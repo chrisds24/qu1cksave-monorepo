@@ -6,9 +6,20 @@
     "outputDirectory": "build",
     "specVersion": 3,
     "schemes": ["https"],
-    "basePath": "/api/v0"
+    "basePath": "/api/v0",
+    "securityDefinitions": {
+      "jwt": {
+        "type": "http",
+        "scheme": "bearer",
+        "scopes": {
+          "member": "member",
+          "premium": "premium"
+        }
+      }
+    }
   },
   "routes": {
-    "routesDir": "build"
+    "routesDir": "build",
+    "authenticationModule": "./src/user/expressAuth.ts"
   }
 }

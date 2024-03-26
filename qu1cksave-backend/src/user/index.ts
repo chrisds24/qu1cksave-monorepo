@@ -1,4 +1,4 @@
-export type Role = "member";
+// export type Role = "member" | "premium";
 
 export interface Credentials {
   /**
@@ -33,5 +33,12 @@ export interface User {
   /**
    * @example ["member"]
    */
-  roles: Role[];
+  // roles: Role[];
+  roles: string[];
+
+
+  /**
+   * @example "user"
+   */
+  accessToken?: string;
 }
