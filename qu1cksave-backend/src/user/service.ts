@@ -63,4 +63,17 @@ export class UserService {
       }
     });
   }
+
+  public async getAll(): Promise<User[]> {
+    const select = "SELECT * FROM users";
+    const query = {
+      text: select,
+    };
+    const { rows } = await pool.query(query);
+    const users = [];
+    for (const row of rows) {
+      users.push(row);
+    }
+    return users;
+  }
 }

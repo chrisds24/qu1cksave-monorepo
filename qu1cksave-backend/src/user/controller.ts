@@ -9,7 +9,7 @@
 #######################################################################
 */
 
-import { Body, Controller, Post, Response, Route, SuccessResponse } from "tsoa";
+import { Body, Controller, Get, Post, Response, Route, Security, SuccessResponse } from "tsoa";
 import { User, Credentials } from ".";
 import { UserService } from "./service";
 
@@ -27,5 +27,13 @@ export class UserController extends Controller {
         }
         return user;
       });
+  }
+
+  // Get all Users
+  @Get('')
+  @Security("jwt", ["member"])
+  @Response('401', 'Unauthorised')
+  public async getAll(): Promise<User[]> {
+    return new UserService().getAll();
   }
 }

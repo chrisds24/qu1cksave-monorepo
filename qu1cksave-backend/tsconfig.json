@@ -19,6 +19,9 @@
 
     "baseUrl": "./",
     "resolveJsonModule": true,
-    "removeComments": true
+    "removeComments": true,
+
+    // https://github.com/microsoft/TypeScript/issues/45063
+    "lib": ["ES2022"]
   }
 }
