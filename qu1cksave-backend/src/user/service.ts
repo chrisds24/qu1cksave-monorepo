@@ -8,7 +8,8 @@ import "whatwg-fetch";
 
 export class UserService {
   public async login(credentials: Credentials): Promise<User | undefined> {
-    const select = "SELECT * FROM member WHERE email ILIKE $1 AND NOT suspended";
+    console.log(`Before db query    name: ${credentials.email}, password: ${credentials.password}`);
+    const select = "SELECT * FROM member WHERE email = $1";
     const query = {
       text: select,
       values: [credentials.email],
@@ -16,7 +17,9 @@ export class UserService {
     const { rows } = await pool.query(query);
     const user = rows.length == 1 ? rows[0] : undefined;
 
-    return new Promise((resolve, reject) => {
+    console.log(`After db query    user: ${user}`);
+
+    // return new Promise((resolve, reject) => {
       if (user && bcrypt.compareSync(credentials.password, user.password)) {
         const accessToken = jwt.sign(
           { id: user.id, name: user.name, email: user.email, roles: user.roles },
@@ -26,17 +29,31 @@ export class UserService {
             algorithm: "HS256",
           }
         );
-        resolve({
+
+        console.log(`After jwt sign:    accessToken: ${accessToken}`);
+
+        // resolve({
+        //   id: user.id,
+        //   name: user.name,
+        //   email: user.email,
+        //   roles: user.roles,
+        //   accessToken: accessToken
+        // });
+
+        return {
           id: user.id,
           name: user.name,
           email: user.email,
           roles: user.roles,
           accessToken: accessToken
-        });
+        };
       } else {
-        reject(new Error("Unauthorized"));
+        console.log('JWT sign fail');
+
+        // reject(new Error("Unauthorized"));
+        return undefined;
       }
-    });
+    // });
   }
 
   public async check(authHeader?: string, scopes?: string[]): Promise<User> {

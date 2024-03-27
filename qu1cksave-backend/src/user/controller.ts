@@ -19,9 +19,11 @@ export class UserController extends Controller {
   @Response("404", "Not found")
   @SuccessResponse("200", "OK")
   public async login(@Body() credentials: Credentials): Promise<User | undefined> {
+    console.log(`login controller 1:    name: ${credentials.email}, password: ${credentials.password}`)
     return new UserService()
       .login(credentials)
       .then(async (user: User | undefined): Promise<User | undefined> => {
+        console.log(`login controller 2:    user: ${user}`)
         if (!user) {
           this.setStatus(404);
         }
