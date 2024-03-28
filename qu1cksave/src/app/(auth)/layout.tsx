@@ -1,18 +1,18 @@
 import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import SignInForm from '@/components/signInForm';
 
 // Credit to:
 // - https://mui.com/material-ui/getting-started/templates/
 // - https://github.com/mui/material-ui/tree/v5.15.14/docs/data/material/getting-started/templates/sign-in-side
 // Use VS Code's Dark Theme colors: https://www.color-hex.com/color-palette/98179
-export default function Page() {
+export default function AuthLayout({
+  children, // will be a page or nested layout
+}: {
+  children: React.ReactNode
+}) {
   return (
     <Grid container component="main" sx={{ height: '100vh' }}>
       <CssBaseline />
@@ -39,13 +39,7 @@ export default function Page() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: '#000000' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5" color={'#ffffff'}>
-            Sign in
-          </Typography>
-          <SignInForm />
+          {children}
         </Box>
       </Grid>
     </Grid>
