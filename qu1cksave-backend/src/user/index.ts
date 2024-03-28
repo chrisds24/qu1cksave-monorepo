@@ -1,44 +1,33 @@
-// export type Role = "member" | "premium";
+/**
+ * Universal Unique ID
+ * @pattern ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+ * @example "22fb4152-b1a3-4989-bb0b-33bccf19617e"
+ */
+export type UUID = string;
+
+// export type Role = "member" | "premium"; // Might not need this
 
 export interface Credentials {
   /**
-   * @example "newuser@gmail.com"
    * @format email
    */
   email: string;
-
-  /**
-   * @example "string"
-   */
   password: string;
 }
 
-export interface User {
-  /**
-   * @example 0000-0000-0000-0000-0000-0000-0000-0001
-   */
-  id: string;
+export interface NewUser extends Credentials {
+  name: string;
+}
 
+
+export interface User {
+  id: UUID;
   /**
-   * @example "user@gmail.com"
    * @format email
    */
   email: string;
-
-  /**
-   * @example "user"
-   */
   name: string;
-
-  /**
-   * @example ["member"]
-   */
   // roles: Role[];
   roles: string[];
-
-
-  /**
-   * @example "user"
-   */
   accessToken?: string;
 }

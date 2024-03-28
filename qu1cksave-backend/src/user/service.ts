@@ -1,7 +1,7 @@
 import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
 
-import { User, Credentials } from ".";
+import { User, Credentials, NewUser } from ".";
 import { pool } from "../db";
 
 import "whatwg-fetch";
@@ -35,6 +35,40 @@ export class UserService {
       };
     } else {
       return undefined;
+    }
+  }
+
+  public async signup(newUser: NewUser): Promise<User | undefined> {
+    const select = "SELECT * FROM member WHERE email = $1";
+    const query = {
+      text: select,
+      values: [newUser.email],
+    };
+    const { rows } = await pool.query(query);
+    const existingUser = rows.length == 1 ? rows[0] : undefined;
+
+    if (existingUser) { // Given email is already associated with an existing user
+      return undefined;
+    } else {
+      const hashedPassword = bcrypt.hashSync(newUser.password, 10);
+      const insert = "INSERT INTO member (name, email, roles, password) VALUES ($1, $2, $3, $4) RETURNING *";
+      const query = {
+        text: insert,
+        values: [newUser.name, newUser.email, JSON.stringify(["member"]), hashedPassword],
+      };
+      try {
+        const { rows } = await pool.query(query);
+        const user = rows[0];
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          roles: user.roles,
+        };
+      } catch(err) {
+        // console.error(err);
+        return undefined;
+      }     
     }
   }
 

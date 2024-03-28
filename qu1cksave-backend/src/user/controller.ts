@@ -10,7 +10,7 @@
 */
 
 import { Body, Controller, Get, Post, Response, Route, Security, SuccessResponse } from "tsoa";
-import { User, Credentials } from ".";
+import { User, Credentials, NewUser } from ".";
 import { UserService } from "./service";
 
 @Route("user")
@@ -29,6 +29,21 @@ export class UserController extends Controller {
       });
   }
 
+  @Post("signup")
+  @Response("409", "Conflict")
+  @SuccessResponse("200", "OK")
+  public async signup(@Body() newUser: NewUser): Promise<User | undefined> {
+    return new UserService()
+      .signup(newUser)
+      .then(async (user: User | undefined): Promise<User | undefined> => {
+        if (!user) {
+          this.setStatus(409);
+        }
+        return user;
+      });
+  }
+
+  // TODO: Change this to getOne, to get the current user.
   // Get all Users
   @Get('')
   @Security("jwt", ["member"])
