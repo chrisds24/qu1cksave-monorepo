@@ -38,6 +38,7 @@ export default function SignInForm() {
 
   return (
     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+      {/* https://stackoverflow.com/questions/70989890/how-to-change-textfield-inputs-focus-border-using-material-ui-theme */}
       <TextField
         margin="normal"
         required
@@ -47,6 +48,25 @@ export default function SignInForm() {
         name="email"
         autoComplete="email"
         autoFocus
+        sx={{
+          input: {
+            color: '#ffffff'
+          },
+          "& .MuiOutlinedInput-notchedOutline": {
+            border: 'solid #3e3e42',
+          },
+          // "& .Mui-focused": {
+          //   "& .MuiOutlinedInput-notchedOutline": {
+          //     border: 'solid #ffffff',
+          //   },
+          // },
+          "& label": {
+            color: '#3e3e42',
+          },
+          // "& label.Mui-focused": {
+          //   color: '#ffffff',
+          // },
+        }}
       />
       <TextField
         margin="normal"
@@ -57,6 +77,25 @@ export default function SignInForm() {
         type="password"
         id="password"
         autoComplete="current-password"
+        sx={{
+          input: {
+            color: '#ffffff'
+          },
+          "& .MuiOutlinedInput-notchedOutline": {
+            border: 'solid #3e3e42',
+          },
+          // "& .Mui-focused": {
+          //   "& .MuiOutlinedInput-notchedOutline": {
+          //     border: 'solid #ffffff',
+          //   },
+          // },
+          "& label": {
+            color: '#3e3e42',
+          },
+          // "& label.Mui-focused": {
+          //   color: '#ffffff',
+          // },
+        }}
       />
       <Button
         type="submit"

@@ -10,7 +10,8 @@ import SignInForm from '@/components/signInForm';
 
 // Credit to:
 // - https://mui.com/material-ui/getting-started/templates/
-// https://github.com/mui/material-ui/tree/v5.15.14/docs/data/material/getting-started/templates/sign-in-side
+// - https://github.com/mui/material-ui/tree/v5.15.14/docs/data/material/getting-started/templates/sign-in-side
+// Use VS Code's Dark Theme colors: https://www.color-hex.com/color-palette/98179
 export default function Page() {
   return (
     <Grid container component="main" sx={{ height: '100vh' }}>
