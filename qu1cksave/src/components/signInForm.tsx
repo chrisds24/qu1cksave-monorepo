@@ -1,5 +1,7 @@
 'use client'
 
+import { useRouter } from 'next/navigation';
+
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
@@ -14,7 +16,8 @@ function Copyright(props: any) {
   return (
     <Typography variant="body2" color="#ffffff" align="center" {...props}>
       {'Copyright © '}
-    <Link color="inherit" href="https://github.com/chrisds24">
+    {/* <Link color="inherit" href="https://github.com/chrisds24"> */}
+    <Link href="https://github.com/chrisds24">
       qu1cksave
     </Link>
     {' 2024.'}
@@ -23,17 +26,37 @@ function Copyright(props: any) {
 }
 
 export default function SignInForm() {
+  const router = useRouter();
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    const credentials = {email: data.get('email'), password: data.get('password')}
 
-    // TODO:
-    // 1.) fetch
-    // 2.) if successful sign in, use useRouter to navigate to dashboard
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const fetchData = async () => {
+      await fetch("http://localhost:3010/api/v0/user/login", {
+        method: "POST",
+        body: JSON.stringify(credentials),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw res;
+          }
+          return res.json();
+        })
+        .then((json) => {
+          localStorage.setItem("user", JSON.stringify(json));
+          router.push('/jobs');
+        })
+        .catch((err) => {
+          // console.log(err);
+          alert('Invalid Credentials');
+        });
+    };
+    fetchData();
   };
 
   return (
