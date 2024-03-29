@@ -19,7 +19,6 @@ export interface NewUser extends Credentials {
   name: string;
 }
 
-
 export interface User {
   id: UUID;
   /**

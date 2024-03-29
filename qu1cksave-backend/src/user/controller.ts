@@ -9,8 +9,8 @@
 #######################################################################
 */
 
-import { Body, Controller, Get, Post, Response, Route, Security, SuccessResponse } from "tsoa";
-import { User, Credentials, NewUser } from ".";
+import { Body, Controller, Get, Path, Post, Query, Response, Route, Security, SuccessResponse } from "tsoa";
+import { User, Credentials, NewUser, UUID } from ".";
 import { UserService } from "./service";
 
 @Route("user")
@@ -43,12 +43,20 @@ export class UserController extends Controller {
       });
   }
 
-  // TODO: Change this to getOne, to get the current user.
-  // Get all Users
-  @Get('')
+  @Get('{id}')
   @Security("jwt", ["member"])
   @Response('401', 'Unauthorized')
-  public async getAll(): Promise<User[]> {
-    return new UserService().getAll();
+  @Response('404', 'Not Found')
+  public async getOne(
+    @Path() id: UUID
+  ): Promise<User | undefined> {
+    return new UserService()
+      .getOne(id)
+      .then(async (user: User | undefined): Promise<User | undefined> => {
+        if (!user) {
+          this.setStatus(404);
+        }
+        return user;
+      });
   }
 }

@@ -1,7 +1,7 @@
 import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
 
-import { User, Credentials, NewUser } from ".";
+import { User, Credentials, NewUser, UUID } from ".";
 import { pool } from "../db";
 
 import "whatwg-fetch";
@@ -97,16 +97,14 @@ export class UserService {
     });
   }
 
-  public async getAll(): Promise<User[]> {
-    const select = "SELECT * FROM member";
+  public async getOne(id: UUID): Promise<User | undefined> {
+    const select = "SELECT id, name, email, roles FROM member WHERE id = $1";
     const query = {
       text: select,
+      values: [id]
     };
     const { rows } = await pool.query(query);
-    const users = [];
-    for (const row of rows) {
-      users.push(row);
-    }
-    return users;
+    // return rows ? rows[0] : undefined; // WRONG
+    return rows.length == 1 ? rows[0] : undefined;
   }
 }
