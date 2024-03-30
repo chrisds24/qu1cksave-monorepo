@@ -1,7 +1,7 @@
 'use client'
 
 import { User } from '@/types/user';
-import { access } from 'fs';
+import Button from '@mui/material/Button';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
 
@@ -16,7 +16,6 @@ export default function Page() {
     } else {
       const { id, accessToken } = JSON.parse(item as string)
       const fetchData = async () => {
-        console.log('id', id);
         await fetch(`http://localhost:3010/api/v0/user/${id}`,{
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -33,23 +32,31 @@ export default function Page() {
           })
           .catch((err) => {
             // console.log(err);
+            // TODO: Go to error page instead of an alert
             alert('User not found.');
           });
       };
       fetchData();
     }
   }, []);
+
+  const logout = () => {
+    localStorage.removeItem('user');
+    setUser(undefined);
+    router.push('/login');
+  };
    
-  // if (!user) {
-  //   return;
-  // } else {
-  //   return (
-  //     <h1>Hello {user.name}!</h1>
-  //   );
-  // }
-  if (user) {
-    return (
-      <h1>Hello {user.name}!</h1>
-    );
-  }
+  return (
+    <>
+      <h1>Hello {user ? user.name : ''}!</h1>
+      <Button
+        variant="contained"
+        onClick={() => {
+          logout();
+        }}
+      >
+        Log Out
+      </Button>
+    </>
+  );
 }
