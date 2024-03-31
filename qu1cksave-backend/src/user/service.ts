@@ -21,7 +21,7 @@ export class UserService {
         { id: user.id, name: user.name, email: user.email, roles: user.roles },
         process.env.ACCESS_TOKEN as string,
         {
-          expiresIn: "90m",
+          expiresIn: "120m",
           algorithm: "HS256",
         }
       );

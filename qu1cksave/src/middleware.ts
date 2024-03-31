@@ -2,18 +2,16 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  const isAuthenticated = false; // TODO: Change to get actual authentication
+  const isAuthenticated = request.cookies.has('session'); // TODO: Use cookies
 
-  // // Authenticated and at home page, go to 
+  // // Authenticated and at home page, go to jobs
   // if(isAuthenticated && (request.nextUrl.pathname === '/')) {
   //   return NextResponse.redirect(new URL('/jobs', request.url))
   // }
-
   // // Authenticated and at login route, go to jobs route
   // if(isAuthenticated && request.nextUrl.pathname.startsWith('/login')) {
   //   return NextResponse.redirect(new URL('/jobs', request.url))
   // }
-
   // // Authenticated and at signup route, go to jobs route
   // if(isAuthenticated && request.nextUrl.pathname.startsWith('/login')) {
   //   return NextResponse.redirect(new URL('/jobs', request.url))
@@ -33,5 +31,5 @@ export async function middleware(request: NextRequest) {
 }
  
 export const config = {
-  matcher: ['/', '/login/:path*', '/signup/:path*', '/jobs/:path*']
+  matcher: ['/', '/login/', '/signup/:path*', '/jobs/:path*']
 }

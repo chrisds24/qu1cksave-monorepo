@@ -10,6 +10,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Avatar from '@mui/material/Avatar';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { login } from '@/actions/auth';
 
 // Credit to:
 // - https://mui.com/material-ui/getting-started/templates/
@@ -30,35 +31,16 @@ function Copyright(props: any) {
 export default function Page() {
   const router = useRouter();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const credentials = {email: data.get('email'), password: data.get('password')}
+    const formdata = new FormData(event.currentTarget);
+    const result = await login(formdata);
+    if (result) {
+      router.push('/jobs');
+    } else {
+      alert('User not found.');
+    }
 
-    const fetchData = async () => {
-      await fetch("http://localhost:3010/api/v0/user/login", {
-        method: "POST",
-        body: JSON.stringify(credentials),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          localStorage.setItem("user", JSON.stringify(json));
-          router.push('/jobs');
-        })
-        .catch((err) => {
-          // console.log(err);
-          alert('Invalid Credentials');
-        });
-    };
-    fetchData();
   };
 
   return (
