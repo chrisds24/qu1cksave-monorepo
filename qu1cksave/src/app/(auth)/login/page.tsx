@@ -40,7 +40,6 @@ export default function Page() {
     } else {
       alert('User not found.');
     }
-
   };
 
   return (
