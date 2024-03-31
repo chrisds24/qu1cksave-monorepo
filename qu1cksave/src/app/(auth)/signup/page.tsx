@@ -10,6 +10,9 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Avatar from '@mui/material/Avatar';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { signup } from '@/actions/auth';
+import { NewUser } from '@/types/auth';
+import { User } from '@/types/user';
 
 // Credit to:
 // - https://mui.com/material-ui/getting-started/templates/
@@ -30,40 +33,25 @@ function Copyright(props: any) {
 export default function Page() {
   const router = useRouter();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const createAccount = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const newUser = {
-      name: data.get('name'),
-      email: data.get('email'),
-      password: data.get('password')
-    }
-
-    const fetchData = async () => {
-      await fetch("http://localhost:3010/api/v0/user/signup", {
-        method: "POST",
-        body: JSON.stringify(newUser),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          alert('Successfully created account!')
-          router.push('/login');
-        })
-        .catch((err) => {
-          // console.log(err);
-          alert('Email already in use.');
-        });
+    const newUser: NewUser = {
+      name: data.get('name') as string,
+      email: data.get('email') as string,
+      password: data.get('password') as string
     };
 
     if (newUser.password !== data.get('repeatpw')) {
       alert("Passwords don't match.");
     } else {
-      fetchData();
+      const user: User | undefined = await signup(newUser);
+      if (user) {
+        alert('Successfully created account!');
+        router.push('/login')
+      } else {
+        alert('Email already in use. Please use a different email.');
+      }
     }
   };
 
@@ -75,7 +63,7 @@ export default function Page() {
       <Typography component="h1" variant="h5" color={'#ffffff'}>
         Sign Up
       </Typography>
-      <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+      <Box component="form" noValidate onSubmit={createAccount} sx={{ mt: 1 }}>
         {/* https://stackoverflow.com/questions/70989890/how-to-change-textfield-inputs-focus-border-using-material-ui-theme */}
         <TextField
           margin="normal"

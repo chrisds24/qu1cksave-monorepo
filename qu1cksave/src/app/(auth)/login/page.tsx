@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import Avatar from '@mui/material/Avatar';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { login } from '@/actions/auth';
+import { Credentials } from '@/types/auth';
 
 // Credit to:
 // - https://mui.com/material-ui/getting-started/templates/
@@ -34,8 +35,12 @@ export default function Page() {
   const signin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formdata = new FormData(event.currentTarget);
-    const result = await login(formdata);
-    if (result) {
+    const credentials: Credentials = {
+      email: formdata.get('email') as string,
+      password: formdata.get('password') as string
+    };
+    const user = await login(credentials);
+    if (user) {
       router.push('/jobs');
     } else {
       alert('User not found.');

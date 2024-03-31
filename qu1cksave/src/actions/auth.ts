@@ -1,42 +1,61 @@
 'use server'
 
+import { Credentials, NewUser } from "@/types/auth";
 import { User } from "@/types/user";
 import * as jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
-export async function login(formdata: FormData): Promise<User | undefined> {
-    const credentials = {email: formdata.get('email'), password: formdata.get('password')};
-    
-    const user = await fetch("http://localhost:3010/api/v0/user/login", {
-      method: "POST",
-      body: JSON.stringify(credentials),
-      headers: {
-        "Content-Type": "application/json",
-      },
+export async function login(credentials: Credentials): Promise<User | undefined> {    
+  const user = await fetch("http://localhost:3010/api/v0/user/login", {
+    method: "POST",
+    body: JSON.stringify(credentials),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw res;
+      }
+      return res.json();
     })
-      .then((res) => {
-        if (!res.ok) {
-          throw res;
-        }
-        return res.json();
-      })
-      .then((user) => {
-        const expires = new Date(Date.now() + 2*60*60*1000); // Expires in 2 hours
-        // Switch to this once using https
-        //   cookies().set("session", user.accessToken, { expires, httpOnly: true, secure: true });
-        cookies().set("session", user.accessToken, { expires, httpOnly: true });
-        return {id: user.id, email: user.email, name: user.name, roles: user.roles};
-      })
-      .catch((err) => {
-        // console.error(err);
-        return undefined
-      })
+    .then((user) => {
+      const expires = new Date(Date.now() + 2*60*60*1000); // Expires in 2 hours
+      // Switch to this once using https
+      //   cookies().set("session", user.accessToken, { expires, httpOnly: true, secure: true });
+      cookies().set("session", user.accessToken, { expires, httpOnly: true });
+      return {id: user.id, email: user.email, name: user.name, roles: user.roles};
+    })
+    .catch((err) => {
+      return undefined
+    })
 
-    return user;
+  return user;
 }
 
 export async function logout() {
   cookies().delete('session');
+}
+
+export async function signup(newUser: NewUser): Promise<User | undefined> {
+  const user = await fetch("http://localhost:3010/api/v0/user/signup", {
+    method: "POST",
+    body: JSON.stringify(newUser),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw res;
+      }
+      return res.json();
+    })
+    .catch((err) => {
+      return undefined;
+    });
+    
+  return user;
 }
 
 export async function decrypt(token: string): Promise<User | undefined> {
