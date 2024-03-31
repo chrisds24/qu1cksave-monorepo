@@ -35,6 +35,10 @@ export async function login(formdata: FormData): Promise<User | undefined> {
     return user;
 }
 
+export async function logout() {
+  cookies().delete('session');
+}
+
 export async function decrypt(token: string): Promise<User | undefined> {
   let result = undefined;
   jwt.verify(token, process.env.ACCESS_TOKEN as string, (err, decoded) => {
@@ -46,3 +50,4 @@ export async function decrypt(token: string): Promise<User | undefined> {
   });
   return result;
 }
+

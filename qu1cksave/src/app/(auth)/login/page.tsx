@@ -31,7 +31,7 @@ function Copyright(props: any) {
 export default function Page() {
   const router = useRouter();
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const signin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formdata = new FormData(event.currentTarget);
     const result = await login(formdata);
@@ -50,7 +50,7 @@ export default function Page() {
       <Typography component="h1" variant="h5" color={'#ffffff'}>
         Sign In
       </Typography>
-      <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+      <Box component="form" noValidate onSubmit={signin} sx={{ mt: 1 }}>
         {/* https://stackoverflow.com/questions/70989890/how-to-change-textfield-inputs-focus-border-using-material-ui-theme */}
         <TextField
           margin="normal"

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  const isAuthenticated = request.cookies.has('session'); // TODO: Use cookies
+  const isAuthenticated = request.cookies.has('session');
 
   // // Authenticated and at home page, go to jobs
   // if(isAuthenticated && (request.nextUrl.pathname === '/')) {

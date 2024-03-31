@@ -1,5 +1,6 @@
 'use client'
 
+import { logout } from '@/actions/auth';
 import { User } from '@/types/user';
 import Button from '@mui/material/Button';
 import { useRouter } from 'next/navigation';
@@ -40,10 +41,11 @@ export default function Page() {
     }
   }, []);
 
-  const logout = () => {
-    localStorage.removeItem('user');
-    setUser(undefined);
-    router.push('/login');
+  const signout = async () => {
+    await logout()
+      .then(() => {
+        router.push('/login');
+      })
   };
    
   return (
@@ -52,7 +54,7 @@ export default function Page() {
       <Button
         variant="contained"
         onClick={() => {
-          logout();
+          signout();
         }}
       >
         Log Out
