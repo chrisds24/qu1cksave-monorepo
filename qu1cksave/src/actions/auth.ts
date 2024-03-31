@@ -70,3 +70,13 @@ export async function decrypt(token: string): Promise<User | undefined> {
   return result;
 }
 
+// Needed to get User to show the user's name in jobs page
+export async function getSessionUser(): Promise<User | undefined> {
+  const session = cookies().get("session")?.value;
+  if (session) {
+    return await decrypt(session);
+  } else {
+    return undefined;
+  }
+}
+

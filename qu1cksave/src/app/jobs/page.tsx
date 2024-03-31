@@ -1,6 +1,6 @@
 'use client'
 
-import { logout } from '@/actions/auth';
+import { getSessionUser, logout } from '@/actions/auth';
 import { User } from '@/types/user';
 import Button from '@mui/material/Button';
 import { useRouter } from 'next/navigation';
@@ -11,34 +11,15 @@ export default function Page() {
   const [user, setUser] = useState<User>();
 
   useEffect(() => {
-    const item = localStorage.getItem('user');
-    if (!item) {
-      router.push('/login');
-    } else {
-      const { id, accessToken } = JSON.parse(item as string)
-      const fetchData = async () => {
-        await fetch(`http://localhost:3010/api/v0/user/${id}`,{
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+    const getSession = async () => {
+      await getSessionUser()
+        .then((user) => {
+          if (user) {
+            setUser(user);
+          }
         })
-          .then((res) => {
-            if (!res.ok) {
-              throw res;
-            }
-            return res.json();
-          })
-          .then((json) => {
-            setUser(json);
-          })
-          .catch((err) => {
-            // console.log(err);
-            // TODO: Go to error page instead of an alert
-            alert('User not found.');
-          });
-      };
-      fetchData();
-    }
+    };
+    getSession();
   }, []);
 
   const signout = async () => {
