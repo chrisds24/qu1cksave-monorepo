@@ -59,4 +59,15 @@ export class UserController extends Controller {
         return user;
       });
   }
+
+  @Get()
+  @Security("jwt", ["member"])
+  @Response('401', 'Unauthorized')
+  public async getMultiple(): Promise<User[]> {
+    return new UserService()
+      .getMultiple()
+      .then(async (users: User[]): Promise<User[]> => {
+        return users;
+      });
+  }
 }

@@ -107,4 +107,13 @@ export class UserService {
     // return rows ? rows[0] : undefined; // WRONG
     return rows.length == 1 ? rows[0] : undefined;
   }
+
+  public async getMultiple(): Promise<User[]> {
+    const select = "SELECT id, name, email, roles FROM member";
+    const query = {
+      text: select,
+    };
+    const { rows } = await pool.query(query);
+    return rows as User[];
+  }
 }
