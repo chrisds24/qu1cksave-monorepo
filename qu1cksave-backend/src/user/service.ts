@@ -1,7 +1,7 @@
 import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
 
-import { User, Credentials, NewUser, UUID } from ".";
+import { User, Credentials, NewUser } from ".";
 import { pool } from "../db";
 
 import "whatwg-fetch";
@@ -97,7 +97,7 @@ export class UserService {
     });
   }
 
-  public async getOne(id: UUID): Promise<User | undefined> {
+  public async getOne(id: string): Promise<User | undefined> {
     const select = "SELECT id, name, email, roles FROM member WHERE id = $1";
     const query = {
       text: select,

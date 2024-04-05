@@ -10,7 +10,7 @@
 */
 
 import { Body, Controller, Get, Path, Post, Query, Response, Route, Security, SuccessResponse } from "tsoa";
-import { User, Credentials, NewUser, UUID } from ".";
+import { User, Credentials, NewUser } from ".";
 import { UserService } from "./service";
 
 @Route("user")
@@ -48,7 +48,7 @@ export class UserController extends Controller {
   @Response('401', 'Unauthorized')
   @Response('404', 'Not Found')
   public async getOne(
-    @Path() id: UUID
+    @Path() id: string
   ): Promise<User | undefined> {
     return new UserService()
       .getOne(id)
