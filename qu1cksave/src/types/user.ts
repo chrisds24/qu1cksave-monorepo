@@ -1,7 +1,7 @@
-import { UUID } from "./common";
+// import { UUID } from "./common";
 
 export interface User {
-  id: UUID;
+  id: string;
   /**
    * @format email
    */

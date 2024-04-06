@@ -1,6 +1,7 @@
 'use client'
 
 import { getSessionUser, logout } from '@/actions/auth';
+import { Job } from '@/types/job';
 import { User } from '@/types/user';
 import Button from '@mui/material/Button';
 import { useRouter } from 'next/navigation';
@@ -11,6 +12,8 @@ export default function Page() {
   const [sessionUser, setSessionUser] = useState<User>();
   const [user, setUser] = useState<User>();
   const [users, setUsers] = useState<User[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  // const [allJobs, setAllJobs] = useState<Job[]>([]);
 
   useEffect(() => {
     const getSession = async () => {
@@ -28,7 +31,7 @@ export default function Page() {
                 }
                 return res.json()
               })
-              .then((user: User) => {
+              .then(async (user: User) => {
                 setUser(user)
               })
               .catch((err) => {
@@ -48,7 +51,37 @@ export default function Page() {
               })
               .catch((err) => {
                 alert('Users collection not found.')
-              })            
+              }) 
+              
+            // Get all jobs for current user
+            await fetch(`/api/job?id=${sesUser.id}`)
+              .then((res) => {
+                if (!res.ok) {
+                  throw res;
+                }
+                return res.json()
+              })
+              .then((jobs: Job[]) => {
+                setJobs(jobs)
+              })
+              .catch((err) => {
+                alert(`Jobs collection for ${sesUser.name} not found.`)
+              }) 
+              
+            // Get jobs for all users
+            // await fetch('/api/job')
+            //   .then((res) => {
+            //     if (!res.ok) {
+            //       throw res;
+            //     }
+            //     return res.json()
+            //   })
+            //   .then((jobs: Job[]) => {
+            //     setAllJobs(jobs)
+            //   })
+            //   .catch((err) => {
+            //     alert('All Jobs collection not found.')
+            //   })
           }
         })
     };
@@ -66,6 +99,7 @@ export default function Page() {
     <>
       <h1>Hello Session User: {sessionUser ? sessionUser.name : ''}!</h1>
       <h1>Hello User: {user ? user.name : ''}!</h1>
+
       <h1>Number of users: {users ? users.length : 'Users collection does not exist.'}</h1>
       <h1>List of users: </h1>
       <ul>
@@ -77,6 +111,33 @@ export default function Page() {
           )
         })}
       </ul>
+
+      <h1>{sessionUser ? sessionUser.name : ''}'s Jobs: </h1>
+      <ul>
+        {jobs.map((job) => {
+          return (
+            <li key={job.id}>
+              {`Job Title: ${job.title}`} <br />
+              {`Company: ${job.company_name}`} <br />
+              {`Status: ${job.job_status}`} <br />
+              <br />
+            </li>
+          )
+        })}
+      </ul>
+
+      {/* <ul>
+        {allJobs.map((job) => {
+          return (
+            <li key={job.id}>
+              {`Job Title: ${job.title}`} <br />
+              {`Company: ${job.company_name}`} <br />
+              {`Status: ${job.job_status}`} <br />
+              <br />
+            </li>
+          )
+        })}
+      </ul> */}
 
       <Button
         variant="contained"
