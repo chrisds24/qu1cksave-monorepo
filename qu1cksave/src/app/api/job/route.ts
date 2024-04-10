@@ -21,12 +21,12 @@ export async function GET(
   // }
   // const id = user.id;
 
-  // let fetchUrl = 'http://localhost:3010/api/v0/job';
-  // if (id) {
-  //   fetchUrl += `?id=${id}`;
-  // }
-  // const users: Job[] | undefined = await fetch(fetchUrl, {
-  const users: Job[] | undefined = await fetch(`http://localhost:3010/api/v0/job?id=${id}`, {
+  let fetchUrl = 'http://localhost:3010/api/v0/job';
+  if (id) {
+    fetchUrl += `?id=${id}`;
+  }
+  const jobs: Job[] | undefined = await fetch(fetchUrl, {
+  // const jobs: Job[] | undefined = await fetch(`http://localhost:3010/api/v0/job?id=${id}`, {
     headers: {
       Authorization: 'Bearer ' + token,
     },
@@ -40,5 +40,5 @@ export async function GET(
     .catch((err) => {
       return undefined;
     })
-  return Response.json(users);
+  return Response.json(jobs);
 }

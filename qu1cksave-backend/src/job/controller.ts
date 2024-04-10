@@ -10,7 +10,7 @@ export class JobController extends Controller {
   @Security("jwt", ["member"])
   @Response('401', 'Unauthorized')
   public async getMultiple(
-    @Query() id: string
+    @Query() id?: string
   ): Promise<Job[]> {
     return new JobService()
       .getMultiple(id)

@@ -13,7 +13,7 @@ export default function Page() {
   const [user, setUser] = useState<User>();
   const [users, setUsers] = useState<User[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
-  // const [allJobs, setAllJobs] = useState<Job[]>([]);
+  const [allJobs, setAllJobs] = useState<Job[]>([]);
 
   useEffect(() => {
     const getSession = async () => {
@@ -69,19 +69,19 @@ export default function Page() {
               }) 
               
             // Get jobs for all users
-            // await fetch('/api/job')
-            //   .then((res) => {
-            //     if (!res.ok) {
-            //       throw res;
-            //     }
-            //     return res.json()
-            //   })
-            //   .then((jobs: Job[]) => {
-            //     setAllJobs(jobs)
-            //   })
-            //   .catch((err) => {
-            //     alert('All Jobs collection not found.')
-            //   })
+            await fetch('/api/job')
+              .then((res) => {
+                if (!res.ok) {
+                  throw res;
+                }
+                return res.json()
+              })
+              .then((jobs: Job[]) => {
+                setAllJobs(jobs)
+              })
+              .catch((err) => {
+                alert('All Jobs collection not found.')
+              })
           }
         })
     };
@@ -126,7 +126,8 @@ export default function Page() {
         })}
       </ul>
 
-      {/* <ul>
+      <h1>All Jobs: </h1>
+      <ul>
         {allJobs.map((job) => {
           return (
             <li key={job.id}>
@@ -137,7 +138,7 @@ export default function Page() {
             </li>
           )
         })}
-      </ul> */}
+      </ul>
 
       <Button
         variant="contained"
