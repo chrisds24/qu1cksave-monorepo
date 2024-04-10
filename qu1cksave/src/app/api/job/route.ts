@@ -11,22 +11,14 @@ export async function GET(
   }
 
   // Get the user's id
-  // Method 1:
   const searchParams = request.nextUrl.searchParams;
   const id = searchParams.get('id');
-  // // Method 2: From session
-  // const user = await decrypt(token);
-  // if (!user) {
-  //   return Response.json(undefined);
-  // }
-  // const id = user.id;
 
   let fetchUrl = 'http://localhost:3010/api/v0/job';
   if (id) {
     fetchUrl += `?id=${id}`;
   }
   const jobs: Job[] | undefined = await fetch(fetchUrl, {
-  // const jobs: Job[] | undefined = await fetch(`http://localhost:3010/api/v0/job?id=${id}`, {
     headers: {
       Authorization: 'Bearer ' + token,
     },

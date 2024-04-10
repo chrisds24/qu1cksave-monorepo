@@ -10,48 +10,18 @@ import { useEffect, useState } from "react";
 export default function Page() {
   const router = useRouter();
   const [sessionUser, setSessionUser] = useState<User>();
-  const [user, setUser] = useState<User>();
-  const [users, setUsers] = useState<User[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [allJobs, setAllJobs] = useState<Job[]>([]);
 
   useEffect(() => {
     const getSession = async () => {
       // Get user from session in cookies
+      // TODO: Maybe put this in layout?
+      //   If in layout, need a way to pass this into jobs page
+      //   Then have the sidebar in the layout as a component
       await getSessionUser()
         .then(async (sesUser) => {
           if (sesUser) {
             setSessionUser(sesUser);
-
-            // Get current user from backend
-            await fetch(`/api/user/${sesUser.id}`)
-              .then((res) => {
-                if (!res.ok) {
-                  throw res;
-                }
-                return res.json()
-              })
-              .then(async (user: User) => {
-                setUser(user)
-              })
-              .catch((err) => {
-                alert('User not found.')
-              })
-
-            // Get all users
-            await fetch(`/api/user`)
-              .then((res) => {
-                if (!res.ok) {
-                  throw res;
-                }
-                return res.json()
-              })
-              .then((users: User[]) => {
-                setUsers(users)
-              })
-              .catch((err) => {
-                alert('Users collection not found.')
-              }) 
               
             // Get all jobs for current user
             await fetch(`/api/job?id=${sesUser.id}`)
@@ -67,21 +37,6 @@ export default function Page() {
               .catch((err) => {
                 alert(`Jobs collection for ${sesUser.name} not found.`)
               }) 
-              
-            // Get jobs for all users
-            await fetch('/api/job')
-              .then((res) => {
-                if (!res.ok) {
-                  throw res;
-                }
-                return res.json()
-              })
-              .then((jobs: Job[]) => {
-                setAllJobs(jobs)
-              })
-              .catch((err) => {
-                alert('All Jobs collection not found.')
-              })
           }
         })
     };
@@ -98,37 +53,10 @@ export default function Page() {
   return (
     <>
       <h1>Hello Session User: {sessionUser ? sessionUser.name : ''}!</h1>
-      <h1>Hello User: {user ? user.name : ''}!</h1>
-
-      <h1>Number of users: {users ? users.length : 'Users collection does not exist.'}</h1>
-      <h1>List of users: </h1>
-      <ul>
-        {users.map((user) => {
-          return (
-            <li key={user.id}>
-              {user.name}
-            </li>
-          )
-        })}
-      </ul>
 
       <h1>{sessionUser ? sessionUser.name : ''}'s Jobs: </h1>
       <ul>
         {jobs.map((job) => {
-          return (
-            <li key={job.id}>
-              {`Job Title: ${job.title}`} <br />
-              {`Company: ${job.company_name}`} <br />
-              {`Status: ${job.job_status}`} <br />
-              <br />
-            </li>
-          )
-        })}
-      </ul>
-
-      <h1>All Jobs: </h1>
-      <ul>
-        {allJobs.map((job) => {
           return (
             <li key={job.id}>
               {`Job Title: ${job.title}`} <br />
