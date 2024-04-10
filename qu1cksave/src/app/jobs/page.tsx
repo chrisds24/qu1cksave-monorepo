@@ -15,6 +15,8 @@ export default function Page() {
   useEffect(() => {
     const getSession = async () => {
       // Get user from session in cookies
+      // NOTE: This isn't an API call, so it's fine to use Server Actions
+      //   which are POST requests by default
       // TODO: Maybe put this in layout?
       //   If in layout, need a way to pass this into jobs page
       //   Then have the sidebar in the layout as a component
