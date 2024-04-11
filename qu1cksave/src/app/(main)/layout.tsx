@@ -20,7 +20,6 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { logout } from '@/actions/auth';
-// import { useRouter } from 'next/router';
 
 const drawerWidth = 240;
 
@@ -35,8 +34,6 @@ export default function MainLayout({
 }: {
   children: React.ReactNode
 }) {
-  // const router = useRouter();
-
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
 
@@ -61,8 +58,8 @@ export default function MainLayout({
       {/* <Divider /> */}
       <List>
         {navItems.map((navItem) => (
-          <Link href={`/${navItem.route}`}>
-            <ListItem key={navItem.name} disablePadding>
+          <Link key={navItem.name} href={`/${navItem.route}`}>
+            <ListItem disablePadding>
                 <ListItemButton>
                   <ListItemIcon>
                     {navItem.icon}
