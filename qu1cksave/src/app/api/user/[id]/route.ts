@@ -2,6 +2,8 @@ import { User } from "@/types/user";
 // import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
+// TODO: Remove this route handler later since there's no reason
+//   to GET one user. Keeping for now for reference
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }

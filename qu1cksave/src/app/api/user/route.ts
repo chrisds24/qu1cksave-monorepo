@@ -9,6 +9,7 @@ export async function GET(
     return Response.json(undefined);
   }
 
+  // TODO: Edit to http://localhost:3010/api/v0/user/count to get count
   const users: User[] | undefined = await fetch(`http://localhost:3010/api/v0/user`, {
     headers: {
       Authorization: 'Bearer ' + token,
