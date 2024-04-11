@@ -17,16 +17,15 @@ import Typography from '@mui/material/Typography';
 import WorkIcon from '@mui/icons-material/Work';
 import FolderIcon from '@mui/icons-material/Folder';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { logout } from '@/actions/auth';
 
-const drawerWidth = 240;
+const drawerWidth = 180;
 
 const navItems = [
-  {name: 'Jobs', icon: <WorkIcon />, route: 'jobs'},
-  {name: 'Documents', icon: <FolderIcon />, route: 'documents'},
-  {name: 'Statistics', icon: <BarChartIcon />, route: 'statistics'}
+  {name: 'Jobs', icon: <WorkIcon sx={{color: '#ffffff'}}/>, route: 'jobs'},
+  {name: 'Documents', icon: <FolderIcon sx={{color: '#ffffff'}}/>, route: 'documents'},
+  {name: 'Statistics', icon: <BarChartIcon sx={{color: '#ffffff'}}/>, route: 'statistics'}
 ]
 
 export default function MainLayout({
@@ -54,7 +53,22 @@ export default function MainLayout({
 
   const drawer = (
     <div>
-      <Toolbar />
+      {/* <Toolbar /> */}
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column',
+        backgroundColor: '#1e1e1e',
+        height: 64
+      }}>
+        <img
+          height={56}
+          width={'auto'}
+          src="/qu1cksave_darkgray_bg.png"
+          alt="qu1cksave logo"
+          style={{marginTop: 4}}
+        />
+      </Box>   
       {/* <Divider /> */}
       <List>
         {navItems.map((navItem) => (
@@ -64,14 +78,14 @@ export default function MainLayout({
                   <ListItemIcon>
                     {navItem.icon}
                   </ListItemIcon>
-                  <ListItemText primary={navItem.name} />
+                  <ListItemText primary={navItem.name} sx={{ color: '#ffffff' }}/>
                 </ListItemButton>
             </ListItem>
           </Link>
         ))}
         <ListItem key={'logout'} disablePadding>
           <ListItemButton onClick={() => { logout(); }}>
-            <ListItemText primary={'Logout'} />
+            <ListItemText primary={'Logout'} sx={{ color: '#ffffff' }}/>
           </ListItemButton>
         </ListItem>
       </List>
@@ -86,6 +100,7 @@ export default function MainLayout({
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
+          display: { sm: 'none' },
         }}
       >
         <Toolbar>
@@ -99,7 +114,7 @@ export default function MainLayout({
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Responsive drawer
+            qu1cksave
           </Typography>
         </Toolbar>
       </AppBar>
@@ -121,6 +136,11 @@ export default function MainLayout({
             display: { xs: 'block', sm: 'none' },
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
+          PaperProps={{
+            sx: {
+              backgroundColor: '#1e1e1e',
+            }
+          }}
         >
           {drawer}
         </Drawer>
@@ -131,6 +151,11 @@ export default function MainLayout({
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
           open
+          PaperProps={{
+            sx: {
+              backgroundColor: '#1e1e1e',
+            }
+          }}
         >
           {drawer}
         </Drawer>
