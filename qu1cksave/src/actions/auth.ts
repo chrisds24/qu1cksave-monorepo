@@ -4,6 +4,7 @@ import { Credentials, NewUser } from "@/types/auth";
 import { User } from "@/types/user";
 import * as jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function login(credentials: Credentials): Promise<User | undefined> {    
   const user = await fetch("http://localhost:3010/api/v0/user/login", {
@@ -35,6 +36,7 @@ export async function login(credentials: Credentials): Promise<User | undefined>
 
 export async function logout() {
   cookies().delete('session');
+  redirect('login');
 }
 
 export async function signup(newUser: NewUser): Promise<User | undefined> {

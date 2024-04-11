@@ -19,6 +19,7 @@ import FolderIcon from '@mui/icons-material/Folder';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { logout } from '@/actions/auth';
 // import { useRouter } from 'next/router';
 
 const drawerWidth = 240;
@@ -71,6 +72,11 @@ export default function MainLayout({
             </ListItem>
           </Link>
         ))}
+        <ListItem key={'logout'} disablePadding>
+          <ListItemButton onClick={() => { logout(); }}>
+            <ListItemText primary={'Logout'} />
+          </ListItemButton>
+        </ListItem>
       </List>
     </div>
   );
