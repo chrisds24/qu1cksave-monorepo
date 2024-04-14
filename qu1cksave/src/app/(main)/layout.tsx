@@ -1,6 +1,5 @@
 'use client'
 
-import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -18,7 +17,9 @@ import WorkIcon from '@mui/icons-material/Work';
 import FolderIcon from '@mui/icons-material/Folder';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import Link from 'next/link';
-import { logout } from '@/actions/auth';
+import { getSessionUser, logout } from '@/actions/auth';
+import { Context, ReactNode, createContext, useEffect, useState } from 'react';
+import { User } from '@/types/user';
 
 const drawerWidth = 180;
 
@@ -28,13 +29,31 @@ const navItems = [
   {name: 'Statistics', icon: <BarChartIcon sx={{color: '#ffffff'}}/>, route: 'statistics'}
 ]
 
+export const SessionUserContext: Context<any> = createContext(null);
+
 export default function MainLayout({
   children, // will be a page or nested layout
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [isClosing, setIsClosing] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [sessionUser, setSessionUser] = useState<User>();
+
+  useEffect(() => {
+    const getSession = async () => {
+      // Get user from session in cookies
+      // NOTE: This isn't an API call, so it's fine to use Server Actions
+      //   which are POST requests by default
+      await getSessionUser()
+        .then(async (sesUser) => {
+          if (sesUser) {
+            setSessionUser(sesUser);
+          }
+        })
+    };
+    getSession();
+  }, []);
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -53,13 +72,12 @@ export default function MainLayout({
 
   const drawer = (
     <div>
-      {/* <Toolbar /> */}
       <Box sx={{
         display: 'flex',
         alignItems: 'center',
         flexDirection: 'column',
         backgroundColor: '#1e1e1e',
-        height: 64
+        height: 64 // The Toolbar that MUI uses to add the space has height 64
       }}>
         <img
           height={56}
@@ -83,8 +101,14 @@ export default function MainLayout({
             </ListItem>
           </Link>
         ))}
+        <ListItem key={'sessionUser'} disablePadding>
+            <ListItemText primary={sessionUser ? sessionUser.name : ''} sx={{ color: '#ffffff' }}/>
+        </ListItem>
         <ListItem key={'logout'} disablePadding>
-          <ListItemButton onClick={() => { logout(); }}>
+          <ListItemButton onClick={() => {
+            logout();
+            setSessionUser(undefined);
+          }}>
             <ListItemText primary={'Logout'} sx={{ color: '#ffffff' }}/>
           </ListItemButton>
         </ListItem>
@@ -165,7 +189,9 @@ export default function MainLayout({
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar />
-        {children}
+        <SessionUserContext.Provider value={{ sessionUser }}>
+          {children}
+        </SessionUserContext.Provider>
       </Box>
     </Box>
   );
