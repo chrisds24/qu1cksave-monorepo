@@ -1,14 +1,26 @@
 'use client'
 
-import { Box, Typography } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { Context, createContext, useContext, useEffect, useState } from "react";
 import { SessionUserContext } from "../layout";
 import { Job } from "@/types/job";
+import JobsList from "@/components/job/list";
+
+export const JobsContext: Context<any> = createContext(null);
 
 export default function Page() {
   let { sessionUser } = useContext(SessionUserContext);
   const [jobs, setJobs] = useState<Job[]>([]);
 
+  // TODO (Maybe): If I want an SPA experience where state is preserved, I
+  //   could do all initial data fetches (Ex. getJobs) in the layout.
+  //   See CSE 186 Asg 8: Pass hooks in Context
+  //
+  //   Although this doesn't make much sense since if a user decides to
+  //   navigate away from the jobs page, then that means that they're done
+  //   working with the jobs page in the meantime.
+  //   
+  //   Different story with jobs -> single job -> back to jobs.
+  //   This is where we want to preserve the context in jobs.
   useEffect(() => {
     const getJobs = async () => {
       if (sessionUser) {
@@ -32,20 +44,8 @@ export default function Page() {
   }, [sessionUser]);
 
   return (
-    <Box>
-      {`Hello ${sessionUser ? sessionUser.name : 'not logged in'}`}
-      <ul>
-        {jobs.map((job) => {
-          return (
-            <li key={job.id}>
-              {`Job Title: ${job.title}`} <br />
-              {`Company: ${job.company_name}`} <br />
-              {`Status: ${job.job_status}`} <br />
-              <br />
-            </li>
-          )
-        })}
-      </ul>
-    </Box>
+    <JobsContext.Provider value={{ jobs }}>
+      <JobsList />
+    </JobsContext.Provider>
   );
 }

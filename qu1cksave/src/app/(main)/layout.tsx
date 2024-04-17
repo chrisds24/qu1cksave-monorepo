@@ -76,13 +76,13 @@ export default function MainLayout({
         display: 'flex',
         alignItems: 'center',
         flexDirection: 'column',
-        backgroundColor: '#1e1e1e',
+        backgroundColor: '#000000',
         height: 64 // The Toolbar that MUI uses to add the space has height 64
       }}>
         <img
           height={56}
           width={'auto'}
-          src="/qu1cksave_darkgray_bg.png"
+          src="/qu1cksave_black_bg.png"
           alt="qu1cksave logo"
           style={{marginTop: 4}}
         />
@@ -162,7 +162,7 @@ export default function MainLayout({
           }}
           PaperProps={{
             sx: {
-              backgroundColor: '#1e1e1e',
+              backgroundColor: '#000000',
             }
           }}
         >
@@ -177,7 +177,7 @@ export default function MainLayout({
           open
           PaperProps={{
             sx: {
-              backgroundColor: '#1e1e1e',
+              backgroundColor: '#000000',
             }
           }}
         >
@@ -186,9 +186,14 @@ export default function MainLayout({
       </Box>
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+        sx={{ flexGrow: 1,
+          p: 3,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          backgroundColor: '#1e1e1e',
+          height: '100vh'
+        }}
       >
-        <Toolbar />
+        <Toolbar sx={{display: { xs: 'block', sm: 'none' }}}/>
         <SessionUserContext.Provider value={{ sessionUser }}>
           {children}
         </SessionUserContext.Provider>
