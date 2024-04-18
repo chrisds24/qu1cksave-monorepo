@@ -26,7 +26,7 @@ export default function JobCard(props: any) {
         }}
         elevation={3}
       >
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 1}}>
           <Typography color='#ffffff' sx={{fontSize: '17px'}}>
             {'Applied: ' +
               (
@@ -57,7 +57,7 @@ export default function JobCard(props: any) {
             {`${job.is_remote}`}
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 0.5}}>
           <Typography color='#ffffff' fontWeight={'bold'} sx={{fontSize: '17px', fontStyle: 'italic'}}>
             {`${job.company_name}`}
           </Typography>
@@ -68,7 +68,7 @@ export default function JobCard(props: any) {
             {job.city ? `${job.city}, ${job.us_state}` : 'N/A'}
           </Typography>
         </Box>
-        <Typography sx={{textOverflow: 'ellipsis'}} noWrap>
+        <Typography sx={{textOverflow: 'ellipsis', paddingBottom: 1}} noWrap>
           {job.job_description ? job.job_description : 'No description.'}
         </Typography>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -78,8 +78,14 @@ export default function JobCard(props: any) {
           <Box sx={{ display: 'flex', flexDirection: 'row'}}>
             <Button
               variant="contained"
-              sx={{ color: '#ffffff', marginRight: 1 }}
-              color='success'
+              sx={{
+                color: '#ffffff',
+                backgroundColor: '#000000',
+                marginRight: 1,
+                '&:hover': {
+                  backgroundColor: '#141414',
+                },
+              }}
             >
               <EditIcon sx={{ color: '#ffffff'}} />
             </Button>
@@ -93,12 +99,6 @@ export default function JobCard(props: any) {
           </Box>
         </Box>
       </Paper>
-    );
-  } else {
-    return (
-      <>
-        Loading
-      </>
     );
   }
 }

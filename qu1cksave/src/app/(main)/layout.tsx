@@ -22,6 +22,7 @@ import { Context, ReactNode, createContext, useEffect, useState } from 'react';
 import { User } from '@/types/user';
 import { Avatar } from '@mui/material';
 import stringAvatar from '@/lib/stringAvatar';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const drawerWidth = 180;
 
@@ -126,9 +127,12 @@ export default function MainLayout({
             logout();
             setSessionUser(undefined);
           }}>
+            <ListItemIcon>
+              <LogoutIcon sx={{color: '#ffffff'}}/>
+            </ListItemIcon>
             <ListItemText primary={'Logout'} sx={{ color: '#ffffff' }}/>
           </ListItemButton>
-        </ListItem>
+        </ListItem>        
       </List>
     </div>
   );

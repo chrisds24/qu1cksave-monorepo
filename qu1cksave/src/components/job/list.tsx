@@ -16,11 +16,5 @@ export default function JobsList() {
         ))}
       </Stack>
     );
-  } else {
-    return (
-      <>
-        Loading
-      </>
-    )
   }
 }
