@@ -22,11 +22,15 @@ export default function JobCard(props: any) {
           color: '#ffffff',
           padding: 2,
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          '&:hover': {
+            backgroundColor: '#171717'
+          },
         }}
         elevation={3}
       >
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 1}}>
+          {/* #ce9178 for applied, posted, and from values */}
           <Typography color='#ffffff' sx={{fontSize: '17px'}}>
             {'Applied: ' +
               (
@@ -50,15 +54,15 @@ export default function JobCard(props: any) {
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Typography color='#ffffff' fontWeight='bold' sx={{fontSize: '19px'}}>
+          <Typography color='#4fc1ff' fontWeight='bold' sx={{fontSize: '19px'}}>
             {`${job.title}`}
           </Typography>
-          <Typography color='#ffffff' sx={{fontSize: '17px'}}>
+          <Typography color='#dcdcaa' sx={{fontSize: '17px'}}>
             {`${job.is_remote}`}
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 0.5}}>
-          <Typography color='#ffffff' fontWeight={'bold'} sx={{fontSize: '17px', fontStyle: 'italic'}}>
+          <Typography color='#4ec9b0' fontWeight={'bold'} sx={{fontSize: '17px', fontStyle: 'italic'}}>
             {`${job.company_name}`}
           </Typography>
           <Typography color='#ffffff' sx={{fontSize: '17px', fontStyle: 'italic'}}>
@@ -83,7 +87,7 @@ export default function JobCard(props: any) {
                 backgroundColor: '#000000',
                 marginRight: 1,
                 '&:hover': {
-                  backgroundColor: '#141414',
+                  backgroundColor: '#0b0b0b',
                 },
               }}
             >
