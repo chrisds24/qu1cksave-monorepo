@@ -8,12 +8,19 @@ import JobCard from "./card";
 
 export default function JobsList() {
   let { jobs } = useContext(JobsContext);
-
-  return (
-    <Stack spacing={'3vh'}>
-      {(jobs as Job[]).map((job) => (
-        <JobCard key={job.id} job={job} />
-      ))}
-    </Stack>
-  );
+  if (jobs) {
+    return (
+      <Stack spacing={'3vh'}>
+        {(jobs as Job[]).map((job) => (
+          <JobCard key={job.id} job={job} />
+        ))}
+      </Stack>
+    );
+  } else {
+    return (
+      <>
+        Loading
+      </>
+    )
+  }
 }

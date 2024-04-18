@@ -7,6 +7,7 @@ export interface Job {
   company_name: string;
   job_description?: string;
   notes?: string;
+  is_remote: string;
   country?: string;
   us_state?: string;
   city?: string;

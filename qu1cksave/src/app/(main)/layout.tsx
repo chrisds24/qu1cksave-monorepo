@@ -20,6 +20,8 @@ import Link from 'next/link';
 import { getSessionUser, logout } from '@/actions/auth';
 import { Context, ReactNode, createContext, useEffect, useState } from 'react';
 import { User } from '@/types/user';
+import { Avatar } from '@mui/material';
+import stringAvatar from '@/lib/stringAvatar';
 
 const drawerWidth = 180;
 
@@ -102,7 +104,22 @@ export default function MainLayout({
           </Link>
         ))}
         <ListItem key={'sessionUser'} disablePadding>
-            <ListItemText primary={sessionUser ? sessionUser.name : ''} sx={{ color: '#ffffff' }}/>
+          <ListItemButton>
+            <ListItemIcon>
+              <Avatar {...stringAvatar(sessionUser ? sessionUser.name : 'N A')} />
+            </ListItemIcon>
+            <ListItemText
+              primary={sessionUser ? sessionUser.name : ''}
+              sx={{ color: '#ffffff', textOverflow: 'ellipsis' }}
+              primaryTypographyProps={{ 
+                style: {
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }
+            }}
+            />
+          </ListItemButton>
         </ListItem>
         <ListItem key={'logout'} disablePadding>
           <ListItemButton onClick={() => {
@@ -165,6 +182,7 @@ export default function MainLayout({
               backgroundColor: '#000000',
             }
           }}
+          elevation={5}
         >
           {drawer}
         </Drawer>
@@ -180,6 +198,7 @@ export default function MainLayout({
               backgroundColor: '#000000',
             }
           }}
+          elevation={6}
         >
           {drawer}
         </Drawer>
