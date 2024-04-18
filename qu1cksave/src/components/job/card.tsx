@@ -5,14 +5,32 @@ import { Box, Button, Paper, Typography } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
+// Applied, Not Applied, Assessment, Interview, Job Offered, Accepted Offer, Declined Offer
+// Rejected, Ghosted, Closed
+const statusColor = {
+  'Applied': 'yellow',
+  'Not Applied': 'orange',
+  'Assessment': 'lime',
+  'Interview': 'limegreen',
+  'Job Offered': 'green',
+  'Accepted Offer': 'gold',
+  'Declined Offer': 'blue',
+  'Rejected': 'red',
+  'Ghosted': 'darkred',
+  'Closed': 'gray'
+};
+
 export default function JobCard(props: any) {
   const job: Job | undefined = props.job;
+
   if (job) {
     const dateApplied = job.date_applied;
     const applied = dateApplied ? new Date(dateApplied.year, dateApplied.month, dateApplied.date) : undefined;
 
     const datePosted = job.date_posted;
     const posted = datePosted ? new Date(datePosted.year, datePosted.month, datePosted.date) : undefined;
+
+    const jobStatus = job.job_status;
 
     return (
       <Paper
@@ -30,26 +48,31 @@ export default function JobCard(props: any) {
         elevation={3}
       >
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 1}}>
-          {/* #ce9178 for applied, posted, and from values */}
-          <Typography color='#ffffff' sx={{fontSize: '17px'}}>
-            {'Applied: ' +
-              (
+          <Box>
+            <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+              {'Applied:'} 
+            </Typography>
+            <Typography display={'inline'} color='#ce9178' sx={{fontSize: '17px'}}>
+              {
                 applied ?
                 `${applied!.toLocaleString('default', { month: 'long' })} ${applied!.getDate()}, ${applied!.getFullYear()}` :
                 'N/A'
-              )
-            } 
-          </Typography>
-          <Typography color='#ffffff' sx={{fontSize: '17px'}}>
-            {'Posted: ' +
-              (
+              } 
+            </Typography>                 
+          </Box>
+          <Box>
+            <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+              {'Posted:'} 
+            </Typography>
+            <Typography display={'inline'} color='#ce9178' sx={{fontSize: '17px'}}>
+              {
                 posted ?
                 `${posted!.toLocaleString('default', { month: 'long' })} ${posted!.getDate()}, ${posted!.getFullYear()}` :
                 'N/A'
-              )
-            } 
-          </Typography>
-          <Typography color='#ffffff' sx={{fontSize: '17px'}}>
+              } 
+            </Typography>              
+          </Box>
+          <Typography color={(statusColor as any)[jobStatus]} fontWeight={'bold'} sx={{fontSize: '17px'}}>
             {`${job.job_status}`}
           </Typography>
         </Box>
@@ -76,9 +99,14 @@ export default function JobCard(props: any) {
           {job.job_description ? job.job_description : 'No description.'}
         </Typography>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Typography color='#ffffff' sx={{fontSize: '17px'}} alignSelf={'center'}>
-            {`From: ${job.found_from ? job.found_from: 'N/A'}`}
-          </Typography>
+          <Box>
+            <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}} alignSelf={'center'}>
+              {'From:'}
+            </Typography>
+            <Typography display={'inline'} color='#ce9178' sx={{fontSize: '17px'}} alignSelf={'center'}>
+              {job.found_from ? job.found_from: 'N/A'}
+            </Typography>
+          </Box>
           <Box sx={{ display: 'flex', flexDirection: 'row'}}>
             <Button
               variant="contained"

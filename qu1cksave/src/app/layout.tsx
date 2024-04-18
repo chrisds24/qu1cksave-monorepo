@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <AppRouterCacheProvider>
-        <body className={inter.className}>{children}</body>
+        <body className={inter.className} style={{backgroundColor: '#1e1e1e'}} >{children}</body>
       </AppRouterCacheProvider>
     </html>
   );

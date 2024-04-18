@@ -94,7 +94,14 @@ export default function MainLayout({
       <List>
         {navItems.map((navItem) => (
           <Link key={navItem.name} href={`/${navItem.route}`}>
-            <ListItem disablePadding>
+            <ListItem
+              disablePadding
+              sx={{
+                '&:hover': {
+                  backgroundColor: '#171717',
+                },
+              }}
+            >
                 <ListItemButton>
                   <ListItemIcon>
                     {navItem.icon}
@@ -104,7 +111,15 @@ export default function MainLayout({
             </ListItem>
           </Link>
         ))}
-        <ListItem key={'sessionUser'} disablePadding>
+        <ListItem
+          key={'sessionUser'}
+          disablePadding
+          sx={{
+            '&:hover': {
+              backgroundColor: '#171717',
+            },
+          }}
+        >
           <ListItemButton>
             <ListItemIcon>
               <Avatar {...stringAvatar(sessionUser ? sessionUser.name : 'N A')} />
@@ -122,7 +137,15 @@ export default function MainLayout({
             />
           </ListItemButton>
         </ListItem>
-        <ListItem key={'logout'} disablePadding>
+        <ListItem
+          key={'logout'}
+          disablePadding
+          sx={{
+            '&:hover': {
+              backgroundColor: '#171717',
+            },
+          }}
+        >
           <ListItemButton onClick={() => {
             logout();
             setSessionUser(undefined);
@@ -202,7 +225,7 @@ export default function MainLayout({
               backgroundColor: '#000000',
             }
           }}
-          elevation={6}
+          elevation={5}
         >
           {drawer}
         </Drawer>
@@ -213,7 +236,7 @@ export default function MainLayout({
           p: 3,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           backgroundColor: '#1e1e1e',
-          height: '100vh'
+          // height: '100vh'
         }}
       >
         <Toolbar sx={{display: { xs: 'block', sm: 'none' }}}/>
