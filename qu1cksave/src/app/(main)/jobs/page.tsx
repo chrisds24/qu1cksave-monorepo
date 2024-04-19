@@ -4,7 +4,7 @@ import { Context, createContext, useContext, useEffect, useState } from "react";
 import { SessionUserContext } from "../layout";
 import { Job } from "@/types/job";
 import JobsList from "@/components/job/list";
-import { Box, Pagination } from "@mui/material";
+import { Box, Pagination, Typography } from "@mui/material";
 import DiscreteSliderValues from "@/components/discreteSliderValues";
 
 export const JobsContext: Context<any> = createContext(null);
@@ -14,7 +14,7 @@ export default function Page() {
   const [jobs, setJobs] = useState<Job[]>([]);
 
   const [page, setPage] = useState<number>(1);
-  const [jobsPerPage, setJobsPerPage] = useState<number>(50);
+  const [jobsPerPage, setJobsPerPage] = useState<number>(10);
   const [jobsInPage, setJobsInPage] = useState<Job[]>([]);
 
   // TODO (Maybe): If I want an SPA experience where state is preserved, I
@@ -55,6 +55,11 @@ export default function Page() {
     setJobsInPage(jobs.slice(jobsPerPage * (value - 1), jobsPerPage * value));
   };
 
+  const changeJobsPerPage = (event: React.ChangeEvent<unknown>, value: number) => {
+    setJobsPerPage(value);
+    setJobsInPage(jobs.slice(value * (page - 1), value * page));
+  };
+
   return (
     <Box>
       <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -73,7 +78,15 @@ export default function Page() {
             marginBottom: '2vh',
           }}
         />
-        <DiscreteSliderValues allJobsCount={jobs.length}/>
+        <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+          <Typography sx={{color: '#ffffff', paddingRight: 3, paddingTop: 0.5}}>
+            {'Jobs Per Page: '}
+          </Typography>
+          <DiscreteSliderValues
+            allJobsCount={jobs.length}
+            changeJobsPerPage={changeJobsPerPage}
+          />
+        </Box>
       </Box>
       <JobsContext.Provider value={{ jobsInPage }}>
         <JobsList />
@@ -90,7 +103,7 @@ export default function Page() {
               background: '#2d2d30',
             },
           },
-          marginTop: '2vh'
+          marginTop: '2vh',
         }}
       />
     </Box>

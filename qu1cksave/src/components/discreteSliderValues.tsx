@@ -6,6 +6,7 @@ function valuetext(value: number) {
 
 export default function DiscreteSliderValues(props: any) {
   const allJobsCount = props.allJobsCount;
+  const changeJobsPerPage = props.changeJobsPerPage;
 
   const marks = [
     { value: 10, label: '10' },
@@ -18,7 +19,7 @@ export default function DiscreteSliderValues(props: any) {
   ];
   
   return (
-    <Box sx={{ width: 250 }}>
+    <Box sx={{ width: 250, marginRight: '1vw' }}>
       <Slider
         aria-label="Restricted values"
         defaultValue={10}
@@ -43,6 +44,7 @@ export default function DiscreteSliderValues(props: any) {
             color: "#ffffff"
           },
         }}
+        onChange={changeJobsPerPage}
       />
     </Box>
   );
