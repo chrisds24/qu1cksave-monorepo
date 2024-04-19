@@ -7,22 +7,15 @@ import { useContext } from "react";
 import JobCard from "./card";
 
 export default function JobsList() {
-  let { jobs } = useContext(JobsContext);
-  if (jobs) {
+  const { jobsInPage } = useContext(JobsContext);
+
+  if (jobsInPage) {
     return (
-      // <Stack spacing={'3vh'}>
-      //   {(jobs as Job[]).map((job) => (
-      //     <JobCard key={job.id} job={job} />
-      //   ))}
-      // </Stack>
-      // Change margin of entire list
-      <List sx={{}}>
-        {(jobs as Job[]).map((job) => (
-          <ListItem sx={{margin: '0vh 0vw 1vh 0vw'}}>
-            <JobCard key={job.id} job={job} />
-          </ListItem>
+      <Stack spacing={'3vh'}>
+        {(jobsInPage as Job[]).map((job) => (
+          <JobCard key={job.id} job={job} />
         ))}
-      </List>
+      </Stack>
     );
   }
 }
