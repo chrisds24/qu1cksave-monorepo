@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Stack } from "@mui/material";
+import { Box, List, ListItem, Stack } from "@mui/material";
 import { Job } from "@/types/job";
 import { JobsContext } from "@/app/(main)/jobs/page";
 import { useContext } from "react";
@@ -10,11 +10,19 @@ export default function JobsList() {
   let { jobs } = useContext(JobsContext);
   if (jobs) {
     return (
-      <Stack spacing={'3vh'}>
+      // <Stack spacing={'3vh'}>
+      //   {(jobs as Job[]).map((job) => (
+      //     <JobCard key={job.id} job={job} />
+      //   ))}
+      // </Stack>
+      // Change margin of entire list
+      <List sx={{}}>
         {(jobs as Job[]).map((job) => (
-          <JobCard key={job.id} job={job} />
+          <ListItem sx={{margin: '0vh 0vw 1vh 0vw'}}>
+            <JobCard key={job.id} job={job} />
+          </ListItem>
         ))}
-      </Stack>
+      </List>
     );
   }
 }
