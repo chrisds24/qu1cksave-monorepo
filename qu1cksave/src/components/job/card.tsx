@@ -8,16 +8,24 @@ import EditIcon from '@mui/icons-material/Edit';
 // Applied, Not Applied, Assessment, Interview, Job Offered, Accepted Offer, Declined Offer
 // Rejected, Ghosted, Closed
 const statusColor = {
-  'Applied': 'yellow',
-  'Not Applied': 'orange',
-  'Assessment': 'lime',
-  'Interview': 'limegreen',
-  'Job Offered': 'green',
-  'Accepted Offer': 'gold',
-  'Declined Offer': 'blue',
-  'Rejected': 'red',
-  'Ghosted': 'darkred',
-  'Closed': 'gray'
+  // Yellow
+  'Applied': '#cccc00',
+  'Assessment': '#ffff00',
+  'Interview': '#ffff27',
+
+  // Green
+  'Job Offered': '#00cc00',
+  'Accepted Offer': '#00ff00',
+
+  'Declined Offer': '#6262ff', // Blue
+
+  'Not Applied': '#cc8400', // Orange
+
+  // Red
+  'Rejected': '#ff0000',
+  'Ghosted': '#b10000',
+
+  'Closed': '#808080' // Gray
 };
 
 export default function JobCard(props: any) {
