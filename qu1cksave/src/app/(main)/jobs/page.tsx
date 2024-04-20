@@ -4,7 +4,7 @@ import { Context, createContext, useContext, useEffect, useState } from "react";
 import { SessionUserContext } from "../layout";
 import { Job } from "@/types/job";
 import JobsList from "@/components/job/list";
-import { Box, Pagination, Typography } from "@mui/material";
+import { Box, Button, Pagination, TextField, Typography } from "@mui/material";
 import DiscreteSliderValues from "@/components/discreteSliderValues";
 
 export const JobsContext: Context<any> = createContext(null);
@@ -16,6 +16,7 @@ export default function Page() {
   const [page, setPage] = useState<number>(1);
   const [jobsPerPage, setJobsPerPage] = useState<number>(10);
   const [jobsInPage, setJobsInPage] = useState<Job[]>([]);
+  const [pageToJumpTo, setPageToJumpTo] = useState<number>();
 
   // TODO (Maybe): If I want an SPA experience where state is preserved, I
   //   could do all initial data fetches (Ex. getJobs) in the layout.
@@ -50,11 +51,13 @@ export default function Page() {
     getJobs();
   }, [sessionUser]);
 
-  // Set jobs shown once current page changes
+  // WHEN page CHANGES
+  // - Set jobs shown once current page changes
   useEffect(() => {
     setJobsInPage(jobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
   }, [page])
 
+  // WHEN jobsPerPage CHANGES
   // When number of jobs per page change, the following also change:
   // 1.) Jobs shown in current page
   // 2.) The page, if current page ends up higher than our last page due to the
@@ -70,6 +73,11 @@ export default function Page() {
       } else { // Just change jobs shown in current page
         setJobsInPage(jobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
       }
+
+      // If there's a page to jump to that has been set, do the check below
+      if (pageToJumpTo  && (pageToJumpTo > lastPage)) {
+        setPageToJumpTo(lastPage);
+      }
     }
   }, [jobsPerPage])
 
@@ -81,24 +89,93 @@ export default function Page() {
     setJobsPerPage(jobsPerPageVal);
   };
 
+  const changePageToJumpTo = (event: React.ChangeEvent<unknown>) => {
+    const eventVal = (event.target as HTMLInputElement).value;
+    if (eventVal) { // If there's a page to jump to that has been set
+      let pageVal = Number(eventVal);
+      const lastPage = Math.ceil(jobs.length / jobsPerPage);
+      if (pageVal < 1) {
+        pageVal = 1;
+      } else if (pageVal > lastPage) {
+        pageVal = lastPage;
+      }
+      setPageToJumpTo(pageVal);
+    }
+  };
+
+  const jumpToPage = () => {
+    if (pageToJumpTo) { // If there's a page to jump to that has been set
+      setPage(pageToJumpTo);
+    }
+  };
+
   return (
     <Box>
-      <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-        <Pagination
-          count={Math.ceil(jobs.length / jobsPerPage)}
-          page={page}
-          onChange={changePage}
-          // size={'large'}
-          sx={{
-            '& .MuiPaginationItem-root': {
-              color: '#ffffff',
-              '&.Mui-selected': {
-                background: '#2d2d30',
+      <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '1.5vh'}}>
+        <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+          <Pagination
+            count={Math.ceil(jobs.length / jobsPerPage)}
+            page={page}
+            onChange={changePage}
+            // size={'large'}
+            sx={{
+              '& .MuiPaginationItem-root': {
+                color: '#ffffff',
+                '&.Mui-selected': {
+                  background: '#2d2d30',
+                },
               },
-            },
-            marginBottom: '2vh',
-          }}
-        />
+              alignSelf: 'center'
+            }}
+          />
+          <TextField
+            id="jump-to-page"
+            label="Page"
+            type="number"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            InputProps={{
+              inputProps: {
+                min: 1,
+                max: Math.ceil(jobs.length / jobsPerPage),
+                step: "1" 
+              },
+              style: {
+                height: '40px',
+                width: '90px',
+                color: '#ffffff',
+              }
+            }}
+            onChange={changePageToJumpTo}
+            sx={{
+              marginRight: '0.5vw',
+              padding: '1px',
+              "& .MuiOutlinedInput-notchedOutline": {
+                border: 'solid #2d2d30',
+              },
+              "& label": {
+                color: '#ffffff',
+              },
+              alignSelf: 'center'
+            }}
+            value={pageToJumpTo}
+          />
+          <Button
+            variant="contained"
+            sx={{
+              color: '#ffffff',
+              backgroundColor: '#000000',
+              // width: '10px',
+              height: '40px',
+              alignSelf: 'center'
+            }}
+            onClick={jumpToPage}
+          >
+            Go
+          </Button>
+        </Box>
+
         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
           <Typography sx={{color: '#ffffff', paddingRight: 3, paddingTop: 0.5}}>
             {'Jobs Per Page: '}
@@ -112,21 +189,68 @@ export default function Page() {
       <JobsContext.Provider value={{ jobsInPage }}>
         <JobsList />
       </JobsContext.Provider>
-      <Pagination
-        count={Math.ceil(jobs.length / jobsPerPage)}
-        page={page}
-        onChange={changePage}
-        // size={'large'}
-        sx={{
-          '& .MuiPaginationItem-root': {
-            color: '#ffffff',
-            '&.Mui-selected': {
-              background: '#2d2d30',
+      <Box sx={{ display: 'flex', flexDirection: 'row', marginTop: '3vh' }}>
+        <Pagination
+          count={Math.ceil(jobs.length / jobsPerPage)}
+          page={page}
+          onChange={changePage}
+          // size={'large'}
+          sx={{
+            '& .MuiPaginationItem-root': {
+              color: '#ffffff',
+              '&.Mui-selected': {
+                background: '#2d2d30',
+              },
             },
-          },
-          marginTop: '2vh',
-        }}
-      />
+            alignSelf: 'center'
+          }}
+        />
+        <TextField
+          id="jump-to-page-bottom"
+          label="Page"
+          type="number"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          InputProps={{
+            inputProps: {
+              min: 1,
+              max: Math.ceil(jobs.length / jobsPerPage),
+              step: "1" 
+            },
+            style: {
+              height: '40px',
+              width: '90px',
+              color: '#ffffff',
+            }
+          }}
+          onChange={changePageToJumpTo}
+          sx={{
+            marginRight: '0.5vw',
+            padding: '1px',
+            "& .MuiOutlinedInput-notchedOutline": {
+              border: 'solid #2d2d30',
+            },
+            "& label": {
+              color: '#ffffff',
+            },
+          }}
+          value={pageToJumpTo}
+        />
+        <Button
+          variant="contained"
+          sx={{
+            color: '#ffffff',
+            backgroundColor: '#000000',
+            // width: '10px',
+            height: '40px',
+            alignSelf: 'center'
+          }}
+          onClick={jumpToPage}
+        >
+          Go
+        </Button>
+      </Box>
     </Box>
   );
 }
