@@ -50,14 +50,35 @@ export default function Page() {
     getJobs();
   }, [sessionUser]);
 
-  const changePage = (event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
-    setJobsInPage(jobs.slice(jobsPerPage * (value - 1), jobsPerPage * value));
+  // Set jobs shown once current page changes
+  useEffect(() => {
+    setJobsInPage(jobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
+  }, [page])
+
+  // When number of jobs per page change, the following also change:
+  // 1.) Jobs shown in current page
+  // 2.) The page, if current page ends up higher than our last page due to the
+  //     change in number of jobs per page
+  //     - As a result of the page change, jobs shown in current page changes 
+  useEffect(() => {
+    if (jobs.length) { // So this doesn't trigger when jobs are still loading initially
+      const lastPage = Math.ceil(jobs.length / jobsPerPage)
+      // If we're at a page higher than our last page, go to the last page
+      // Will automatically update jobs shown in current page
+      if (page > lastPage) {
+        setPage(lastPage);
+      } else { // Just change jobs shown in current page
+        setJobsInPage(jobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
+      }
+    }
+  }, [jobsPerPage])
+
+  const changePage = (event: React.ChangeEvent<unknown>, pageVal: number) => {
+    setPage(pageVal);
   };
 
-  const changeJobsPerPage = (event: React.ChangeEvent<unknown>, value: number) => {
-    setJobsPerPage(value);
-    setJobsInPage(jobs.slice(value * (page - 1), value * page));
+  const changeJobsPerPage = (event: React.ChangeEvent<unknown>, jobsPerPageVal: number) => {
+    setJobsPerPage(jobsPerPageVal);
   };
 
   return (
