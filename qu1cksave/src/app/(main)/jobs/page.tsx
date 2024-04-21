@@ -17,6 +17,7 @@ export default function Page() {
   const [jobsPerPage, setJobsPerPage] = useState<number>(10);
   const [jobsInPage, setJobsInPage] = useState<Job[]>([]);
   const [pageToJumpTo, setPageToJumpTo] = useState<number>();
+  const [invalidEntry, setInvalidEntry] = useState<boolean>(false);
 
   // TODO (Maybe): If I want an SPA experience where state is preserved, I
   //   could do all initial data fetches (Ex. getJobs) in the layout.
@@ -75,11 +76,26 @@ export default function Page() {
       }
 
       // If there's a page to jump to that has been set, do the check below
-      if (pageToJumpTo  && (pageToJumpTo > lastPage)) {
-        setPageToJumpTo(lastPage);
+      if (pageToJumpTo !== undefined) {
+        if (pageToJumpTo < 1 || pageToJumpTo > lastPage) {
+          setInvalidEntry(true);
+        } else {
+          setInvalidEntry(false);
+        }
       }
     }
   }, [jobsPerPage])
+
+  useEffect(() => {
+    if (pageToJumpTo !== undefined) {
+      const lastPage = Math.ceil(jobs.length / jobsPerPage);
+      if (pageToJumpTo < 1 || pageToJumpTo > lastPage) {
+        setInvalidEntry(true);
+      } else {
+        setInvalidEntry(false);
+      }
+    }
+  }, [pageToJumpTo]);
 
   const changePage = (event: React.ChangeEvent<unknown>, pageVal: number) => {
     setPage(pageVal);
@@ -93,18 +109,12 @@ export default function Page() {
     const eventVal = (event.target as HTMLInputElement).value;
     if (eventVal) { // If there's a page to jump to that has been set
       let pageVal = Number(eventVal);
-      const lastPage = Math.ceil(jobs.length / jobsPerPage);
-      if (pageVal < 1) {
-        pageVal = 1;
-      } else if (pageVal > lastPage) {
-        pageVal = lastPage;
-      }
       setPageToJumpTo(pageVal);
     }
   };
 
   const jumpToPage = () => {
-    if (pageToJumpTo) { // If there's a page to jump to that has been set
+    if (pageToJumpTo && !invalidEntry) { // If there's a page to jump to that has been set
       setPage(pageToJumpTo);
     }
   };
@@ -117,7 +127,7 @@ export default function Page() {
             count={Math.ceil(jobs.length / jobsPerPage)}
             page={page}
             onChange={changePage}
-            // size={'large'}
+            size={'large'}
             sx={{
               '& .MuiPaginationItem-root': {
                 color: '#ffffff',
@@ -125,7 +135,7 @@ export default function Page() {
                   background: '#2d2d30',
                 },
               },
-              alignSelf: 'center'
+              marginRight: '1vw'
             }}
           />
           <TextField
@@ -156,19 +166,22 @@ export default function Page() {
               },
               "& label": {
                 color: '#ffffff',
-              },
-              alignSelf: 'center'
+              }
             }}
             value={pageToJumpTo}
+            error={invalidEntry}
+            helperText={
+              invalidEntry ?
+              `Must be 1-${Math.ceil(jobs.length / jobsPerPage)}` :
+              ''
+            }
           />
           <Button
             variant="contained"
             sx={{
               color: '#ffffff',
               backgroundColor: '#000000',
-              // width: '10px',
-              height: '40px',
-              alignSelf: 'center'
+              height: '40px'
             }}
             onClick={jumpToPage}
           >
@@ -194,7 +207,7 @@ export default function Page() {
           count={Math.ceil(jobs.length / jobsPerPage)}
           page={page}
           onChange={changePage}
-          // size={'large'}
+          size={'large'}
           sx={{
             '& .MuiPaginationItem-root': {
               color: '#ffffff',
@@ -202,7 +215,7 @@ export default function Page() {
                 background: '#2d2d30',
               },
             },
-            alignSelf: 'center'
+            marginRight: '1vw'
           }}
         />
         <TextField
@@ -236,15 +249,19 @@ export default function Page() {
             },
           }}
           value={pageToJumpTo}
+          error={invalidEntry}
+          helperText={
+            invalidEntry ?
+            `Must be 1-${Math.ceil(jobs.length / jobsPerPage)}` :
+            ''
+          }
         />
         <Button
           variant="contained"
           sx={{
             color: '#ffffff',
             backgroundColor: '#000000',
-            // width: '10px',
-            height: '40px',
-            alignSelf: 'center'
+            height: '40px'
           }}
           onClick={jumpToPage}
         >
