@@ -4,6 +4,7 @@ import { Job } from "@/types/job";
 import { Box, Button, Paper, Typography } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import { useRouter } from "next/navigation";
 
 // Applied, Not Applied, Assessment, Interview, Job Offered, Accepted Offer, Declined Offer
 // Rejected, Ghosted, Closed
@@ -30,6 +31,7 @@ const statusColor = {
 
 export default function JobCard(props: any) {
   const job: Job | undefined = props.job;
+  const router = useRouter();
 
   if (job) {
     const dateApplied = job.date_applied;
@@ -127,7 +129,10 @@ export default function JobCard(props: any) {
                 },
               }}
             >
-              <EditIcon sx={{ color: '#ffffff'}} />
+              <EditIcon
+                sx={{ color: '#ffffff'}}
+                onClick={() => router.push(`/jobs/${job.id}`)}
+              />
             </Button>
             <Button
               variant="contained"
