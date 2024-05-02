@@ -1,4 +1,6 @@
+import { JobsContext } from "@/app/(main)/jobs/layout";
 import { Box, Slider } from "@mui/material";
+import { useContext } from "react";
 
 function valuetext(value: number) {
   return `${value}`;
@@ -7,6 +9,8 @@ function valuetext(value: number) {
 export default function DiscreteSliderValues(props: any) {
   const allJobsCount = props.allJobsCount;
   const changeJobsPerPage = props.changeJobsPerPage;
+  // const { jobs, changeJobsPerPage } = useContext(JobsContext);
+  // const allJobsCount = jobs.length;
 
   const marks = [
     { value: 10, label: '10' },

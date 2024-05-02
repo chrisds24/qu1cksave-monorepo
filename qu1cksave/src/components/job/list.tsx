@@ -2,9 +2,9 @@
 
 import { Box, List, ListItem, Stack } from "@mui/material";
 import { Job } from "@/types/job";
-import { JobsContext } from "@/app/(main)/jobs/page";
 import { useContext } from "react";
 import JobCard from "./card";
+import { JobsContext } from "@/app/(main)/jobs/layout";
 
 export default function JobsList() {
   const { jobsInPage } = useContext(JobsContext);

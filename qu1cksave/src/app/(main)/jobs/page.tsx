@@ -6,59 +6,31 @@ import { Job } from "@/types/job";
 import JobsList from "@/components/job/list";
 import { Box, Button, Pagination, TextField, Typography } from "@mui/material";
 import DiscreteSliderValues from "@/components/discreteSliderValues";
-
-export const JobsContext: Context<any> = createContext(null);
+import { JobsContext } from "./layout";
 
 export default function Page() {
-  const { sessionUser } = useContext(SessionUserContext);
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const {
+    jobs,
+    setJobs,
+    page,
+    setPage,
+    jobsPerPage,
+    setJobsPerPage,
+    jobsInPage,
+    setJobsInPage,
+    pageToJumpTo,
+    setPageToJumpTo,
+    invalidEntry,
+    setInvalidEntry
+  } = useContext(JobsContext);
 
-  const [page, setPage] = useState<number>(1);
-  const [jobsPerPage, setJobsPerPage] = useState<number>(10);
-  const [jobsInPage, setJobsInPage] = useState<Job[]>([]);
-  const [pageToJumpTo, setPageToJumpTo] = useState<number>();
-  const [invalidEntry, setInvalidEntry] = useState<boolean>(false);
-
-  // TODO (Maybe): If I want an SPA experience where state is preserved, I
-  //   could do all initial data fetches (Ex. getJobs) in the layout.
-  //   See CSE 186 Asg 8: Pass hooks in Context
-  //
-  //   Although this doesn't make much sense since if a user decides to
-  //   navigate away from the jobs page, then that means that they're done
-  //   working with the jobs page in the meantime.
-  //   
-  //   Different story with jobs -> single job -> back to jobs.
-  //   This is where we want to preserve the context in jobs.
-  useEffect(() => {
-    const getJobs = async () => {
-      if (sessionUser) {
-        // Get all jobs for current user
-        await fetch(`/api/job?id=${sessionUser.id}`)
-          .then((res) => {
-            if (!res.ok) {
-              throw res;
-            }
-            return res.json()
-          })
-          .then((jobs: Job[]) => {
-            setJobs(jobs)
-            setJobsInPage(jobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
-          })
-          .catch((err) => {
-            alert(`Jobs collection for ${sessionUser.name} not found.`)
-          }) 
-      }
-    }
-    getJobs();
-  }, [sessionUser]);
-
-  // WHEN page CHANGES
+  // When page changes
   // - Set jobs shown once current page changes
   useEffect(() => {
     setJobsInPage(jobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
   }, [page])
 
-  // WHEN jobsPerPage CHANGES
+  // When jobsPerPage changes
   // When number of jobs per page change, the following also change:
   // 1.) Jobs shown in current page
   // 2.) The page, if current page ends up higher than our last page due to the
@@ -199,9 +171,7 @@ export default function Page() {
           />
         </Box>
       </Box>
-      <JobsContext.Provider value={{ jobsInPage }}>
-        <JobsList />
-      </JobsContext.Provider>
+      <JobsList />
       <Box sx={{ display: 'flex', flexDirection: 'row', marginTop: '3vh' }}>
         <Pagination
           count={Math.ceil(jobs.length / jobsPerPage)}
