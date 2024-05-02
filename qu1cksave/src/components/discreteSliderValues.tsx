@@ -7,10 +7,9 @@ function valuetext(value: number) {
 }
 
 export default function DiscreteSliderValues(props: any) {
-  const allJobsCount = props.allJobsCount;
   const changeJobsPerPage = props.changeJobsPerPage;
-  // const { jobs, changeJobsPerPage } = useContext(JobsContext);
-  // const allJobsCount = jobs.length;
+  const { jobs, jobsPerPage } = useContext(JobsContext);
+  const allJobsCount = jobs.length;
 
   const marks = [
     { value: 10, label: '10' },
@@ -26,7 +25,8 @@ export default function DiscreteSliderValues(props: any) {
     <Box sx={{ width: 250, marginRight: '1vw' }}>
       <Slider
         aria-label="Restricted values"
-        defaultValue={10}
+        // defaultValue={10}
+        defaultValue={jobsPerPage}
         getAriaValueText={valuetext}
         step={null}
         valueLabelDisplay="auto"

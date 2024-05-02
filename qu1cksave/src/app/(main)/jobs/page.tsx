@@ -166,7 +166,6 @@ export default function Page() {
             {'Jobs Per Page: '}
           </Typography>
           <DiscreteSliderValues
-            allJobsCount={jobs.length}
             changeJobsPerPage={changeJobsPerPage}
           />
         </Box>
