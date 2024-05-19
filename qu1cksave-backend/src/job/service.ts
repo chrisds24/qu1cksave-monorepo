@@ -17,14 +17,14 @@ export class JobService {
     return rows as Job[];
   }
 
-  public async getOne(id: string): Promise<Job | undefined> {
-    let select = 'SELECT * FROM job WHERE id = $1';
-    const query = {
-      text: select,
-      values: [id]
-    };
+  // public async getOne(id: string): Promise<Job | undefined> {
+  //   let select = 'SELECT * FROM job WHERE id = $1';
+  //   const query = {
+  //     text: select,
+  //     values: [id]
+  //   };
 
-    const { rows } = await pool.query(query);
-    return rows.length == 1 ? rows[0] : undefined;
-  }
+  //   const { rows } = await pool.query(query);
+  //   return rows.length == 1 ? rows[0] : undefined;
+  // }
 }

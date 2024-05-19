@@ -19,19 +19,19 @@ export class JobController extends Controller {
       });
   }
 
-  @Get('{id}')
-  @Security('jwt', ['member'])
-  @Response('401', 'Unauthorized')
-  @Response('404', 'Not Found')
-  public async getOne(
-    @Path() id: string
-  ): Promise<Job | undefined> {
-    return new JobService()
-      .getOne(id)
-      .then(async (job: Job | undefined): Promise<Job | undefined> => {
-        return job;
-      });
-  }
+  // @Get('{id}')
+  // @Security('jwt', ['member'])
+  // @Response('401', 'Unauthorized')
+  // @Response('404', 'Not Found')
+  // public async getOne(
+  //   @Path() id: string
+  // ): Promise<Job | undefined> {
+  //   return new JobService()
+  //     .getOne(id)
+  //     .then(async (job: Job | undefined): Promise<Job | undefined> => {
+  //       return job;
+  //     });
+  // }
 }
 
 // ================== DELETE LATER ========================
