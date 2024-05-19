@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Response, Route, Security} from "tsoa";
+import { Controller, Get, Path, Query, Response, Route, Security} from "tsoa";
 import { Job } from ".";
 import { JobService } from "./service";
 
@@ -7,7 +7,7 @@ export class JobController extends Controller {
   // TODO: I need to add a check here so that people who know someone's id
   //   can't just view other people's saved jobs.
   @Get()
-  @Security("jwt", ["member"])
+  @Security('jwt', ['member'])
   @Response('401', 'Unauthorized')
   public async getMultiple(
     @Query() id?: string
@@ -16,6 +16,20 @@ export class JobController extends Controller {
       .getMultiple(id)
       .then(async (jobs: Job[]): Promise<Job[]> => {
         return jobs;
+      });
+  }
+
+  @Get('{id}')
+  @Security('jwt', ['member'])
+  @Response('401', 'Unauthorized')
+  @Response('404', 'Not Found')
+  public async getOne(
+    @Path() id: string
+  ): Promise<Job | undefined> {
+    return new JobService()
+      .getOne(id)
+      .then(async (job: Job | undefined): Promise<Job | undefined> => {
+        return job;
       });
   }
 }
