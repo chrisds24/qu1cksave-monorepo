@@ -29,6 +29,6 @@ export interface Job {
   date_applied?: YearMonthDate;
   date_posted?: YearMonthDate;
   job_status: string;
-  links?: string;
+  links?: string[];
   found_from?: string;
 }

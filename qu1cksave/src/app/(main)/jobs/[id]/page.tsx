@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Button, Divider, Typography } from "@mui/material";
+import { Box, Button, Divider, List, ListItem, ListItemText, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { JobsContext } from "../layout";
@@ -8,7 +8,6 @@ import { Job } from "@/types/job";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 
 // Applied, Not Applied, Assessment, Interview, Job Offered, Accepted Offer, Declined Offer
 // Rejected, Ghosted, Closed
@@ -51,9 +50,14 @@ export default function Page({ params }: { params: { id: string } }) {
 
     const jobStatus = job.job_status;
 
+    const paragraphs = job.job_description ? job.job_description.split(/\r\n|\r|\n/) : [];
+    // console.log('paragraphs', paragraphs);
+    const notesParagraphs = job.notes ? job.notes.split(/\r\n|\r|\n/) : [];
+    console.log('notesParagraphs', notesParagraphs);
+
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column'}}>
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 1.5}}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 1.5}}>
           <ArrowBackIcon sx={{color: '#ffffff', cursor: 'pointer'}} onClick={() => router.push('/jobs')}/>
           <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
             <Button
@@ -120,8 +124,8 @@ export default function Page({ params }: { params: { id: string } }) {
             </Typography>              
           </Box>
         </Box>
-        <Box sx={{paddingBottom: 1.5}}>
-          <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+        <Box sx={{marginBottom: 1.5}}>
+          <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1, fontWeight: 'bold'}}>
             {'Status:'} 
           </Typography>
           <Typography display={'inline'} color={(statusColor as any)[jobStatus]} fontWeight={'bold'} sx={{fontSize: '17px'}}>
@@ -139,23 +143,108 @@ export default function Page({ params }: { params: { id: string } }) {
             {`${job.is_remote}`}
           </Typography>
           {/* <HorizontalRuleIcon sx={{color: '#ffffff', margin: '0vw 1vw', alignSelf: 'center'}} /> */}
-          <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0vw 1vw', height: '20px', alignSelf: 'center'}} />
+          <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '20px', alignSelf: 'center'}} />
+          {/* TODO: Change things so that there's a salary range. */}
           <Typography color='#6a9955' sx={{fontSize: '20px'}}>
             {'$130000/yr - $160000/yr'} {/* Replace this with an actual salary */}
           </Typography>
         </Box>
         <Box sx={{display: 'flex', flexDirection: 'row'}}>
           <Typography color='#ffffff' sx={{fontSize: '17px'}}>
-            {job.city ? `${job.city}, ${job.us_state}` : 'N/A'}
+            {`${job.city ? job.city : 'N/A'}, ${job.us_state ? job.us_state : 'N/A'}`}
           </Typography>
           {/* <HorizontalRuleIcon sx={{color: '#ffffff', margin: '0vw 1vw'}} /> */}
-          <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0vw 1vw', height: '17px', alignSelf: 'center'}} />
+          <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '17px', alignSelf: 'center'}} />
           <Typography color='#ffffff' sx={{fontSize: '17px'}}>
             {job.country ? `${job.country}` : 'N/A'}
           </Typography>
         </Box>
         <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
-
+        <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginBottom: 1}}>
+          {'Description'}
+        </Typography>
+        { paragraphs.length > 0 ?
+          paragraphs.map((paragraph) => 
+            paragraph ?
+            <Typography color='#ffffff' sx={{fontSize: '17px'}}>
+              {paragraph}
+            </Typography>
+            :
+            // To deal with double line breaks \n\n in strings. Example:
+            // Lorem ipsum\n\nBlah blah    is actually:
+            // 'Lorem ipsum
+            //
+            //  Blah blah'
+            // When we split, we get ['Lorem ipsum', '', 'Blah blah']
+            // So we want the '', to be a line break just as originally intended
+            // 
+            <br />
+          )
+          :
+          <Typography color='#ffffff' sx={{fontSize: '17px'}}>
+            {'N/A'}
+          </Typography>       
+        }
+        <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
+        <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginBottom: 1}}>
+          {'Notes'}
+        </Typography>
+        { notesParagraphs.length > 0 ?
+          notesParagraphs.map((paragraph) => 
+            paragraph ?
+            <Typography color='#ffffff' sx={{fontSize: '17px'}}>
+              {paragraph}
+            </Typography>
+            :
+            <br />
+          )
+          :
+          <Typography color='#ffffff' sx={{fontSize: '17px'}}>
+            {'N/A'}
+          </Typography> 
+        }
+        <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
+        {/* TODO: Change the links so that only the text itself is the clickable portion */}
+        <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginBottom: 1}}>
+          {'Links'}
+        </Typography>
+        {job.links && job.links.length > 0 ?
+          <List sx={{padding: '0px 0px 25px 0px'}}>
+            {job.links.map((link) =>
+              <ListItem
+                component='a'
+                href={`${link}`}
+                rel='noopener noreferrer'
+                target='_blank'
+                sx={{padding: '0px 0px 15px 0px', margin: 0}}
+              >
+                <ListItemText
+                  primary={link}
+                  sx={{ color: '#ffffff', textOverflow: 'ellipsis', margin: 0 }}
+                  primaryTypographyProps={{ 
+                    style: {
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis'
+                    }
+                  }}
+                />   
+              </ListItem>
+            )}
+          </List>
+          :
+          <Typography color='#ffffff' sx={{fontSize: '17px'}}>
+            {'N/A'}
+          </Typography> 
+        }
+        <Box>
+          <Typography display={'inline'} color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
+            {'Job posting found from:'} 
+          </Typography>
+          <Typography display={'inline'} color='#ffffff' sx={{fontSize: '20px', fontWeight: 'bold'}}>
+            {job.found_from ? job.found_from : 'N/A'} 
+          </Typography>                 
+        </Box>
       </Box>
     );
   }

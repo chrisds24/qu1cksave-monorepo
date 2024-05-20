@@ -102,7 +102,7 @@ export default function JobCard(props: any) {
             {job.country ? `${job.country}` : 'N/A'}
           </Typography>
           <Typography color='#ffffff' sx={{fontSize: '17px', fontStyle: 'italic'}}>
-            {job.city ? `${job.city}, ${job.us_state}` : 'N/A'}
+            {`${job.city ? job.city : 'N/A'}, ${job.us_state ? job.us_state : 'N/A'}`}
           </Typography>
         </Box>
         <Typography sx={{textOverflow: 'ellipsis', paddingBottom: 1}} noWrap>
