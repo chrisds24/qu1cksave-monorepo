@@ -10,6 +10,29 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 
+// Applied, Not Applied, Assessment, Interview, Job Offered, Accepted Offer, Declined Offer
+// Rejected, Ghosted, Closed
+const statusColor = {
+  // Yellow
+  'Applied': '#cccc00',
+  'Assessment': '#ffff00',
+  'Interview': '#ffff27',
+
+  // Green
+  'Job Offered': '#00cc00',
+  'Accepted Offer': '#00ff00',
+
+  'Declined Offer': '#6262ff', // Blue
+
+  'Not Applied': '#cc8400', // Orange
+
+  // Red
+  'Rejected': '#ff0000',
+  'Ghosted': '#b10000',
+
+  'Closed': '#808080' // Gray
+};
+
 export default function Page({ params }: { params: { id: string } }) {
   const router = useRouter();
   const { jobs } = useContext(JobsContext);
@@ -25,6 +48,8 @@ export default function Page({ params }: { params: { id: string } }) {
 
     const dateSaved = job.date_saved;
     const saved = dateSaved ? new Date(dateSaved) : undefined;
+
+    const jobStatus = job.job_status;
 
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column'}}>
@@ -57,7 +82,7 @@ export default function Page({ params }: { params: { id: string } }) {
             </Button>                     
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 1.5}}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
           <Box>
             <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
               {'Applied:'} 
@@ -95,6 +120,14 @@ export default function Page({ params }: { params: { id: string } }) {
             </Typography>              
           </Box>
         </Box>
+        <Box sx={{paddingBottom: 1.5}}>
+          <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+            {'Status:'} 
+          </Typography>
+          <Typography display={'inline'} color={(statusColor as any)[jobStatus]} fontWeight={'bold'} sx={{fontSize: '17px'}}>
+            {`${job.job_status}`}
+          </Typography>
+        </Box>
         <Typography color='#4fc1ff' fontWeight='bold' sx={{fontSize: '24px'}}>
           {`${job.title}`}
         </Typography>
@@ -111,7 +144,7 @@ export default function Page({ params }: { params: { id: string } }) {
             {'$130000/yr - $160000/yr'} {/* Replace this with an actual salary */}
           </Typography>
         </Box>
-        <Box sx={{display: 'flex', flexDirection: 'row', paddingBottom: 2}}>
+        <Box sx={{display: 'flex', flexDirection: 'row'}}>
           <Typography color='#ffffff' sx={{fontSize: '17px'}}>
             {job.city ? `${job.city}, ${job.us_state}` : 'N/A'}
           </Typography>
@@ -121,7 +154,7 @@ export default function Page({ params }: { params: { id: string } }) {
             {job.country ? `${job.country}` : 'N/A'}
           </Typography>
         </Box>
-        <Divider sx={{ backgroundColor: '#ffffff'}} />
+        <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
 
       </Box>
     );
