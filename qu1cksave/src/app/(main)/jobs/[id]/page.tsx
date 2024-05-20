@@ -233,7 +233,7 @@ export default function Page({ params }: { params: { id: string } }) {
             )}
           </List>
           :
-          <Typography color='#ffffff' sx={{fontSize: '17px'}}>
+          <Typography color='#ffffff' sx={{fontSize: '17px', padding: '0px 0px 25px 0px'}}>
             {'N/A'}
           </Typography> 
         }
