@@ -73,8 +73,6 @@ export default function Page({ params }: { params: { id: string } }) {
             >
               <EditIcon
                 sx={{ color: '#ffffff'}}
-                // TODO: Change this to go to edit mode instead
-                onClick={() => router.push(`/jobs/${job.id}`)}
               />
             </Button> 
             <Button

@@ -5,6 +5,8 @@ import { Box, Button, Paper, Typography } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { JobsContext } from "@/app/(main)/jobs/layout";
 
 // Applied, Not Applied, Assessment, Interview, Job Offered, Accepted Offer, Declined Offer
 // Rejected, Ghosted, Closed
@@ -33,6 +35,8 @@ export default function JobCard(props: any) {
   const job: Job | undefined = props.job;
   const router = useRouter();
 
+  const {setOpen, setIsAdd} = useContext(JobsContext);
+
   if (job) {
     const dateApplied = job.date_applied;
     const applied = dateApplied ? new Date(dateApplied.year, dateApplied.month, dateApplied.date) : undefined;
@@ -54,8 +58,10 @@ export default function JobCard(props: any) {
           '&:hover': {
             backgroundColor: '#171717'
           },
+          cursor: 'pointer'
         }}
         elevation={3}
+        onClick={() => router.push(`/jobs/${job.id}`)}
       >
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 1}}>
           <Box>
@@ -128,10 +134,17 @@ export default function JobCard(props: any) {
                   backgroundColor: '#0b0b0b',
                 },
               }}
+              onClick={
+                (event) =>  {
+                  event.stopPropagation();
+                  setIsAdd(false);
+                  setOpen(true);
+                  // TODO: Need to set the job being edited
+                }
+              }
             >
               <EditIcon
                 sx={{ color: '#ffffff'}}
-                onClick={() => router.push(`/jobs/${job.id}`)}
               />
             </Button>
             <Button

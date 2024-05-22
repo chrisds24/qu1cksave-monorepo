@@ -19,6 +19,8 @@ export default function JobsLayout({
   const [jobsInPage, setJobsInPage] = useState<Job[]>([]);
   const [pageToJumpTo, setPageToJumpTo] = useState<number>();
   const [invalidEntry, setInvalidEntry] = useState<boolean>(false);
+  const [open, setOpen] = useState(false); // For modal
+  const [isAdd, setIsAdd] = useState(false); // For modal
 
   useEffect(() => {
     const getJobs = async () => {
@@ -57,7 +59,11 @@ export default function JobsLayout({
         pageToJumpTo,
         setPageToJumpTo,
         invalidEntry,
-        setInvalidEntry
+        setInvalidEntry,
+        open,
+        setOpen,
+        isAdd,
+        setIsAdd
       }}
     >
       {children}

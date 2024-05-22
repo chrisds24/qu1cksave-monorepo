@@ -1,22 +1,19 @@
 'use client'
 
-import { Context, createContext, useContext, useEffect, useState } from "react";
-import { SessionUserContext } from "../layout";
-import { Job } from "@/types/job";
+import { useContext, useEffect } from "react";
 import JobsList from "@/components/job/list";
 import { Box, Button, Pagination, TextField, Typography } from "@mui/material";
 import DiscreteSliderValues from "@/components/discreteSliderValues";
 import { JobsContext } from "./layout";
+import AddOrEditDialog from "@/components/addOrEditDialog";
 
 export default function Page() {
   const {
     jobs,
-    setJobs,
     page,
     setPage,
     jobsPerPage,
     setJobsPerPage,
-    jobsInPage,
     setJobsInPage,
     pageToJumpTo,
     setPageToJumpTo,
@@ -93,6 +90,7 @@ export default function Page() {
 
   return (
     <Box>
+      {/* TODO: I can use a MUI Floating Action Button to add a new job. */}
       <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '1.5vh'}}>
         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
           <Pagination
@@ -170,6 +168,7 @@ export default function Page() {
           />
         </Box>
       </Box>
+      <AddOrEditDialog />
       <JobsList />
       <Box sx={{ display: 'flex', flexDirection: 'row', marginTop: '3vh' }}>
         <Pagination
