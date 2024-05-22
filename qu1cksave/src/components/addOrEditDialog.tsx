@@ -3,6 +3,7 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { useContext, useState } from "react";
 import { JobsContext } from "@/app/(main)/jobs/layout";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 export default function AddOrEditDialog() {
   const {open, setOpen, isAdd} = useContext(JobsContext);
@@ -99,6 +100,17 @@ export default function AddOrEditDialog() {
                   border: 'solid #636369',
                 },
               }}
+              inputProps={{
+                MenuProps: {
+                  MenuListProps: {
+                    sx: {
+                      // backgroundColor: '#1e1e1e',
+                      backgroundColor: '#000000',
+                      color: '#ffffff'
+                    }
+                  }
+                }
+              }}
               // fullWidth
             >
               <MenuItem value={'Remote'}>Remote</MenuItem>
@@ -170,9 +182,59 @@ export default function AddOrEditDialog() {
           //   being edited
           // defaultValue="Default Value"
         />
+        <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2}}>
+          <DatePicker
+            // Source:
+            //   https://stackoverflow.com/questions/76767152/i-am-using-react-mui-mui-x-date-pickers-please-tell-me-how-to-change-color-of
+            // This works, but I don't want to change the color
+            // slotProps={{
+            //   day: {
+            //     sx: {
+            //       "&.MuiPickersDay-root.Mui-selected": {
+            //         backgroundColor: "#636369",
+            //       },
+            //     },
+            //   },
+            // }}          
+            sx={{
+              marginRight: 2,
+              input: {
+                color: '#ffffff'
+              },
+              "& .MuiOutlinedInput-notchedOutline": {
+                border: 'solid #636369',
+              },
+              "& label": {
+                color: '#636369',
+              },
+              "& .MuiButtonBase-root": {
+                color: '#636369',
+              },
+            }}
+            label="Date Applied"
+          />
+          <DatePicker
+            sx={{
+              input: {
+                color: '#ffffff'
+              },
+              "& .MuiOutlinedInput-notchedOutline": {
+                border: 'solid #636369',
+              },
+              "& label": {
+                color: '#636369',
+              },
+              "& .MuiButtonBase-root": {
+                color: '#636369',
+              }
+            }}          
+            label="Date Posted"
+          />
+        </Box>
         <TextField
           id="notes"
           label="Notes"
+          placeholder="Enter any additional info you want here"
           multiline
           rows={10}
           fullWidth
