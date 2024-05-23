@@ -36,16 +36,20 @@ export default function AddOrEditDialog() {
       }}
     />;
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   // TODO: I need to reset the state when the dialog is closed
   //   I remember there's a callback function for this in the MUI Dialog page
   const [remote, setRemote] = useState('Remote');
   const [status, setStatus] = useState('Not Applied');
   const [state, setState] = useState('');
   const [links, setLinks] = useState<JSX.Element[]>([link1]);
+
+  const handleClose = () => {
+    setOpen(false);
+    setRemote('Remote');
+    setStatus('Not Applied');
+    setState('');
+    setLinks([link1]);
+  };
 
   const changeRemote = (event: SelectChangeEvent) => {
     setRemote(event.target.value as string);
