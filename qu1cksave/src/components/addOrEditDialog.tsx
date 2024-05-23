@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { useContext, useState } from "react";
 import { JobsContext } from "@/app/(main)/jobs/layout";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -54,6 +54,88 @@ export default function AddOrEditDialog() {
         <DialogContentText sx={{color: '#ffffff', marginBottom: 2}}>
           Edit this job. Required values will be marked with an asterisk (*).
         </DialogContentText>
+        <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2, justifyContent: 'space-between'}}>
+          <FormControl>
+            <InputLabel sx={{color: '#636369'}} id="status-label">Status</InputLabel>
+            <Select
+              required
+              labelId="status-label"
+              id="status"
+              value={status}
+              label="Status"
+              onChange={changeStatus}
+              sx={{
+                color: '#ffffff',
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: 'solid #636369',
+                },
+              }}
+              inputProps={{
+                MenuProps: {
+                  MenuListProps: {
+                    sx: {
+                      backgroundColor: '#000000',
+                      color: '#ffffff'
+                    }
+                  }
+                }
+              }}
+            >
+              {statusList.map((status) => 
+                <MenuItem value={status}>{status}</MenuItem>
+              )}
+            </Select>
+          </FormControl>
+          <Box sx={{display: 'flex', flexDirection: 'row'}}>
+            <DatePicker
+              // Source:
+              //   https://stackoverflow.com/questions/76767152/i-am-using-react-mui-mui-x-date-pickers-please-tell-me-how-to-change-color-of
+              // This works, but I don't want to change the color
+              // slotProps={{
+              //   day: {
+              //     sx: {
+              //       "&.MuiPickersDay-root.Mui-selected": {
+              //         backgroundColor: "#636369",
+              //       },
+              //     },
+              //   },
+              // }}          
+              sx={{
+                marginRight: 2,
+                input: {
+                  color: '#ffffff'
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: 'solid #636369',
+                },
+                "& label": {
+                  color: '#636369',
+                },
+                "& .MuiButtonBase-root": {
+                  color: '#636369',
+                },
+              }}
+              label="Date Applied"
+            />
+            <DatePicker
+              sx={{
+                input: {
+                  color: '#ffffff'
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: 'solid #636369',
+                },
+                "& label": {
+                  color: '#636369',
+                },
+                "& .MuiButtonBase-root": {
+                  color: '#636369',
+                }
+              }}          
+              label="Date Posted"
+            />
+          </Box>
+        </Box>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2}}>
           <TextField
             required            
@@ -98,14 +180,14 @@ export default function AddOrEditDialog() {
           />
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2}}>
-          <Box sx={{marginRight: 2}}>
-            {/* <InputLabel sx={{color: '#636369'}} id="remote-label">Remote</InputLabel> */}
+          <FormControl>
+            <InputLabel sx={{color: '#636369'}} id="remote-label">Remote</InputLabel>
             <Select
               required
-              // labelId="remote-label"
+              labelId="remote-label"
               id="remote"
               value={remote}
-              // label="Remote"
+              label="Remote"
               onChange={changeRemote}
               sx={{
                 color: '#ffffff',
@@ -130,7 +212,7 @@ export default function AddOrEditDialog() {
               <MenuItem value={'Hybrid'}>Hybrid</MenuItem>
               <MenuItem value={'On-site'}>On-site</MenuItem>
             </Select>
-          </Box>
+          </FormControl>
           <Box sx={{display: 'flex', flexDirection: 'row'}}>
             <TextField
               // required={isAdd ? true : false}
@@ -197,15 +279,15 @@ export default function AddOrEditDialog() {
               marginRight: 2,
             }}
           />  
-          <Box>
-            {/* <InputLabel sx={{color: '#636369'}} id="state-label">State</InputLabel> */}
+          <FormControl sx={{minWidth: 90, marginRight: 2}}>
+            <InputLabel sx={{color: '#636369'}} id="state-label">State</InputLabel>
             <Select
               required
-              // labelId="state-label"
+              labelId="state-label"
               id="state"
               placeholder="State"
               value={state}
-              // label="State"
+              label="State"
               onChange={changeState}
               sx={{
                 color: '#ffffff',
@@ -224,13 +306,17 @@ export default function AddOrEditDialog() {
                   }
                 }
               }}
-              // fullWidth
+              fullWidth
             >
               {Object.keys(states).map((state) => 
-                <MenuItem value={state}>{state}</MenuItem>
+                <MenuItem
+                  value={state === 'N/A' ? states[state] : state}
+                >
+                  {state}
+                </MenuItem>
               )}
             </Select>
-          </Box>
+          </FormControl>
           <TextField
             id="country"
             name="country"
@@ -271,88 +357,6 @@ export default function AddOrEditDialog() {
           //   being edited
           // defaultValue="Default Value"
         />
-        <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2, justifyContent: 'space-between'}}>
-          {/* <InputLabel sx={{color: '#636369'}} id="status-label">Status</InputLabel> */}
-          <Select
-            required
-            // labelId="status-label"
-            id="status"
-            value={status}
-            // label="Status"
-            onChange={changeStatus}
-            sx={{
-              color: '#ffffff',
-              "& .MuiOutlinedInput-notchedOutline": {
-                border: 'solid #636369',
-              },
-            }}
-            inputProps={{
-              MenuProps: {
-                MenuListProps: {
-                  sx: {
-                    // backgroundColor: '#1e1e1e',
-                    backgroundColor: '#000000',
-                    color: '#ffffff'
-                  }
-                }
-              }
-            }}
-            // fullWidth
-          >
-            {statusList.map((status) => 
-              <MenuItem value={status}>{status}</MenuItem>
-            )}
-          </Select>
-          <Box sx={{display: 'flex', flexDirection: 'row'}}>
-            <DatePicker
-              // Source:
-              //   https://stackoverflow.com/questions/76767152/i-am-using-react-mui-mui-x-date-pickers-please-tell-me-how-to-change-color-of
-              // This works, but I don't want to change the color
-              // slotProps={{
-              //   day: {
-              //     sx: {
-              //       "&.MuiPickersDay-root.Mui-selected": {
-              //         backgroundColor: "#636369",
-              //       },
-              //     },
-              //   },
-              // }}          
-              sx={{
-                marginRight: 2,
-                input: {
-                  color: '#ffffff'
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: 'solid #636369',
-                },
-                "& label": {
-                  color: '#636369',
-                },
-                "& .MuiButtonBase-root": {
-                  color: '#636369',
-                },
-              }}
-              label="Date Applied"
-            />
-            <DatePicker
-              sx={{
-                input: {
-                  color: '#ffffff'
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: 'solid #636369',
-                },
-                "& label": {
-                  color: '#636369',
-                },
-                "& .MuiButtonBase-root": {
-                  color: '#636369',
-                }
-              }}          
-              label="Date Posted"
-            />
-          </Box>
-        </Box>
         <TextField
           id="notes"
           label="Notes"
@@ -372,6 +376,26 @@ export default function AddOrEditDialog() {
           inputProps={{ style: { color: "#ffffff" } }}
           // defaultValue="Default Value"
         />
+        <TextField
+          id="from"
+          name="from"
+          label="Posting Found From"
+          placeholder="LinkedIn, Indeed, etc."
+          variant="outlined"
+          sx={{
+            color: '#ffffff',
+            input: {
+              color: '#ffffff'
+            },
+            "& .MuiOutlinedInput-notchedOutline": {
+              border: 'solid #636369',
+            },
+            "& label": {
+              color: '#636369',
+            },
+            marginRight: 2,
+          }}
+        />  
       </DialogContent>
       <DialogActions>
         <Button sx={{color: '#ffffff'}} onClick={handleClose}>Cancel</Button>

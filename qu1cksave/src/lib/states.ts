@@ -1,4 +1,5 @@
 export const states = {
+  'N/A': '',
   AK: 'Alaska' ,
   AL: 'Alabama',
   AR: 'Arkansas',
