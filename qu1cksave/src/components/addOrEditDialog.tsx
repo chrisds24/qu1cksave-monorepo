@@ -1,23 +1,51 @@
 'use client'
 
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
 import { useContext, useState } from "react";
 import { JobsContext } from "@/app/(main)/jobs/layout";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { states } from "@/lib/states";
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
 export default function AddOrEditDialog() {
   const {open, setOpen, isAdd} = useContext(JobsContext);
 
+  const link1 = 
+    <TextField
+      id='link1'
+      name='link1'
+      label='Link 1'
+      placeholder='Link 1'
+      variant="outlined"
+      sx={{
+        color: '#ffffff',
+        input: {
+          color: '#ffffff'
+        },
+        "& .MuiOutlinedInput-notchedOutline": {
+          border: 'solid #636369',
+        },
+        "& label": {
+          color: '#636369',
+        },
+        marginBottom: 2,
+        width: '50%'
+      }}
+    />;
+
   const handleClose = () => {
     setOpen(false);
   };
 
+  // TODO: I need to reset the state when the dialog is closed
+  //   I remember there's a callback function for this in the MUI Dialog page
   const [remote, setRemote] = useState('Remote');
   const [status, setStatus] = useState('Not Applied');
   const [state, setState] = useState('');
+  const [links, setLinks] = useState<JSX.Element[]>([link1]);
 
   const changeRemote = (event: SelectChangeEvent) => {
     setRemote(event.target.value as string);
@@ -29,6 +57,46 @@ export default function AddOrEditDialog() {
 
   const changeState = (event: SelectChangeEvent) => {
     setState(event.target.value as string);
+  };
+
+  const addLink = () => {
+    if (links.length < 10) {
+      const link =
+        <TextField
+          id={`link${links.length + 1}`}
+          name={`link${links.length + 1}`}
+          label={`Link ${links.length + 1}`}
+          placeholder={`Link ${links.length + 1}`}
+          variant="outlined"
+          sx={{
+            color: '#ffffff',
+            input: {
+              color: '#ffffff'
+            },
+            "& .MuiOutlinedInput-notchedOutline": {
+              border: 'solid #636369',
+            },
+            "& label": {
+              color: '#636369',
+            },
+            marginBottom: 2,
+            width: '50%'
+          }}
+        />;
+      const newLinks = [...links];
+      newLinks.push(link);
+      setLinks(newLinks);
+    } else {
+      alert('Maximum number of links reached.')
+    }
+  };
+
+  const removeLink = () => {
+    if (links.length > 0) {
+      const newLinks = [...links];
+      newLinks.pop();
+      setLinks(newLinks);
+    }
   };
 
   return (
@@ -52,7 +120,6 @@ export default function AddOrEditDialog() {
       <DialogTitle sx={{color: '#4fc1ff', fontWeight: 'bold', fontSize: '24px'}}>{isAdd ? 'Add Job': 'Edit Job'}</DialogTitle>
       <DialogContent>
         <DialogContentText sx={{color: '#ffffff', marginBottom: 2}}>
-          Edit this job. Required values will be marked with an asterisk (*).
         </DialogContentText>
         <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2, justifyContent: 'space-between'}}>
           <FormControl>
@@ -215,7 +282,6 @@ export default function AddOrEditDialog() {
           </FormControl>
           <Box sx={{display: 'flex', flexDirection: 'row'}}>
             <TextField
-              // required={isAdd ? true : false}
               id="salaryMin"
               name="salaryMin"
               label="Salary Min"
@@ -236,7 +302,6 @@ export default function AddOrEditDialog() {
               // fullWidth
             />  
             <TextField
-              // required={isAdd ? true : false}
               id="salaryMax"
               name="salaryMax"
               label="Salary Max"
@@ -282,7 +347,6 @@ export default function AddOrEditDialog() {
           <FormControl sx={{minWidth: 90, marginRight: 2}}>
             <InputLabel sx={{color: '#636369'}} id="state-label">State</InputLabel>
             <Select
-              required
               labelId="state-label"
               id="state"
               placeholder="State"
@@ -376,6 +440,18 @@ export default function AddOrEditDialog() {
           inputProps={{ style: { color: "#ffffff" } }}
           // defaultValue="Default Value"
         />
+        <Typography color='#ffffff' fontWeight='bold' sx={{fontSize: '19px', marginBottom: 2}}>
+          Links
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column'}}>
+          {links.map((link) =>
+            link
+          )}
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'row', marginBottom: 2}}>
+          <AddIcon sx={{color: '#ffffff', cursor: 'pointer', marginRight: 4}} onClick={addLink} /> 
+          <RemoveIcon sx={{color: '#ffffff', cursor: 'pointer'}} onClick={removeLink} />
+        </Box>
         <TextField
           id="from"
           name="from"
@@ -394,8 +470,9 @@ export default function AddOrEditDialog() {
               color: '#636369',
             },
             marginRight: 2,
+            marginBottom: 2
           }}
-        />  
+        />
       </DialogContent>
       <DialogActions>
         <Button sx={{color: '#ffffff'}} onClick={handleClose}>Cancel</Button>
