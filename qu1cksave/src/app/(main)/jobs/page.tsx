@@ -2,10 +2,11 @@
 
 import { useContext, useEffect } from "react";
 import JobsList from "@/components/job/list";
-import { Box, Button, Pagination, TextField, Typography } from "@mui/material";
+import { Box, Button, Fab, Pagination, TextField, Typography } from "@mui/material";
 import DiscreteSliderValues from "@/components/discreteSliderValues";
 import { JobsContext } from "./layout";
 import AddOrEditDialog from "@/components/addOrEditDialog";
+import AddIcon from '@mui/icons-material/Add';
 
 export default function Page() {
   const {
@@ -18,7 +19,10 @@ export default function Page() {
     pageToJumpTo,
     setPageToJumpTo,
     invalidEntry,
-    setInvalidEntry
+    setInvalidEntry,
+    setIsAdd,
+    setDialogJob,
+    setOpen
   } = useContext(JobsContext);
 
   // When page changes
@@ -236,6 +240,29 @@ export default function Page() {
           Go
         </Button>
       </Box>
+      <Fab
+        aria-label='add'
+        sx={{
+          position: 'fixed',
+          bottom: 32,
+          right: 32,
+          backgroundColor: '#2ea043',
+          height: 80,
+          width: 80,
+          '&:hover': {
+            backgroundColor: '#4ecc65',
+          },
+        }}
+        onClick={
+          () =>  {
+            setIsAdd(true);
+            setDialogJob(undefined);
+            setOpen(true);
+          }
+        }
+      >
+        <AddIcon sx={{color: '#ffffff', height: 48, width: 48}} />
+      </Fab>
     </Box>
   );
 }

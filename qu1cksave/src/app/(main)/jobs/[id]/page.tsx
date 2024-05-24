@@ -75,8 +75,8 @@ export default function Page({ params }: { params: { id: string } }) {
               onClick={
                 () =>  {
                   setIsAdd(false);
-                  setOpen(true);
                   setDialogJob(job);
+                  setOpen(true);
                 }
               }
             >

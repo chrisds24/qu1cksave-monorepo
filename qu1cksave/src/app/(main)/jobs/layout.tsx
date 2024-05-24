@@ -19,7 +19,7 @@ export default function JobsLayout({
   const [pageToJumpTo, setPageToJumpTo] = useState<number>();
   const [invalidEntry, setInvalidEntry] = useState<boolean>(false);
   const [open, setOpen] = useState(false); // For modal
-  const [isAdd, setIsAdd] = useState(false); // For modal
+  const [isAdd, setIsAdd] = useState(true); // For modal
   const [dialogJob, setDialogJob] = useState<Job | undefined>(undefined);
 
   useEffect(() => {

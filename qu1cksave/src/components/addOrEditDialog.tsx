@@ -7,6 +7,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { states } from "@/lib/states";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import dayjs from 'dayjs'
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
@@ -38,16 +39,28 @@ const createLink = (idx: number, val: string) => {
 }
 
 export default function AddOrEditDialog() {
-  const {open, setOpen, isAdd, dialogJob, setDialogJob} = useContext(JobsContext);
+  const {open, setOpen, isAdd, setIsAdd, dialogJob, setDialogJob} = useContext(JobsContext);
 
   const link1 = createLink(1, '');
   const existingLinks: JSX.Element[] = [];
+  let applied: Date | undefined = undefined;
+  let posted: Date | undefined = undefined;
   // !isAdd && dialogJob means we're in edit mode and the selected job is set
-  if (!isAdd && dialogJob && dialogJob.links) {
-    const n = dialogJob.links.length;
-    for (let i = 1; i < n + 1; i++) { // Start count at 1
-      // i-1 since we count starting from 1
-      existingLinks.push(createLink(i, dialogJob.links[i-1]))
+  if (!isAdd && dialogJob) {
+    if (dialogJob.links) {
+      const n = dialogJob.links.length;
+      for (let i = 1; i < n + 1; i++) { // Start count at 1
+        // i-1 since we count starting from 1
+        existingLinks.push(createLink(i, dialogJob.links[i-1]))
+      }
+    }
+    if (dialogJob.date_applied) {
+      const dateApplied = dialogJob.date_applied;
+      applied = dateApplied ? new Date(dateApplied.year, dateApplied.month, dateApplied.date) : undefined;
+    }
+    if (dialogJob.date_posted) {
+      const datePosted = dialogJob.date_posted;
+      posted = datePosted ? new Date(datePosted.year, datePosted.month, datePosted.date) : undefined;
     }
   }
 
@@ -77,6 +90,7 @@ export default function AddOrEditDialog() {
     setState('');
     setLinks([link1]);
     setDialogJob(undefined);
+    setIsAdd(true);
   };
 
   const changeRemote = (event: SelectChangeEvent) => {
@@ -198,6 +212,8 @@ export default function AddOrEditDialog() {
                 },
               }}
               label="Date Applied"
+              // https://stackoverflow.com/questions/75334255/how-to-convert-the-input-date-value-of-mui-datepicker
+              defaultValue={!isAdd && applied ? dayjs(applied): null}
             />
             <DatePicker
               sx={{
@@ -215,6 +231,7 @@ export default function AddOrEditDialog() {
                 }
               }}          
               label="Date Posted"
+              defaultValue={!isAdd && posted ? dayjs(posted): null}
             />
           </Box>
         </Box>

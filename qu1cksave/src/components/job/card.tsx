@@ -138,8 +138,8 @@ export default function JobCard(props: any) {
                 (event) =>  {
                   event.stopPropagation();
                   setIsAdd(false);
-                  setOpen(true);
                   setDialogJob(job);
+                  setOpen(true);
                 }
               }
             >
