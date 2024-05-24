@@ -1,7 +1,7 @@
 'use client'
 
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { JobsContext } from "@/app/(main)/jobs/layout";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { states } from "@/lib/states";
@@ -10,16 +10,15 @@ import RemoveIcon from '@mui/icons-material/Remove';
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
-export default function AddOrEditDialog() {
-  const {open, setOpen, isAdd} = useContext(JobsContext);
-
-  const link1 = 
+const createLink = (idx: number, val: string) => {
+  return (
     <TextField
-      id='link1'
-      name='link1'
-      label='Link 1'
-      placeholder='Link 1'
+      id={`link${idx}`}
+      name={`link${idx}`}
+      label={`Link ${idx}`}
+      placeholder={`Link ${idx}`}
       variant="outlined"
+      defaultValue={val}
       sx={{
         color: '#ffffff',
         input: {
@@ -34,14 +33,42 @@ export default function AddOrEditDialog() {
         marginBottom: 2,
         width: '50%'
       }}
-    />;
+    />
+  );
+}
 
-  // TODO: I need to reset the state when the dialog is closed
-  //   I remember there's a callback function for this in the MUI Dialog page
+export default function AddOrEditDialog() {
+  const {open, setOpen, isAdd, dialogJob, setDialogJob} = useContext(JobsContext);
+
+  const link1 = createLink(1, '');
+  const existingLinks: JSX.Element[] = [];
+  // !isAdd && dialogJob means we're in edit mode and the selected job is set
+  if (!isAdd && dialogJob && dialogJob.links) {
+    const n = dialogJob.links.length;
+    for (let i = 1; i < n + 1; i++) { // Start count at 1
+      // i-1 since we count starting from 1
+      existingLinks.push(createLink(i, dialogJob.links[i-1]))
+    }
+  }
+
+  // If editing, fill in fields and set states based on selected job
+  // const [remote, setRemote] = useState(!isAdd && dialogJob ? dialogJob.is_remote : 'Remote');
+  // const [status, setStatus] = useState(!isAdd && dialogJob ? dialogJob.job_status : 'Not Applied');
+  // const [state, setState] = useState(!isAdd && dialogJob && dialogJob.us_state ? dialogJob.us_state : '');
+  // const [links, setLinks] = useState<JSX.Element[]>(!isAdd && dialogJob && dialogJob.links ? existingLinks : [link1]);
   const [remote, setRemote] = useState('Remote');
   const [status, setStatus] = useState('Not Applied');
   const [state, setState] = useState('');
   const [links, setLinks] = useState<JSX.Element[]>([link1]);
+
+  useEffect(() => {
+    if (!isAdd && dialogJob) {
+      setRemote(dialogJob.is_remote)
+      setStatus(dialogJob.job_status)
+      if (dialogJob.us_state) setState(dialogJob.us_state)
+      if (dialogJob.links) setLinks(existingLinks)
+    }
+  }, [isAdd, dialogJob]);
 
   const handleClose = () => {
     setOpen(false);
@@ -49,6 +76,7 @@ export default function AddOrEditDialog() {
     setStatus('Not Applied');
     setState('');
     setLinks([link1]);
+    setDialogJob(undefined);
   };
 
   const changeRemote = (event: SelectChangeEvent) => {
@@ -65,28 +93,7 @@ export default function AddOrEditDialog() {
 
   const addLink = () => {
     if (links.length < 10) {
-      const link =
-        <TextField
-          id={`link${links.length + 1}`}
-          name={`link${links.length + 1}`}
-          label={`Link ${links.length + 1}`}
-          placeholder={`Link ${links.length + 1}`}
-          variant="outlined"
-          sx={{
-            color: '#ffffff',
-            input: {
-              color: '#ffffff'
-            },
-            "& .MuiOutlinedInput-notchedOutline": {
-              border: 'solid #636369',
-            },
-            "& label": {
-              color: '#636369',
-            },
-            marginBottom: 2,
-            width: '50%'
-          }}
-        />;
+      const link = createLink(links.length + 1, '')
       const newLinks = [...links];
       newLinks.push(link);
       setLinks(newLinks);
@@ -123,8 +130,11 @@ export default function AddOrEditDialog() {
     >
       <DialogTitle sx={{color: '#4fc1ff', fontWeight: 'bold', fontSize: '24px'}}>{isAdd ? 'Add Job': 'Edit Job'}</DialogTitle>
       <DialogContent>
-        <DialogContentText sx={{color: '#ffffff', marginBottom: 2}}>
-        </DialogContentText>
+        {/*
+          DialogContentText is purposely empty. Needed so the first row of
+          forms don't get cut off on the top.
+        */}
+        <DialogContentText sx={{color: '#ffffff', marginBottom: 2}}></DialogContentText>
         <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2, justifyContent: 'space-between'}}>
           <FormControl>
             <InputLabel sx={{color: '#636369'}} id="status-label">Status</InputLabel>
@@ -158,6 +168,7 @@ export default function AddOrEditDialog() {
             </Select>
           </FormControl>
           <Box sx={{display: 'flex', flexDirection: 'row'}}>
+            {/* TODO: When in edit mode, set values of date picker based on job to be edited. */}
             <DatePicker
               // Source:
               //   https://stackoverflow.com/questions/76767152/i-am-using-react-mui-mui-x-date-pickers-please-tell-me-how-to-change-color-of
@@ -215,6 +226,7 @@ export default function AddOrEditDialog() {
             label="Job Title"
             fullWidth
             variant="outlined"
+            defaultValue={!isAdd && dialogJob ? dialogJob.title : ''}
             sx={{
               color: '#ffffff',
               input: {
@@ -236,6 +248,7 @@ export default function AddOrEditDialog() {
             label="Company"
             fullWidth
             variant="outlined"
+            defaultValue={!isAdd && dialogJob ? dialogJob.company_name : ''}
             sx={{
               // color: '#ffffff',
               input: {
@@ -285,6 +298,7 @@ export default function AddOrEditDialog() {
             </Select>
           </FormControl>
           <Box sx={{display: 'flex', flexDirection: 'row'}}>
+            {/* TODO: Change these to a numeric input once salaries are implemented */}
             <TextField
               id="salaryMin"
               name="salaryMin"
@@ -303,7 +317,6 @@ export default function AddOrEditDialog() {
                 },
                 marginRight: 2,
               }}
-              // fullWidth
             />  
             <TextField
               id="salaryMax"
@@ -322,7 +335,6 @@ export default function AddOrEditDialog() {
                   color: '#636369',
                 },
               }}
-              // fullWidth
             />
           </Box>       
         </Box>
@@ -334,6 +346,7 @@ export default function AddOrEditDialog() {
             name="city"
             label="City"
             variant="outlined"
+            defaultValue={!isAdd && dialogJob && dialogJob.city ? dialogJob.city : ''}
             sx={{
               color: '#ffffff',
               input: {
@@ -390,6 +403,7 @@ export default function AddOrEditDialog() {
             name="country"
             label="Country"
             variant="outlined"
+            defaultValue={!isAdd && dialogJob && dialogJob.country ? dialogJob.country : ''}
             sx={{
               color: '#ffffff',
               input: {
@@ -411,6 +425,7 @@ export default function AddOrEditDialog() {
           multiline
           rows={10}
           fullWidth
+          defaultValue={!isAdd && dialogJob && dialogJob.job_description ? dialogJob.job_description : ''}
           sx={{
             "& .MuiOutlinedInput-notchedOutline": {
               border: 'solid #636369',
@@ -421,9 +436,6 @@ export default function AddOrEditDialog() {
             marginBottom: 2
           }}
           inputProps={{ style: { color: "#ffffff" } }}
-          // TODO: When editing, defaultValue is the description of the job
-          //   being edited
-          // defaultValue="Default Value"
         />
         <TextField
           id="notes"
@@ -432,6 +444,7 @@ export default function AddOrEditDialog() {
           multiline
           rows={10}
           fullWidth
+          defaultValue={!isAdd && dialogJob && dialogJob.notes ? dialogJob.notes : ''}
           sx={{
             "& .MuiOutlinedInput-notchedOutline": {
               border: 'solid #636369',
@@ -442,7 +455,6 @@ export default function AddOrEditDialog() {
             marginBottom: 2
           }}
           inputProps={{ style: { color: "#ffffff" } }}
-          // defaultValue="Default Value"
         />
         <Typography color='#ffffff' fontWeight='bold' sx={{fontSize: '19px', marginBottom: 2}}>
           Links
@@ -462,6 +474,7 @@ export default function AddOrEditDialog() {
           label="Posting Found From"
           placeholder="LinkedIn, Indeed, etc."
           variant="outlined"
+          defaultValue={!isAdd && dialogJob && dialogJob.found_from ? dialogJob.found_from : ''}
           sx={{
             color: '#ffffff',
             input: {

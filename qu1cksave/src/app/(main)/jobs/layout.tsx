@@ -13,7 +13,6 @@ export default function JobsLayout({
 }) {
   const { sessionUser } = useContext(SessionUserContext);
   const [jobs, setJobs] = useState<Job[]>([]);
-
   const [page, setPage] = useState<number>(1);
   const [jobsPerPage, setJobsPerPage] = useState<number>(10);
   const [jobsInPage, setJobsInPage] = useState<Job[]>([]);
@@ -21,6 +20,7 @@ export default function JobsLayout({
   const [invalidEntry, setInvalidEntry] = useState<boolean>(false);
   const [open, setOpen] = useState(false); // For modal
   const [isAdd, setIsAdd] = useState(false); // For modal
+  const [dialogJob, setDialogJob] = useState<Job | undefined>(undefined);
 
   useEffect(() => {
     const getJobs = async () => {
@@ -63,7 +63,9 @@ export default function JobsLayout({
         open,
         setOpen,
         isAdd,
-        setIsAdd
+        setIsAdd,
+        dialogJob,
+        setDialogJob
       }}
     >
       {children}

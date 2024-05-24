@@ -35,7 +35,7 @@ export default function JobCard(props: any) {
   const job: Job | undefined = props.job;
   const router = useRouter();
 
-  const {setOpen, setIsAdd} = useContext(JobsContext);
+  const {setOpen, setIsAdd, setDialogJob} = useContext(JobsContext);
 
   if (job) {
     const dateApplied = job.date_applied;
@@ -139,7 +139,7 @@ export default function JobCard(props: any) {
                   event.stopPropagation();
                   setIsAdd(false);
                   setOpen(true);
-                  // TODO: Need to set the job being edited
+                  setDialogJob(job);
                 }
               }
             >

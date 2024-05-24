@@ -8,6 +8,7 @@ import { Job } from "@/types/job";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddOrEditDialog from "@/components/addOrEditDialog";
 
 // Applied, Not Applied, Assessment, Interview, Job Offered, Accepted Offer, Declined Offer
 // Rejected, Ghosted, Closed
@@ -34,7 +35,7 @@ const statusColor = {
 
 export default function Page({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { jobs } = useContext(JobsContext);
+  const { jobs, setIsAdd, setOpen, setDialogJob } = useContext(JobsContext);
   const filteredJobs = (jobs as Job[]).filter((job) => job.id === params.id);
   const job = filteredJobs.length == 1 ? filteredJobs[0] : undefined;
 
@@ -57,6 +58,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column'}}>
+        <AddOrEditDialog />
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 1.5}}>
           <ArrowBackIcon sx={{color: '#ffffff', cursor: 'pointer'}} onClick={() => router.push('/jobs')}/>
           <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -70,6 +72,13 @@ export default function Page({ params }: { params: { id: string } }) {
                   backgroundColor: '#0b0b0b',
                 },
               }}
+              onClick={
+                () =>  {
+                  setIsAdd(false);
+                  setOpen(true);
+                  setDialogJob(job);
+                }
+              }
             >
               <EditIcon
                 sx={{ color: '#ffffff'}}
