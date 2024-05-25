@@ -23,16 +23,22 @@ export class JobService {
     let txt = 'INSERT INTO job(member_id,';
     let count = 2;
     let txtVals = 'VALUES ($1,';
-    const vals = [memberId];
+    const vals: any[] = [memberId];
     for (const key in newJob) {
       txt += `${key},`;
       txtVals += `$${count},`;
       count++;
-      vals.push(key)
+      // I used: https://stackoverflow.com/questions/57086672/element-implicitly-has-an-any-type-because-expression-of-type-string-cant-b
+      // Alternative: https://stackoverflow.com/questions/75050320/typescript-error-element-implicitly-has-an-any-type-because-expression-of-ty
+      vals.push(
+        key === 'links' ?
+        JSON.stringify(newJob[key as keyof typeof newJob]) :
+        newJob[key as keyof typeof newJob]
+      )
     }
     // txt.length-1 since we want to remove the final comma
-    txt = txt.slice(0, txt.length-1) + ') '
-    txtVals = txtVals.slice(0, txtVals.length-1) + ') RETURNING *'
+    txt = txt.slice(0, txt.length-1) + ') ';
+    txtVals = txtVals.slice(0, txtVals.length-1) + ') RETURNING *';
 
     // Example:
     // const insert =

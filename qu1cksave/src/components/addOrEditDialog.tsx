@@ -41,7 +41,7 @@ const createLink = (idx: number, val: string) => {
 }
 
 export default function AddOrEditDialog() {
-  const {open, setOpen, isAdd, setIsAdd, dialogJob, setDialogJob} = useContext(JobsContext);
+  const {open, setOpen, isAdd, setIsAdd, dialogJob, setDialogJob, jobs, setJobs} = useContext(JobsContext);
 
   const link1 = createLink(1, '');
   const existingLinks: JSX.Element[] = [];
@@ -147,8 +147,8 @@ export default function AddOrEditDialog() {
     }
     newJob['links'] = linksList;
 
-    const addedJob = await fetch('/api/job', {
-      method: "POST",
+    await fetch('/api/job', {
+      method: "POST", // isAdd ? "POST" : "PUT"
       body: JSON.stringify(newJob),
       headers: {
         "Content-Type": "application/json",
@@ -159,11 +159,18 @@ export default function AddOrEditDialog() {
           throw res;
         }
         return res.json();
-        // Then add this newly added job to jobs and set its state
+      })
+      .then((job) => {
+        // Add this job to jobs, then set jobs
+        const newJobs = [...jobs];
+        newJobs.push(job)
+        setJobs(newJobs)
       })
       .catch((err) => {
-        return undefined;
+        console.error(err)
       });
+
+    handleClose();
   };
 
   const changeRemote = (event: SelectChangeEvent) => {
@@ -203,11 +210,12 @@ export default function AddOrEditDialog() {
       onClose={handleClose}
       PaperProps={{
         component: 'form',
-        onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-          event.preventDefault();
-          // Do stuff here
-          handleClose();
-        },
+        // onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+        //   event.preventDefault();
+        //   // Do stuff here
+        //   handleClose();
+        // },
+        onSubmit: handleSubmit,
         sx: {
           backgroundColor: '#1e1e1e',
         }
