@@ -7,7 +7,9 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { states } from "@/lib/states";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import dayjs from 'dayjs'
+import dayjs, {Dayjs} from 'dayjs'
+import { NewJob } from "@/types/job";
+import { YearMonthDate } from "@/types/common";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
@@ -93,6 +95,77 @@ export default function AddOrEditDialog() {
     setIsAdd(true);
   };
 
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    // Add additional validation here to make sure that that required values are given.
+    if (!(data.get('title') && data.get('company') && data.get('remote') && data.get('status'))) {
+      alert('Please fill all required values.')
+    }
+
+    const newJob: Partial<NewJob> = {
+      title: data.get('title') as string,
+      company_name: data.get('company') as string,
+      is_remote: data.get('remote') as string,
+      job_status: data.get('status') as string
+    };
+    // for (const key of data.keys()) {  // Need downlevelIteration if using this
+    //   ...
+    // }
+    if (data.get('description')) newJob['job_description'] = data.get('description') as string;
+    if (data.get('notes')) newJob['notes'] = data.get('notes') as string;
+    if (data.get('country')) newJob['country'] = data.get('country') as string;
+    if (data.get('state')) newJob['us_state'] = data.get('state') as string;
+    if (data.get('city')) newJob['city'] = data.get('city') as string;
+    if (data.get('from')) newJob['found_from'] = data.get('from') as string;
+    if (data.get('applied')) {
+      const applied = data.get('applied');
+      if (applied) {
+        const appliedDayjs = dayjs(applied as string);
+        newJob['date_applied'] = {
+          year: appliedDayjs.year(),
+          month: appliedDayjs.month(),
+          date: appliedDayjs.date()
+        } as YearMonthDate;
+      }
+    }
+    if (data.get('posted')) {
+      const posted = data.get('posted');
+      if (posted) {
+        const postedDayjs = dayjs(posted as string);
+        newJob['date_posted'] = {
+          year: postedDayjs.year(),
+          month: postedDayjs.month(),
+          date: postedDayjs.date()
+        } as YearMonthDate;
+      }
+    }
+
+    const linksList = []
+    for (let i = 0; i < links.length; i++) {
+      linksList.push(data.get(`link${i+1}`) as string);
+    }
+    newJob['links'] = linksList;
+
+    const addedJob = await fetch('/api/job', {
+      method: "POST",
+      body: JSON.stringify(newJob),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw res;
+        }
+        return res.json();
+        // Then add this newly added job to jobs and set its state
+      })
+      .catch((err) => {
+        return undefined;
+      });
+  };
+
   const changeRemote = (event: SelectChangeEvent) => {
     setRemote(event.target.value as string);
   };
@@ -156,6 +229,7 @@ export default function AddOrEditDialog() {
               required
               labelId="status-label"
               id="status"
+              name="status"
               value={status}
               label="Status"
               onChange={changeStatus}
@@ -195,7 +269,14 @@ export default function AddOrEditDialog() {
               //       },
               //     },
               //   },
-              // }}          
+              // }}  
+              // https://stackoverflow.com/questions/74733138/unable-to-assign-name-or-id-to-datepicker-component-for-the-purpose-of-yup-valid 
+              slotProps={{
+                textField: {
+                  id: 'applied',
+                  name: 'applied',
+                },
+              }}     
               sx={{
                 marginRight: 2,
                 input: {
@@ -216,6 +297,12 @@ export default function AddOrEditDialog() {
               defaultValue={!isAdd && applied ? dayjs(applied): null}
             />
             <DatePicker
+              slotProps={{
+                textField: {
+                  id: 'posted',
+                  name: 'posted',
+                },
+              }}  
               sx={{
                 input: {
                   color: '#ffffff'
@@ -287,6 +374,7 @@ export default function AddOrEditDialog() {
               required
               labelId="remote-label"
               id="remote"
+              name="remote"
               value={remote}
               label="Remote"
               onChange={changeRemote}
@@ -383,6 +471,7 @@ export default function AddOrEditDialog() {
             <Select
               labelId="state-label"
               id="state"
+              name="state"
               placeholder="State"
               value={state}
               label="State"
@@ -456,6 +545,7 @@ export default function AddOrEditDialog() {
         />
         <TextField
           id="notes"
+          name="notes"
           label="Notes"
           placeholder="Enter any additional info you want here"
           multiline

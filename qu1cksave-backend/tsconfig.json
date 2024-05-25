@@ -21,6 +21,8 @@
     "resolveJsonModule": true,
     "removeComments": true,
 
+    // "typeRoots": ["./src/types", "./node_modules/@types"],
+
     // https://github.com/microsoft/TypeScript/issues/45063
     "lib": ["ES2022"]
   }

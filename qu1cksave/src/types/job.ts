@@ -18,3 +18,19 @@ export interface Job {
   links?: string[];
   found_from?: string;
 }
+
+export interface NewJob {
+  title: string;
+  company_name: string;
+  job_description?: string;
+  notes?: string;
+  is_remote: string;
+  country?: string;
+  us_state?: string;
+  city?: string;
+  date_applied?: YearMonthDate;
+  date_posted?: YearMonthDate;
+  job_status: string;
+  links?: string[];
+  found_from?: string;
+}

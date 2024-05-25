@@ -1,6 +1,7 @@
-import { Controller, Get, Path, Query, Response, Route, Security} from "tsoa";
-import { Job } from ".";
+import { Controller, Get, Post, Path, Query, Response, SuccessResponse, Route, Security, Body, Request} from "tsoa";
+import { Job, NewJob } from ".";
 import { JobService } from "./service";
+import * as express from 'express';
 
 @Route("job")
 export class JobController extends Controller {
@@ -17,6 +18,17 @@ export class JobController extends Controller {
       .then(async (jobs: Job[]): Promise<Job[]> => {
         return jobs;
       });
+  }
+
+  @Post()
+  @Security('jwt', ['member'])
+  @Response('401', 'Unauthorized')
+  @SuccessResponse("201", "Product created")
+  public async create(
+    @Body() newJob: NewJob,
+    @Request() request: express.Request,
+  ): Promise<Job> {
+    return await new JobService().create(newJob, request.user.id);
   }
 
   // @Get('{id}')
