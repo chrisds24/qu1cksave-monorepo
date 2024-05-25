@@ -27,7 +27,9 @@ export class JobController extends Controller {
   public async create(
     @Body() newJob: NewJob,
     @Request() request: express.Request,
-  ): Promise<Job> {
+  ): Promise<Job | undefined> {
+    // Need to set appropriate status code when product creation fails for
+    //     reasons other than "Unauthorized" 
     return await new JobService().create(newJob, request.user.id);
   }
 

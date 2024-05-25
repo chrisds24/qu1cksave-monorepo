@@ -112,6 +112,7 @@ export default function AddOrEditDialog() {
     // for (const key of data.keys()) {  // Need downlevelIteration if using this
     //   ...
     // }
+    // TODO: Refactor this. I might actually just resort to downlevelIteration
     if (data.get('description')) newJob['job_description'] = data.get('description') as string;
     if (data.get('notes')) newJob['notes'] = data.get('notes') as string;
     if (data.get('country')) newJob['country'] = data.get('country') as string;
@@ -143,7 +144,10 @@ export default function AddOrEditDialog() {
 
     const linksList = []
     for (let i = 0; i < links.length; i++) {
-      linksList.push(data.get(`link${i+1}`) as string);
+      const link = data.get(`link${i+1}`);
+      if (link) {
+        linksList.push(link as string);
+      }
     }
     newJob['links'] = linksList;
 
@@ -165,6 +169,16 @@ export default function AddOrEditDialog() {
         const newJobs = [...jobs];
         newJobs.push(job)
         setJobs(newJobs)
+
+        // TODO: I need to automatically update jobsInPage when jobs changes.
+        //   Gonna need a useEffect
+        // Need to add conditional in the modal for edit
+        //   Also need a Route Handler and an API call.
+        // NOTE: For some reason, the links are weird in the single job view.
+        //   If I create link fields in the modal and set it to for example,
+        //   a bunch of spaces. It creates a link to the single job page for
+        //   the current job.
+        //   (Turns out this is the case for anything that isn't a link)
       })
       .catch((err) => {
         console.error(err)

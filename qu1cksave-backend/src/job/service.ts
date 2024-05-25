@@ -17,39 +17,48 @@ export class JobService {
     return rows as Job[];
   }
 
-  public async create(newJob: NewJob, memberId: string): Promise<Job> {
+  public async create(newJob: NewJob, memberId: string): Promise<Job | undefined> {
     // id, member_id, title, company_name, job_description, notes, is_remote, country,
     // us_state, city, date_saved, date_applied, date_posted, job_status, links, found_from
-    let txt = 'INSERT INTO job(member_id,';
+    let txt = 'INSERT INTO job(member_id, ';
     let count = 2;
-    let txtVals = 'VALUES ($1,';
+    let txtVals = 'VALUES ($1, ';
     const vals: any[] = [memberId];
     for (const key in newJob) {
-      txt += `${key},`;
-      txtVals += `$${count},`;
+      txt += `${key}, `;
+      txtVals += `$${count}, `;
       count++;
+
       // I used: https://stackoverflow.com/questions/57086672/element-implicitly-has-an-any-type-because-expression-of-type-string-cant-b
       // Alternative: https://stackoverflow.com/questions/75050320/typescript-error-element-implicitly-has-an-any-type-because-expression-of-ty
       vals.push(
-        key === 'links' ?
+        key === 'links' || key === 'date_applied' || key === 'date_posted' ?
         JSON.stringify(newJob[key as keyof typeof newJob]) :
         newJob[key as keyof typeof newJob]
       )
     }
-    // txt.length-1 since we want to remove the final comma
-    txt = txt.slice(0, txt.length-1) + ') ';
-    txtVals = txtVals.slice(0, txtVals.length-1) + ') RETURNING *';
+    // txt.length-2 since we want to remove the final comma and space
+    txt = txt.slice(0, txt.length-2) + ') ';
+    txtVals = txtVals.slice(0, txtVals.length-2) + ') RETURNING *';
 
     // Example:
     // const insert =
-    //   "INSERT INTO job(cat_id, poster_id, image_id, title, description, price) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *";
+    //     "INSERT INTO products(cat_id, poster_id, image_id, title, description, price) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *";
     const insert = txt + txtVals;
+    // insert when all values are filled
+    // const insert =
+    //     "INSERT INTO job(member_id, title, company_name, job_description, notes, is_remote, country, us_state, city, date_applied, date_posted, job_status, links, found_from) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *"
     const query = {
       text: insert,
-      values: [vals],
+      values: vals,
     };
-    const { rows } = await pool.query(query);
-    return rows[0];
+    try {
+      const { rows } = await pool.query(query);
+      return rows[0];
+    } catch(e) {
+      console.log(e);
+      return undefined;
+    }
   }
 
   // public async getOne(id: string): Promise<Job | undefined> {
