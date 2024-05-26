@@ -151,8 +151,12 @@ export default function AddOrEditDialog() {
     }
     newJob['links'] = linksList;
 
-    await fetch('/api/job', {
-      method: "POST", // isAdd ? "POST" : "PUT"
+    let fetchString = '/api/job';
+    if (!isAdd) {
+      fetchString += `/${dialogJob.id}`;
+    }
+    await fetch(fetchString, {
+      method: isAdd ? "POST" : "PUT",
       body: JSON.stringify(newJob),
       headers: {
         "Content-Type": "application/json",
@@ -169,10 +173,11 @@ export default function AddOrEditDialog() {
         const newJobs = [...jobs];
         newJobs.push(job)
         setJobs(newJobs)
+        // NOTE: The useEffect to automatically update jobsInPage when jobs
+        //   changes is in job/page.tsx
 
-        // TODO: I need to automatically update jobsInPage when jobs changes.
-        //   Gonna need a useEffect
-        // Need to add conditional in the modal for edit
+        // TODO: 
+        //   Need to add conditional in the modal for edit
         //   Also need a Route Handler and an API call.
         // NOTE: For some reason, the links are weird in the single job view.
         //   If I create link fields in the modal and set it to for example,

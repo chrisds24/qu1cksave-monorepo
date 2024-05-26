@@ -35,7 +35,7 @@ export default function JobsLayout({
           })
           .then((jobs: Job[]) => {
             setJobs(jobs)
-            setJobsInPage(jobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
+            // setJobsInPage(jobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
           })
           .catch((err) => {
             alert(`Jobs collection for ${sessionUser.name} not found.`)
@@ -44,6 +44,10 @@ export default function JobsLayout({
     }
     getJobs();
   }, [sessionUser]);
+
+  useEffect(() => {
+    setJobsInPage(jobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
+  }, [jobs]);
 
   return (
     <JobsContext.Provider

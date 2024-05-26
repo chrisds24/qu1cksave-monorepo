@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Path, Query, Response, SuccessResponse, Route, Security, Body, Request} from "tsoa";
+import { Controller, Get, Post, Put, Path, Query, Response, SuccessResponse, Route, Security, Body, Request} from "tsoa";
 import { Job, NewJob } from ".";
 import { JobService } from "./service";
 import * as express from 'express';
@@ -31,6 +31,27 @@ export class JobController extends Controller {
     // Need to set appropriate status code when product creation fails for
     //     reasons other than "Unauthorized" 
     return await new JobService().create(newJob, request.user.id);
+  }
+
+  @Put('{id}')
+  @Security('jwt', ['member'])
+  @Response('401', 'Unauthorized')
+  @Response('404', 'Not Found')
+  public async edit(
+    @Path() id: string,
+    @Body() newJob: NewJob,
+    @Request() request: express.Request,
+  ): Promise<Job | undefined> {
+    const jobService = new JobService();
+    return await jobService
+      .getOne(id)
+      .then(async (job: Job | undefined): Promise<Job | undefined> => {
+        if (!job) {
+          this.setStatus(404);
+          return job;
+        }
+        return await jobService.edit(newJob, request.user.id, id);
+      })
   }
 
   // @Get('{id}')
