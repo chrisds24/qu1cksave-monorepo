@@ -170,15 +170,17 @@ export default function AddOrEditDialog() {
       })
       .then((job) => {
         // Add this job to jobs, then set jobs
-        const newJobs = [...jobs];
+        let newJobs = [...jobs];
+        if (!isAdd) {
+          // When editing, remove the outdated job from the jobs list.
+          newJobs = newJobs.filter((j) => j.id !== job.id);
+        }
+
         newJobs.push(job)
         setJobs(newJobs)
         // NOTE: The useEffect to automatically update jobsInPage when jobs
         //   changes is in job/page.tsx
 
-        // TODO: 
-        //   Need to add conditional in the modal for edit
-        //   Also need a Route Handler and an API call.
         // NOTE: For some reason, the links are weird in the single job view.
         //   If I create link fields in the modal and set it to for example,
         //   a bunch of spaces. It creates a link to the single job page for

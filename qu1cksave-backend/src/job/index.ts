@@ -34,6 +34,7 @@ export interface Job {
 }
 
 export interface NewJob {
+  // No id, member_id, and date_saved
   title: string;
   company_name: string;
   job_description?: string;
