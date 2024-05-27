@@ -3,6 +3,7 @@
 import { Context, ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { SessionUserContext } from "../layout";
 import { Job } from "@/types/job";
+import compareDateSaved from "@/lib/applyFilters";
 
 export const JobsContext: Context<any> = createContext(null);
 
@@ -34,6 +35,7 @@ export default function JobsLayout({
             return res.json()
           })
           .then((jobs: Job[]) => {
+            jobs.sort(compareDateSaved);
             setJobs(jobs)
             // setJobsInPage(jobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
           })
