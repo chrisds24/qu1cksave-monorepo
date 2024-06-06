@@ -1,6 +1,6 @@
 import { Job } from "@/types/job";
 
-export default function compareDateSaved(jobA: Job, jobB: Job): number {
+export function compareDateSaved(jobA: Job, jobB: Job): number {
   const dateA = new Date(jobA.date_saved);
   const dateB = new Date(jobB.date_saved);
   if (dateA < dateB) {
@@ -13,7 +13,13 @@ export default function compareDateSaved(jobA: Job, jobB: Job): number {
   }
 }
 
-// TODO: Edit this to apply all filters
-// export default function applyFilters(jobs: Job[]): Job[] {
+// Applies all filters
+export default function applyFilters(jobs: Job[]): Job[] {
+  let filteredJobs = jobs;
+  // Filters here
 
-// }
+  // Sort last
+  filteredJobs = jobs.sort(compareDateSaved);
+
+  return filteredJobs;
+}
