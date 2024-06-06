@@ -10,7 +10,6 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import dayjs, {Dayjs} from 'dayjs'
 import { NewJob } from "@/types/job";
 import { YearMonthDate } from "@/types/common";
-import compareDateSaved from "@/lib/applyFilters";
 import applyFilters from "@/lib/applyFilters";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
@@ -179,9 +178,9 @@ export default function AddOrEditDialog() {
         }
 
         newJobs.push(job)
-        // NOTE: Whenever jobs is set, apply the filters
-        //   For now, just sort by date saved (newest to oldest)
-        setJobs(applyFilters(newJobs))
+        // NOTE: Whenever jobs is set, apply the filters.
+        // This is done in layout.tsx to get filteredJobs
+        setJobs(newJobs)
         // NOTE: The useEffect to automatically update jobsInPage when jobs
         //   changes is in job/page.tsx
         // NOTE: For some reason, the links are weird in the single job view.

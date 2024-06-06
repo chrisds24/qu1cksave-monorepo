@@ -10,7 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 
 export default function Page() {
   const {
-    jobs,
+    filteredJobs,
     page,
     setPage,
     jobsPerPage,
@@ -28,7 +28,7 @@ export default function Page() {
   // When page changes
   // - Set jobs shown once current page changes
   useEffect(() => {
-    setJobsInPage(jobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
+    setJobsInPage(filteredJobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
   }, [page])
 
   // When jobsPerPage changes
@@ -38,14 +38,14 @@ export default function Page() {
   //     change in number of jobs per page
   //     - As a result of the page change, jobs shown in current page changes 
   useEffect(() => {
-    if (jobs.length) { // So this doesn't trigger when jobs are still loading initially
-      const lastPage = Math.ceil(jobs.length / jobsPerPage)
+    if (filteredJobs.length) { // So this doesn't trigger when jobs are still loading initially
+      const lastPage = Math.ceil(filteredJobs.length / jobsPerPage)
       // If we're at a page higher than our last page, go to the last page
       // Will automatically update jobs shown in current page
       if (page > lastPage) {
         setPage(lastPage);
       } else { // Just change jobs shown in current page
-        setJobsInPage(jobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
+        setJobsInPage(filteredJobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
       }
 
       // If there's a page to jump to that has been set, do the check below
@@ -61,7 +61,7 @@ export default function Page() {
 
   useEffect(() => {
     if (pageToJumpTo !== undefined) {
-      const lastPage = Math.ceil(jobs.length / jobsPerPage);
+      const lastPage = Math.ceil(filteredJobs.length / jobsPerPage);
       if (pageToJumpTo < 1 || pageToJumpTo > lastPage) {
         setInvalidEntry(true);
       } else {
@@ -94,11 +94,10 @@ export default function Page() {
 
   return (
     <Box>
-      {/* TODO: I can use a MUI Floating Action Button to add a new job. */}
       <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '1.5vh'}}>
         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
           <Pagination
-            count={Math.ceil(jobs.length / jobsPerPage)}
+            count={Math.ceil(filteredJobs.length / jobsPerPage)}
             page={page}
             onChange={changePage}
             size={'large'}
@@ -122,7 +121,7 @@ export default function Page() {
             InputProps={{
               inputProps: {
                 min: 1,
-                max: Math.ceil(jobs.length / jobsPerPage),
+                max: Math.ceil(filteredJobs.length / jobsPerPage),
                 step: "1" 
               },
               style: {
@@ -146,7 +145,7 @@ export default function Page() {
             error={invalidEntry}
             helperText={
               invalidEntry ?
-              `Must be 1-${Math.ceil(jobs.length / jobsPerPage)}` :
+              `Must be 1-${Math.ceil(filteredJobs.length / jobsPerPage)}` :
               ''
             }
           />
@@ -176,7 +175,7 @@ export default function Page() {
       <JobsList />
       <Box sx={{ display: 'flex', flexDirection: 'row', marginTop: '3vh' }}>
         <Pagination
-          count={Math.ceil(jobs.length / jobsPerPage)}
+          count={Math.ceil(filteredJobs.length / jobsPerPage)}
           page={page}
           onChange={changePage}
           size={'large'}
@@ -200,7 +199,7 @@ export default function Page() {
           InputProps={{
             inputProps: {
               min: 1,
-              max: Math.ceil(jobs.length / jobsPerPage),
+              max: Math.ceil(filteredJobs.length / jobsPerPage),
               step: "1" 
             },
             style: {
@@ -224,7 +223,7 @@ export default function Page() {
           error={invalidEntry}
           helperText={
             invalidEntry ?
-            `Must be 1-${Math.ceil(jobs.length / jobsPerPage)}` :
+            `Must be 1-${Math.ceil(filteredJobs.length / jobsPerPage)}` :
             ''
           }
         />

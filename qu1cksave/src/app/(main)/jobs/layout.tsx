@@ -14,6 +14,7 @@ export default function JobsLayout({
 }) {
   const { sessionUser } = useContext(SessionUserContext);
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
   const [page, setPage] = useState<number>(1);
   const [jobsPerPage, setJobsPerPage] = useState<number>(10);
   const [jobsInPage, setJobsInPage] = useState<Job[]>([]);
@@ -35,7 +36,7 @@ export default function JobsLayout({
             return res.json()
           })
           .then((jobs: Job[]) => {
-            setJobs(applyFilters(jobs))
+            setJobs(jobs)
           })
           .catch((err) => {
             alert(`Jobs collection for ${sessionUser.name} not found.`)
@@ -46,14 +47,20 @@ export default function JobsLayout({
   }, [sessionUser]);
 
   useEffect(() => {
-    setJobsInPage(jobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
+    setFilteredJobs(applyFilters(jobs))
   }, [jobs]);
+
+  useEffect(() => {
+    setJobsInPage(filteredJobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
+  }, [filteredJobs]);
 
   return (
     <JobsContext.Provider
       value={{
         jobs,
         setJobs,
+        filteredJobs,
+        setFilteredJobs,
         page,
         setPage,
         jobsPerPage,

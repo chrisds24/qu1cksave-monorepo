@@ -8,8 +8,9 @@ function valuetext(value: number) {
 
 export default function DiscreteSliderValues(props: any) {
   const changeJobsPerPage = props.changeJobsPerPage;
-  const { jobs, jobsPerPage } = useContext(JobsContext);
-  const allJobsCount = jobs.length;
+  const { filteredJobs, jobsPerPage } = useContext(JobsContext);
+  // const allJobsCount = jobs.length;
+  const allJobsCount = filteredJobs.length;
 
   const marks = [
     { value: 10, label: '10' },

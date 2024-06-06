@@ -17,9 +17,10 @@ export function compareDateSaved(jobA: Job, jobB: Job): number {
 export default function applyFilters(jobs: Job[]): Job[] {
   let filteredJobs = jobs;
   // Filters here
+  // filteredJobs = filteredJobs.filter((j) => j.company_name === 'Google');
 
   // Sort last
-  filteredJobs = jobs.sort(compareDateSaved);
+  filteredJobs.sort(compareDateSaved);
 
   return filteredJobs;
 }
