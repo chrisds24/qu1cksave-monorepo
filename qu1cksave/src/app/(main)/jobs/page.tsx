@@ -7,6 +7,7 @@ import DiscreteSliderValues from "@/components/discreteSliderValues";
 import { JobsContext } from "./layout";
 import AddOrEditDialog from "@/components/addOrEditDialog";
 import AddIcon from '@mui/icons-material/Add';
+import Filters from "@/components/filters";
 
 export default function Page() {
   const {
@@ -94,6 +95,8 @@ export default function Page() {
 
   return (
     <Box>
+      <Filters />
+
       <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '1.5vh'}}>
         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
           <Pagination
@@ -171,8 +174,11 @@ export default function Page() {
           />
         </Box>
       </Box>
+
       <AddOrEditDialog />
+
       <JobsList />
+
       <Box sx={{ display: 'flex', flexDirection: 'row', marginTop: '3vh' }}>
         <Pagination
           count={Math.ceil(filteredJobs.length / jobsPerPage)}

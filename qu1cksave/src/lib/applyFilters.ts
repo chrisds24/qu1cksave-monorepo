@@ -14,6 +14,7 @@ export function compareDateSaved(jobA: Job, jobB: Job): number {
 }
 
 // Applies all filters
+// Takes in the filters(which are states) as parameters
 export default function applyFilters(jobs: Job[]): Job[] {
   let filteredJobs = jobs;
   // Filters here
