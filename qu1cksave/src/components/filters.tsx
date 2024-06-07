@@ -1,19 +1,26 @@
 import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { states } from "@/lib/states";
 
-const statusList = ['N/A', 'Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
+const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
 export default function Filters() {
   const [jobFilter, setJobFilter] = useState('');
   const [companyFilter, setCompanyFilter] = useState('');
-  const [statusFilter, setStatusFilter] = useState('N/A');
-  const [remoteFilter, setRemoteFilter] = useState('N/A');
+  const [statusFilter, setStatusFilter] = useState(''); // Dropdown
+  const [remoteFilter, setRemoteFilter] = useState(''); // Dropdown
   const [cityFilter, setCityFilter] = useState('');
-  const [stateFilter, setStateFilter] = useState('');
+  const [stateFilter, setStateFilter] = useState(''); // Dropdown
   const [countryFilter, setCountryFilter] = useState('');
   const [fromFilter, setFromFilter] = useState('');
+
+  // NOT NEEDED
+  // useEffect(() => {
+  //   setStatusFilter('');
+  //   setRemoteFilter('');
+  //   setStateFilter('');
+  // }, []);
 
   const changeJobFilter = (event: any) => {
     setJobFilter(event.target.value as string);
@@ -109,7 +116,7 @@ export default function Filters() {
             />
           </Box>
           <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2, justifyContent: 'space-between'}}>
-            <FormControl>
+            <FormControl sx={{minWidth: 90}}>
               <InputLabel sx={{color: '#636369'}} id="statusFilter-label">Status</InputLabel>
               <Select
                 required
@@ -136,12 +143,13 @@ export default function Filters() {
                   }
                 }}
               >
+                <MenuItem value={''}>{'N/A'}</MenuItem>
                 {statusList.map((status) => 
                   <MenuItem value={status}>{status}</MenuItem>
                 )}
               </Select>
             </FormControl>
-            <FormControl>
+            <FormControl sx={{minWidth: 90}}>
               <InputLabel sx={{color: '#636369'}} id="remoteFilter-label">Remote</InputLabel>
               <Select
                 required
@@ -170,7 +178,7 @@ export default function Filters() {
                 }}
                 // fullWidth
               >
-                <MenuItem value={'N/A'}>{'N/A'}</MenuItem>
+                <MenuItem value={''}>{'N/A'}</MenuItem>
                 <MenuItem value={'Remote'}>Remote</MenuItem>
                 <MenuItem value={'Hybrid'}>Hybrid</MenuItem>
                 <MenuItem value={'On-site'}>On-site</MenuItem>
