@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { states } from "@/lib/states";
 import { JobsContext } from "@/app/(main)/jobs/layout";
 import applyFilters from "@/lib/applyFilters";
+import sortJobs from "@/lib/sortJobs";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
@@ -26,7 +27,9 @@ export default function Filters() {
     fromFilter,
     setFromFilter,
     setFilteredJobs,
-    jobs
+    jobs,
+    sortCriteria,
+    sortIncreasing,
   } = useContext(JobsContext);
 
   const changeJobFilter = (event: any) => {
@@ -61,18 +64,25 @@ export default function Filters() {
     setFromFilter(event.target.value as string);
   };
 
+  // When filters are applied, we need to sort again otherwise we lose
+  // sorting (since the filters are applied to the non-filtered jobs
+  // and a new list is returned).
   const apply = () => {
     setFilteredJobs(
-      applyFilters(
-        jobs,
-        jobFilter,
-        companyFilter,
-        statusFilter,
-        remoteFilter,
-        cityFilter,
-        stateFilter,
-        countryFilter,
-        fromFilter
+      sortJobs(
+        applyFilters(
+          jobs,
+          jobFilter,
+          companyFilter,
+          statusFilter,
+          remoteFilter,
+          cityFilter,
+          stateFilter,
+          countryFilter,
+          fromFilter
+        ),
+        sortCriteria,
+        sortIncreasing
       )
     );
   }
@@ -91,7 +101,7 @@ export default function Filters() {
   return (
     <Box sx={{marginBottom: 3}}>
       {/* <Accordion defaultExpanded> */}
-      <Accordion sx={{backgroundColor: '#000000'}}>
+      <Accordion sx={{backgroundColor: '#141414'}}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon sx={{color: '#ffffff'}} />}
           aria-controls="panel3-content"

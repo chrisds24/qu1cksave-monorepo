@@ -4,6 +4,7 @@ import { Context, ReactNode, createContext, useContext, useEffect, useState } fr
 import { SessionUserContext } from "../layout";
 import { Job } from "@/types/job";
 import applyFilters from "@/lib/applyFilters";
+import sortJobs from "@/lib/sortJobs";
 
 export const JobsContext: Context<any> = createContext(null);
 
@@ -36,6 +37,10 @@ export default function JobsLayout({
   const [countryFilter, setCountryFilter] = useState('');
   const [fromFilter, setFromFilter] = useState('');
 
+  // Sort
+  const [sortCriteria, setSortCriteria] = useState('Date Saved');
+  const [sortIncreasing, setSortIncreasing] = useState(false);
+
   useEffect(() => {
     const getJobs = async () => {
       if (sessionUser) {
@@ -59,19 +64,24 @@ export default function JobsLayout({
   }, [sessionUser]);
 
   // Jobs only changes during: initial load, adding, editing, or deleting.
-  // Not when going to a single job view then going back.
+  //   (Not when going to a single job view then going back.)
+  // Filters and sorting should also automatically apply once jobs changes
   useEffect(() => {
     setFilteredJobs(
-      applyFilters(
-        jobs,
-        jobFilter,
-        companyFilter,
-        statusFilter,
-        remoteFilter,
-        cityFilter,
-        stateFilter,
-        countryFilter,
-        fromFilter
+      sortJobs(
+        applyFilters(
+          jobs,
+          jobFilter,
+          companyFilter,
+          statusFilter,
+          remoteFilter,
+          cityFilter,
+          stateFilter,
+          countryFilter,
+          fromFilter
+        ),
+        sortCriteria,
+        sortIncreasing
       )
     );
   }, [jobs]);
@@ -119,7 +129,11 @@ export default function JobsLayout({
         countryFilter,
         setCountryFilter,
         fromFilter,
-        setFromFilter
+        setFromFilter,
+        sortCriteria,
+        setSortCriteria,
+        sortIncreasing,
+        setSortIncreasing
       }}
     >
       {children}

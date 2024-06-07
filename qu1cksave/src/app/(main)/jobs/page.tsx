@@ -98,6 +98,11 @@ export default function Page() {
       <Filters />
 
       <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '1.5vh'}}>
+        {/* TODO: Add the dropdown and the increasing and decreasing toggle button here  */}
+        {/* https://mui.com/material-ui/react-toggle-button/ */}
+      </Box>
+
+      <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '1.5vh'}}>
         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
           <Pagination
             count={Math.ceil(filteredJobs.length / jobsPerPage)}

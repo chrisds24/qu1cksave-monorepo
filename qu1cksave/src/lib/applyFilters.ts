@@ -1,19 +1,5 @@
 import { Filters, Job } from "@/types/job";
 
-// TODO: Move this to sort file
-function compareDateSaved(jobA: Job, jobB: Job): number {
-  const dateA = new Date(jobA.date_saved);
-  const dateB = new Date(jobB.date_saved);
-  if (dateA < dateB) {
-    return 1;
-  } else if (dateA > dateB) {
-    // Most recently saved comes first in list
-    return -1;
-  } else {
-    return 0;
-  }
-}
-
 function checkFilters(
   job: Job,
   filters: Filters
@@ -71,8 +57,4 @@ export default function applyFilters(
 
   // Filter jobs by those which satisfy all filters
   return jobs.filter((j) => checkFilters(j, filters))
-
-  // Sort last
-  // TODO: Take this out of here, sort should be applied automatically when sort option is selected.
-  // filteredJobs.sort(compareDateSaved);
 }
