@@ -34,3 +34,14 @@ export interface NewJob {
   links?: string[];
   found_from?: string;
 }
+
+export interface Filters {
+  title?: string; // job?: string;
+  company_name?: string; // company?: string;
+  job_status?: string; // status?: string;
+  is_remote?: string; // remote?: string;
+  city?: string;
+  us_state?: string; // state?: string;
+  country?: string;
+  found_from?: string; // from?: string;
+}

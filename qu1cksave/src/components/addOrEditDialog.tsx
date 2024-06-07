@@ -10,7 +10,6 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import dayjs, {Dayjs} from 'dayjs'
 import { NewJob } from "@/types/job";
 import { YearMonthDate } from "@/types/common";
-import applyFilters from "@/lib/applyFilters";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 

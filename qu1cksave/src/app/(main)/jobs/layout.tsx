@@ -20,9 +20,21 @@ export default function JobsLayout({
   const [jobsInPage, setJobsInPage] = useState<Job[]>([]);
   const [pageToJumpTo, setPageToJumpTo] = useState<number>();
   const [invalidEntry, setInvalidEntry] = useState<boolean>(false);
-  const [open, setOpen] = useState(false); // For modal
-  const [isAdd, setIsAdd] = useState(true); // For modal
+
+  // For modal/dialog
+  const [open, setOpen] = useState(false);
+  const [isAdd, setIsAdd] = useState(true);
   const [dialogJob, setDialogJob] = useState<Job | undefined>(undefined);
+
+  // Filters
+  const [jobFilter, setJobFilter] = useState('');
+  const [companyFilter, setCompanyFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState(''); // Dropdown
+  const [remoteFilter, setRemoteFilter] = useState(''); // Dropdown
+  const [cityFilter, setCityFilter] = useState('');
+  const [stateFilter, setStateFilter] = useState(''); // Dropdown
+  const [countryFilter, setCountryFilter] = useState('');
+  const [fromFilter, setFromFilter] = useState('');
 
   useEffect(() => {
     const getJobs = async () => {
@@ -46,8 +58,22 @@ export default function JobsLayout({
     getJobs();
   }, [sessionUser]);
 
+  // Jobs only changes during: initial load, adding, editing, or deleting.
+  // Not when going to a single job view then going back.
   useEffect(() => {
-    setFilteredJobs(applyFilters(jobs))
+    setFilteredJobs(
+      applyFilters(
+        jobs,
+        jobFilter,
+        companyFilter,
+        statusFilter,
+        remoteFilter,
+        cityFilter,
+        stateFilter,
+        countryFilter,
+        fromFilter
+      )
+    );
   }, [jobs]);
 
   useEffect(() => {
@@ -76,7 +102,24 @@ export default function JobsLayout({
         isAdd,
         setIsAdd,
         dialogJob,
-        setDialogJob
+        setDialogJob,
+        // Filters
+        jobFilter,
+        setJobFilter,
+        companyFilter,
+        setCompanyFilter,
+        statusFilter,
+        setStatusFilter,
+        remoteFilter,
+        setRemoteFilter,
+        cityFilter,
+        setCityFilter,
+        stateFilter,
+        setStateFilter,
+        countryFilter,
+        setCountryFilter,
+        fromFilter,
+        setFromFilter
       }}
     >
       {children}

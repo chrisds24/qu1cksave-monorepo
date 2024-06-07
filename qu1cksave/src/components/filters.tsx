@@ -1,26 +1,33 @@
 import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { states } from "@/lib/states";
+import { JobsContext } from "@/app/(main)/jobs/layout";
+import applyFilters from "@/lib/applyFilters";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
 export default function Filters() {
-  const [jobFilter, setJobFilter] = useState('');
-  const [companyFilter, setCompanyFilter] = useState('');
-  const [statusFilter, setStatusFilter] = useState(''); // Dropdown
-  const [remoteFilter, setRemoteFilter] = useState(''); // Dropdown
-  const [cityFilter, setCityFilter] = useState('');
-  const [stateFilter, setStateFilter] = useState(''); // Dropdown
-  const [countryFilter, setCountryFilter] = useState('');
-  const [fromFilter, setFromFilter] = useState('');
-
-  // NOT NEEDED
-  // useEffect(() => {
-  //   setStatusFilter('');
-  //   setRemoteFilter('');
-  //   setStateFilter('');
-  // }, []);
+  const {
+    jobFilter,
+    setJobFilter,
+    companyFilter,
+    setCompanyFilter,
+    statusFilter,
+    setStatusFilter,
+    remoteFilter,
+    setRemoteFilter,
+    cityFilter,
+    setCityFilter,
+    stateFilter,
+    setStateFilter,
+    countryFilter,
+    setCountryFilter,
+    fromFilter,
+    setFromFilter,
+    setFilteredJobs,
+    jobs
+  } = useContext(JobsContext);
 
   const changeJobFilter = (event: any) => {
     setJobFilter(event.target.value as string);
@@ -54,6 +61,33 @@ export default function Filters() {
     setFromFilter(event.target.value as string);
   };
 
+  const apply = () => {
+    setFilteredJobs(
+      applyFilters(
+        jobs,
+        jobFilter,
+        companyFilter,
+        statusFilter,
+        remoteFilter,
+        cityFilter,
+        stateFilter,
+        countryFilter,
+        fromFilter
+      )
+    );
+  }
+
+  const reset = () => {
+    setJobFilter('');
+    setCompanyFilter('');
+    setStatusFilter('');
+    setRemoteFilter('');
+    setCityFilter('');
+    setStateFilter('');
+    setCountryFilter('');
+    setFromFilter('');
+  }
+
   return (
     <Box sx={{marginBottom: 3}}>
       {/* <Accordion defaultExpanded> */}
@@ -70,7 +104,6 @@ export default function Filters() {
           {/* Filters go here. */}
           <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2}}>
             <TextField
-              required            
               id="jobFilter"
               name="jobFilter"
               label="Job Title"
@@ -93,7 +126,6 @@ export default function Filters() {
               }}
             />
             <TextField
-              required
               id="companyFilter"
               name="companyFilter"
               label="Company"
@@ -119,7 +151,6 @@ export default function Filters() {
             <FormControl sx={{minWidth: 90}}>
               <InputLabel sx={{color: '#636369'}} id="statusFilter-label">Status</InputLabel>
               <Select
-                required
                 labelId="statusFilter-label"
                 id="statusFilter"
                 name="statusFilter"
@@ -152,7 +183,6 @@ export default function Filters() {
             <FormControl sx={{minWidth: 90}}>
               <InputLabel sx={{color: '#636369'}} id="remoteFilter-label">Remote</InputLabel>
               <Select
-                required
                 labelId="remoteFilter-label"
                 id="remoteFilter"
                 name="remoteFilter"
@@ -291,8 +321,8 @@ export default function Filters() {
           />
         </AccordionDetails>
         <AccordionActions>
-          <Button>Reset</Button>
-          <Button>Apply</Button>
+          <Button onClick={reset}>Reset</Button>
+          <Button onClick={apply}>Apply</Button>
         </AccordionActions>
       </Accordion>
     </Box>
