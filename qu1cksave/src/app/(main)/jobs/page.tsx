@@ -98,76 +98,8 @@ export default function Page() {
     <Box>
       <Filters />
 
-      <SortOptions />
-
       <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 1.4}}>
-        <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-          <Pagination
-            count={Math.ceil(filteredJobs.length / jobsPerPage)}
-            page={page}
-            onChange={changePage}
-            size={'large'}
-            sx={{
-              '& .MuiPaginationItem-root': {
-                color: '#ffffff',
-                '&.Mui-selected': {
-                  background: '#2d2d30',
-                },
-              },
-              marginRight: '1vw'
-            }}
-          />
-          <TextField
-            id="jump-to-page"
-            label="Page"
-            type="number"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            InputProps={{
-              inputProps: {
-                min: 1,
-                max: Math.ceil(filteredJobs.length / jobsPerPage),
-                step: "1" 
-              },
-              style: {
-                height: '40px',
-                width: '90px',
-                color: '#ffffff',
-              }
-            }}
-            onChange={changePageToJumpTo}
-            sx={{
-              marginRight: '0.5vw',
-              padding: '1px',
-              "& .MuiOutlinedInput-notchedOutline": {
-                border: 'solid #2d2d30',
-              },
-              "& label": {
-                color: '#ffffff',
-              }
-            }}
-            value={pageToJumpTo}
-            error={invalidEntry}
-            helperText={
-              invalidEntry ?
-              `Must be 1-${Math.ceil(filteredJobs.length / jobsPerPage)}` :
-              ''
-            }
-          />
-          <Button
-            variant="contained"
-            sx={{
-              color: '#ffffff',
-              backgroundColor: '#000000',
-              height: '40px'
-            }}
-            onClick={jumpToPage}
-          >
-            Go
-          </Button>
-        </Box>
-
+        <SortOptions />
         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
           <Typography sx={{color: '#ffffff', paddingRight: 3, paddingTop: 0.5}}>
             {'Jobs Per Page: '}
@@ -176,6 +108,73 @@ export default function Page() {
             changeJobsPerPage={changeJobsPerPage}
           />
         </Box>
+      </Box>
+
+      <Box sx={{ display: 'flex', flexDirection: 'row', marginBottom: 2.5 }}>
+        <Pagination
+          count={Math.ceil(filteredJobs.length / jobsPerPage)}
+          page={page}
+          onChange={changePage}
+          size={'large'}
+          sx={{
+            '& .MuiPaginationItem-root': {
+              color: '#ffffff',
+              '&.Mui-selected': {
+                background: '#2d2d30',
+              },
+            },
+            marginRight: '1vw'
+          }}
+        />
+        <TextField
+          id="jump-to-page"
+          label="Page"
+          type="number"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          InputProps={{
+            inputProps: {
+              min: 1,
+              max: Math.ceil(filteredJobs.length / jobsPerPage),
+              step: "1" 
+            },
+            style: {
+              height: '40px',
+              width: '90px',
+              color: '#ffffff',
+            }
+          }}
+          onChange={changePageToJumpTo}
+          sx={{
+            marginRight: '0.5vw',
+            padding: '1px',
+            "& .MuiOutlinedInput-notchedOutline": {
+              border: 'solid #2d2d30',
+            },
+            "& label": {
+              color: '#ffffff',
+            }
+          }}
+          value={pageToJumpTo}
+          error={invalidEntry}
+          helperText={
+            invalidEntry ?
+            `Must be 1-${Math.ceil(filteredJobs.length / jobsPerPage)}` :
+            ''
+          }
+        />
+        <Button
+          variant="contained"
+          sx={{
+            color: '#ffffff',
+            backgroundColor: '#000000',
+            height: '40px'
+          }}
+          onClick={jumpToPage}
+        >
+          Go
+        </Button>
       </Box>
 
       <AddOrEditDialog />
