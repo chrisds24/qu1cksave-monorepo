@@ -8,6 +8,7 @@ import { JobsContext } from "./layout";
 import AddOrEditDialog from "@/components/addOrEditDialog";
 import AddIcon from '@mui/icons-material/Add';
 import Filters from "@/components/filters";
+import SortOptions from "@/components/sortOptions";
 
 export default function Page() {
   const {
@@ -97,12 +98,9 @@ export default function Page() {
     <Box>
       <Filters />
 
-      <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '1.5vh'}}>
-        {/* TODO: Add the dropdown and the increasing and decreasing toggle button here  */}
-        {/* https://mui.com/material-ui/react-toggle-button/ */}
-      </Box>
+      <SortOptions />
 
-      <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '1.5vh'}}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 1.4}}>
         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
           <Pagination
             count={Math.ceil(filteredJobs.length / jobsPerPage)}

@@ -28,7 +28,7 @@ export default function Filters() {
     setFromFilter,
     setFilteredJobs,
     jobs,
-    sortCriteria,
+    sortBy,
     sortIncreasing,
   } = useContext(JobsContext);
 
@@ -81,7 +81,7 @@ export default function Filters() {
           countryFilter,
           fromFilter
         ),
-        sortCriteria,
+        sortBy,
         sortIncreasing
       )
     );
@@ -101,7 +101,7 @@ export default function Filters() {
   return (
     <Box sx={{marginBottom: 3}}>
       {/* <Accordion defaultExpanded> */}
-      <Accordion sx={{backgroundColor: '#141414'}}>
+      <Accordion sx={{backgroundColor: '#111111'}}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon sx={{color: '#ffffff'}} />}
           aria-controls="panel3-content"

@@ -38,7 +38,7 @@ export default function JobsLayout({
   const [fromFilter, setFromFilter] = useState('');
 
   // Sort
-  const [sortCriteria, setSortCriteria] = useState('Date Saved');
+  const [sortBy, setSortBy] = useState('Date Saved');
   const [sortIncreasing, setSortIncreasing] = useState(false);
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function JobsLayout({
           countryFilter,
           fromFilter
         ),
-        sortCriteria,
+        sortBy,
         sortIncreasing
       )
     );
@@ -130,8 +130,9 @@ export default function JobsLayout({
         setCountryFilter,
         fromFilter,
         setFromFilter,
-        sortCriteria,
-        setSortCriteria,
+        // Sorting
+        sortBy,
+        setSortBy,
         sortIncreasing,
         setSortIncreasing
       }}

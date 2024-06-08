@@ -28,10 +28,10 @@ function compareDateSavedIncreasing(jobA: Job, jobB: Job): number {
   }
 }
 
-// TODO: Criteria specifies if we're sorting by date saved/applied/posted or
+// TODO: sortBy specifies if we're sorting by date saved/applied/posted or
 // alphabetically (job title or company name).
 // Increasing specifies if we should sort in increasing order. 
-export default function sortJobs(jobs: Job[], criteria: string, increasing: boolean): Job[] {
+export default function sortJobs(jobs: Job[], sortBy: string, increasing: boolean): Job[] {
   if (increasing) {
     jobs.sort(compareDateSavedIncreasing);
   } else {
