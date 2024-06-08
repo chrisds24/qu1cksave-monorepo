@@ -87,6 +87,13 @@ export default function JobsLayout({
   }, [jobs]);
 
   useEffect(() => {
+    const filteredJobsCopy = [...filteredJobs];
+    setFilteredJobs(
+      sortJobs(filteredJobsCopy, sortBy, sortIncreasing)      
+    );    
+  }, [sortBy, sortIncreasing]);
+
+  useEffect(() => {
     setJobsInPage(filteredJobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
   }, [filteredJobs]);
 
