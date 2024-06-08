@@ -98,7 +98,7 @@ export default function Page() {
     <Box>
       <Filters />
 
-      <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 1.4}}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3}}>
         <SortOptions />
         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
           <Typography sx={{color: '#ffffff', paddingRight: 3, paddingTop: 0.5}}>

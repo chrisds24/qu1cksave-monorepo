@@ -30,7 +30,7 @@ export default function SortOptions() {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'start', marginBottom: 2}}>
+    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'start'}}>
       <FormControl sx={{minWidth: 90, marginRight: 2}}>
         <InputLabel sx={{color: '#636369'}} id="sortBy-label">Sort By</InputLabel>
         <Select
