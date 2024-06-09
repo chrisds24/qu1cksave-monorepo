@@ -10,37 +10,39 @@ const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Of
 
 export default function Filters() {
   const {
-    jobFilter,
+    // Filters
     setJobFilter,
-    companyFilter,
     setCompanyFilter,
-    statusFilter,
     setStatusFilter,
-    remoteFilter,
     setRemoteFilter,
-    cityFilter,
     setCityFilter,
-    stateFilter,
     setStateFilter,
-    countryFilter,
     setCountryFilter,
-    fromFilter,
     setFromFilter,
-    setFilteredJobs,
-    jobs,
+    // Filter fields
+    jobFilterField,
+    setJobFilterField,
+    companyFilterField,
+    setCompanyFilterField,
+    statusFilterField,
+    setStatusFilterField,
+    remoteFilterField,
+    setRemoteFilterField,
+    cityFilterField,
+    setCityFilterField,
+    stateFilterField,
+    setStateFilterField,
+    countryFilterField,
+    setCountryFilterField,
+    fromFilterField,
+    setFromFilterField,
+    // Sort
     sortBy,
     sortIncreasing,
+    // Other
+    setFilteredJobs,
+    jobs,
   } = useContext(JobsContext);
-
-  // These are the values for the filter related fields
-  const [jobFilterField, setJobFilterField] = useState('');
-  const [companyFilterField, setCompanyFilterField] = useState('');
-  const [statusFilterField, setStatusFilterField] = useState('');
-  const [remoteFilterField, setRemoteFilterField] = useState('');
-  const [cityFilterField, setCityFilterField] = useState('');
-  const [stateFilterField, setStateFilterField] = useState('');
-  const [countryFilterField, setCountryFilterField] = useState('');
-  const [fromFilterField, setFromFilterField] = useState('');
 
   const changeJobFilter = (event: any) => {
     setJobFilterField(event.target.value as string);

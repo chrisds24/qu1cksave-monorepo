@@ -41,6 +41,18 @@ export default function JobsLayout({
   const [countryFilter, setCountryFilter] = useState('');
   const [fromFilter, setFromFilter] = useState('');
 
+  // These are the values for the filter related fields
+  // Moving it here so that state is retained when going into a single job
+  // view then back.
+  const [jobFilterField, setJobFilterField] = useState('');
+  const [companyFilterField, setCompanyFilterField] = useState('');
+  const [statusFilterField, setStatusFilterField] = useState('');
+  const [remoteFilterField, setRemoteFilterField] = useState('');
+  const [cityFilterField, setCityFilterField] = useState('');
+  const [stateFilterField, setStateFilterField] = useState('');
+  const [countryFilterField, setCountryFilterField] = useState('');
+  const [fromFilterField, setFromFilterField] = useState('');
+
   // Sort
   const [sortBy, setSortBy] = useState('Date Saved');
   const [sortIncreasing, setSortIncreasing] = useState(false);
@@ -141,6 +153,23 @@ export default function JobsLayout({
         setCountryFilter,
         fromFilter,
         setFromFilter,
+        // Filter field states
+        jobFilterField,
+        setJobFilterField,
+        companyFilterField,
+        setCompanyFilterField,
+        statusFilterField,
+        setStatusFilterField,
+        remoteFilterField,
+        setRemoteFilterField,
+        cityFilterField,
+        setCityFilterField,
+        stateFilterField,
+        setStateFilterField,
+        countryFilterField,
+        setCountryFilterField,
+        fromFilterField,
+        setFromFilterField,
         // Sorting
         sortBy,
         setSortBy,
