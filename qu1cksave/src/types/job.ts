@@ -1,4 +1,4 @@
-import { YearMonthDate } from "./common";
+import { YearMonthDate, YearMonthDateFilter } from "./common";
 
 export interface Job {
   id: string;
@@ -44,4 +44,7 @@ export interface Filters {
   us_state?: string; // state?: string;
   country?: string;
   found_from?: string; // from?: string;
+  saved?: YearMonthDateFilter;
+  applied?: YearMonthDateFilter;
+  posted?: YearMonthDateFilter;
 }

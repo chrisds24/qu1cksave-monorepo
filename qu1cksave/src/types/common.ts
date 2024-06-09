@@ -10,3 +10,9 @@ export interface YearMonthDate {
   month: number;
   date: number;
 }
+
+export interface YearMonthDateFilter {
+  year?: number;
+  month?: number;
+  date?: number;
+}

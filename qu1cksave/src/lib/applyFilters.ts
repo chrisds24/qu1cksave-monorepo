@@ -1,3 +1,4 @@
+import { YearMonthDateFilter } from "@/types/common";
 import { Filters, Job } from "@/types/job";
 
 function checkFilters(
@@ -42,6 +43,15 @@ export default function applyFilters(
   state: string,
   country: string,
   from: string,
+  // savedYear: number | null,
+  // savedMonth: number | null,
+  // savedDate: number | null,
+  // appliedYear: number | null,
+  // appliedMonth: number | null,
+  // appliedDate: number | null,
+  // postedYear: number | null,
+  // postedMonth: number | null,
+  // postedDate: number | null
 ): Job[] {
   const filters: Filters = {};
   if (job) filters['title'] = job
@@ -53,7 +63,30 @@ export default function applyFilters(
   if (country) filters['country'] = country
   if (from) filters['found_from'] = from
 
-  // TODO: Convert savedYear, savedMonth, and savedDate as YearMonthDate (same for applied and posted)
+  // // If at least one property for date saved was set, we can filter by date saved
+  // if (savedYear || savedMonth || savedDate) {
+  //   const saved: YearMonthDateFilter = {};
+  //   if (savedYear) saved['year'] = savedYear;
+  //   if (savedMonth !== null) saved['month'] = savedMonth; // Month can be 0
+  //   if (savedDate) saved['date'] = savedDate;
+  //   filters['saved'] = saved;
+  // }
+
+  // if (appliedYear || appliedMonth || appliedDate) {
+  //   const applied: YearMonthDateFilter = {};
+  //   if (appliedYear) applied['year'] = appliedYear;
+  //   if (appliedMonth !== null) applied['month'] = appliedMonth; // Month can be 0
+  //   if (appliedDate) applied['date'] = appliedDate;
+  //   filters['applied'] = applied;
+  // }
+
+  // if (postedYear || postedMonth || postedDate) {
+  //   const posted: YearMonthDateFilter = {};
+  //   if (postedYear) posted['year'] = postedYear;
+  //   if (postedMonth !== null) posted['month'] = postedMonth; // Month can be 0
+  //   if (postedDate) posted['date'] = postedDate;
+  //   filters['posted'] = posted;
+  // }
 
   // Filter jobs by those which satisfy all filters
   return jobs.filter((j) => checkFilters(j, filters))
