@@ -1,10 +1,11 @@
-import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
+import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useContext, useEffect, useState } from "react";
 import { states } from "@/lib/states";
 import { JobsContext } from "@/app/(main)/jobs/layout";
 import applyFilters from "@/lib/applyFilters";
 import sortJobs from "@/lib/sortJobs";
+import { DatePicker } from "@mui/x-date-pickers";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
@@ -19,6 +20,9 @@ export default function Filters() {
     setStateFilter,
     setCountryFilter,
     setFromFilter,
+    setSavedFilter,
+    setAppliedFilter,
+    setPostedFilter,
     // Filter fields
     jobFilterField,
     setJobFilterField,
@@ -36,6 +40,27 @@ export default function Filters() {
     setCountryFilterField,
     fromFilterField,
     setFromFilterField,
+    // Saved Filter Field
+    savedYearField,
+    setSavedYearField,
+    savedMonthField,
+    setSavedMonthField,
+    savedDateField,
+    setSavedDateField,
+    // Applied Filter Field
+    appliedYearField,
+    setAppliedYearField,
+    appliedMonthField,
+    setAppliedMonthField,
+    appliedDateField,
+    setAppliedDateField,
+    // Posted Filter Field
+    postedYearField,
+    setPostedYearField,
+    postedMonthField,
+    setPostedMonthField,
+    postedDateField,
+    setPostedDateField,
     // Sort
     sortBy,
     sortIncreasing,
@@ -86,6 +111,8 @@ export default function Filters() {
   //   the state for filteredJobs.
   const apply = () => {
     // TODO: Do any field value checks here
+    // TODO: The month date picker shows the year as the current year.
+    //   Need a way to edit the year in the calendar to not show the year.
 
     // Set the applied filters
     setJobFilter(jobFilterField)
@@ -126,6 +153,15 @@ export default function Filters() {
     setStateFilterField('');
     setCountryFilterField('');
     setFromFilterField('');
+    setSavedYearField(null);
+    setSavedMonthField(null);
+    setSavedDateField(null);
+    setAppliedYearField(null);
+    setAppliedMonthField(null);
+    setAppliedDateField(null);
+    setPostedYearField(null);
+    setPostedMonthField(null);
+    setPostedDateField(null);
   }
 
   return (
@@ -356,9 +392,183 @@ export default function Filters() {
                 color: '#636369',
               },
               marginRight: 2,
-              marginBottom: 2
+              marginBottom: 3
             }}
           />
+          <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2}}>
+            <Typography sx={{color: '#ffffff', paddingRight: 3, alignSelf: 'center'}}>
+              {'Saved: '}
+            </Typography>
+            <DatePicker
+              slotProps={{
+                textField: {
+                  id: 'savedYearField',
+                  name: 'savedYearField',
+                },
+              }}  
+              sx={{
+                input: {
+                  color: '#ffffff'
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: 'solid #636369',
+                },
+                "& label": {
+                  color: '#636369',
+                },
+                "& .MuiButtonBase-root": {
+                  color: '#636369',
+                },
+                marginRight: 2
+              }}          
+              label="Year"
+              value={savedYearField}
+              onChange={(val) => setSavedYearField(val)}
+              views={["year"]}
+            />
+            <DatePicker
+              slotProps={{
+                textField: {
+                  id: 'savedMonthField',
+                  name: 'savedMonthField',
+                },
+              }}  
+              sx={{
+                input: {
+                  color: '#ffffff'
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: 'solid #636369',
+                },
+                "& label": {
+                  color: '#636369',
+                },
+                "& .MuiButtonBase-root": {
+                  color: '#636369',
+                }
+              }}          
+              label="Month"
+              value={savedMonthField}
+              onChange={(val) => setSavedMonthField(val)}
+              views={["month"]}
+            />
+          </Box>
+          <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2}}>
+            <Typography sx={{color: '#ffffff', paddingRight: 3, alignSelf: 'center'}}>
+              {'Applied: '}
+            </Typography>
+            <DatePicker
+              slotProps={{
+                textField: {
+                  id: 'appliedYearField',
+                  name: 'appliedYearField',
+                },
+              }}  
+              sx={{
+                input: {
+                  color: '#ffffff'
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: 'solid #636369',
+                },
+                "& label": {
+                  color: '#636369',
+                },
+                "& .MuiButtonBase-root": {
+                  color: '#636369',
+                },
+                marginRight: 2
+              }}          
+              label="Year"
+              value={appliedYearField}
+              onChange={(val) => setAppliedYearField(val)}
+              views={["year"]}
+            />
+            <DatePicker
+              slotProps={{
+                textField: {
+                  id: 'appliedMonthField',
+                  name: 'appliedMonthField',
+                },
+              }}  
+              sx={{
+                input: {
+                  color: '#ffffff'
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: 'solid #636369',
+                },
+                "& label": {
+                  color: '#636369',
+                },
+                "& .MuiButtonBase-root": {
+                  color: '#636369',
+                }
+              }}          
+              label="Month"
+              value={appliedMonthField}
+              onChange={(val) => setAppliedMonthField(val)}
+              views={["month"]}
+            />
+          </Box>
+          <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2}}>
+            <Typography sx={{color: '#ffffff', paddingRight: 3, alignSelf: 'center'}}>
+              {'Posted: '}
+            </Typography>
+            <DatePicker
+              slotProps={{
+                textField: {
+                  id: 'postedYearField',
+                  name: 'postedYearField',
+                },
+              }}  
+              sx={{
+                input: {
+                  color: '#ffffff'
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: 'solid #636369',
+                },
+                "& label": {
+                  color: '#636369',
+                },
+                "& .MuiButtonBase-root": {
+                  color: '#636369',
+                },
+                marginRight: 2
+              }}          
+              label="Year"
+              value={postedYearField}
+              onChange={(val) => setPostedYearField(val)}
+              views={["year"]}
+            />
+            <DatePicker
+              slotProps={{
+                textField: {
+                  id: 'postedMonthField',
+                  name: 'postedMonthField',
+                },
+              }}  
+              sx={{
+                input: {
+                  color: '#ffffff'
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: 'solid #636369',
+                },
+                "& label": {
+                  color: '#636369',
+                },
+                "& .MuiButtonBase-root": {
+                  color: '#636369',
+                }
+              }}          
+              label="Month"
+              value={postedMonthField}
+              onChange={(val) => setPostedMonthField(val)}
+              views={["month"]}
+            />
+          </Box>         
         </AccordionDetails>
         <AccordionActions>
           <Button onClick={clear}>Clear</Button>

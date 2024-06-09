@@ -1,10 +1,12 @@
 'use client'
 
-import { Context, ReactNode, createContext, useContext, useEffect, useState } from "react";
+import { Context, Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useState } from "react";
 import { SessionUserContext } from "../layout";
 import { Job } from "@/types/job";
 import applyFilters from "@/lib/applyFilters";
 import sortJobs from "@/lib/sortJobs";
+import { YearMonthDateFilter } from "@/types/common";
+import { Dayjs } from "dayjs";
 
 export const JobsContext: Context<any> = createContext(null);
 
@@ -40,6 +42,9 @@ export default function JobsLayout({
   const [stateFilter, setStateFilter] = useState(''); // Dropdown
   const [countryFilter, setCountryFilter] = useState('');
   const [fromFilter, setFromFilter] = useState('');
+  const [savedFilter, setSavedFilter]  = useState<YearMonthDateFilter | null>(null);
+  const [appliedFilter, setAppliedFilter] = useState<YearMonthDateFilter | null>(null);
+  const [postedFilter, setPostedFilter] = useState<YearMonthDateFilter | null>(null);
 
   // These are the values for the filter related fields
   // Moving it here so that state is retained when going into a single job
@@ -52,6 +57,18 @@ export default function JobsLayout({
   const [stateFilterField, setStateFilterField] = useState('');
   const [countryFilterField, setCountryFilterField] = useState('');
   const [fromFilterField, setFromFilterField] = useState('');
+  // Saved
+  const [savedYearField, setSavedYearField] = useState<Dayjs | null>(null);
+  const [savedMonthField, setSavedMonthField] = useState<Dayjs | null>(null);
+  const [savedDateField, setSavedDateField] = useState<Dayjs | null>(null);
+  // Applied
+  const [appliedYearField, setAppliedYearField] = useState<Dayjs | null>(null);
+  const [appliedMonthField, setAppliedMonthField] = useState<Dayjs | null>(null);
+  const [appliedDateField, setAppliedDateField] = useState<Dayjs | null>(null);
+  // Posted
+  const [postedYearField, setPostedYearField] = useState<Dayjs | null>(null);
+  const [postedMonthField, setPostedMonthField] = useState<Dayjs | null>(null);
+  const [postedDateField, setPostedDateField] = useState<Dayjs | null>(null);
 
   // Sort
   const [sortBy, setSortBy] = useState('Date Saved');
@@ -153,6 +170,12 @@ export default function JobsLayout({
         setCountryFilter,
         fromFilter,
         setFromFilter,
+        savedFilter,
+        setSavedFilter,
+        appliedFilter,
+        setAppliedFilter,
+        postedFilter,
+        setPostedFilter,
         // Filter field states
         jobFilterField,
         setJobFilterField,
@@ -170,6 +193,27 @@ export default function JobsLayout({
         setCountryFilterField,
         fromFilterField,
         setFromFilterField,
+        // Saved Filter Field
+        savedYearField,
+        setSavedYearField,
+        savedMonthField,
+        setSavedMonthField,
+        savedDateField,
+        setSavedDateField,
+        // Applied Filter Field
+        appliedYearField,
+        setAppliedYearField,
+        appliedMonthField,
+        setAppliedMonthField,
+        appliedDateField,
+        setAppliedDateField,
+        // Posted Filter Field
+        postedYearField,
+        setPostedYearField,
+        postedMonthField,
+        setPostedMonthField,
+        postedDateField,
+        setPostedDateField,
         // Sorting
         sortBy,
         setSortBy,
