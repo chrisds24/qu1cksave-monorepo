@@ -32,54 +32,82 @@ export default function Filters() {
     sortIncreasing,
   } = useContext(JobsContext);
 
+  // These are the values for the filter related fields
+  const [jobFilterField, setJobFilterField] = useState('');
+  const [companyFilterField, setCompanyFilterField] = useState('');
+  const [statusFilterField, setStatusFilterField] = useState('');
+  const [remoteFilterField, setRemoteFilterField] = useState('');
+  const [cityFilterField, setCityFilterField] = useState('');
+  const [stateFilterField, setStateFilterField] = useState('');
+  const [countryFilterField, setCountryFilterField] = useState('');
+  const [fromFilterField, setFromFilterField] = useState('');
+
   const changeJobFilter = (event: any) => {
-    setJobFilter(event.target.value as string);
+    setJobFilterField(event.target.value as string);
   };
 
   const changeCompanyFilter = (event: any) => {
-    setCompanyFilter(event.target.value as string);
+    setCompanyFilterField(event.target.value as string);
   };
 
   const changeStatusFilter = (event: SelectChangeEvent) => {
-    setStatusFilter(event.target.value as string);
+    setStatusFilterField(event.target.value as string);
   };
 
   const changeRemoteFilter = (event: SelectChangeEvent) => {
-    setRemoteFilter(event.target.value as string);
+    setRemoteFilterField(event.target.value as string);
   };
 
   const changeCityFilter = (event: any) => {
-    setCityFilter(event.target.value as string);
+    setCityFilterField(event.target.value as string);
   };
 
   const changeStateFilter = (event: SelectChangeEvent) => {
-    setStateFilter(event.target.value as string);
+    setStateFilterField(event.target.value as string);
   };
 
   const changeCountryFilter = (event: any) => {
-    setCountryFilter(event.target.value as string);
+    setCountryFilterField(event.target.value as string);
   };
 
   const changeFromFilter = (event: any) => {
-    setFromFilter(event.target.value as string);
+    setFromFilterField(event.target.value as string);
   };
 
-  // When filters are applied, we need to sort again otherwise we lose
-  // sorting (since the filters are applied to the non-filtered jobs
-  // and a new list is returned).
+  // - When filters are applied, we need to sort again otherwise we lose
+  //   sorting (since the filters are applied to the non-filtered jobs
+  //   and a new list is returned).
+  // - This updates the applied filters so they can be used automatically
+  //   whenever needed. Note that the call to applyFilters here uses the 
+  //   values from the fields and not the applied filters so we don't have
+  //   to wait for the state of the applied filters to update before updating
+  //   the state for filteredJobs.
   const apply = () => {
+    // TODO: Do any field value checks here
+
+    // Set the applied filters
+    setJobFilter(jobFilterField)
+    setCompanyFilter(companyFilterField)
+    setStatusFilter(statusFilterField)
+    setRemoteFilter(remoteFilterField)
+    setCityFilter(cityFilterField)
+    setStateFilter(stateFilterField)
+    setCountryFilter(countryFilterField)
+    setFromFilter(fromFilterField)
+
+    // Set the filtered jobs
     setFilteredJobs(
       sortJobs(
         applyFilters(
           jobs,
-          jobFilter,
-          companyFilter,
-          statusFilter,
-          remoteFilter,
-          cityFilter,
-          stateFilter,
-          countryFilter,
-          fromFilter
+          jobFilterField,
+          companyFilterField,
+          statusFilterField,
+          remoteFilterField,
+          cityFilterField,
+          stateFilterField,
+          countryFilterField,
+          fromFilterField
         ),
         sortBy,
         sortIncreasing
@@ -87,15 +115,15 @@ export default function Filters() {
     );
   }
 
-  const reset = () => {
-    setJobFilter('');
-    setCompanyFilter('');
-    setStatusFilter('');
-    setRemoteFilter('');
-    setCityFilter('');
-    setStateFilter('');
-    setCountryFilter('');
-    setFromFilter('');
+  const clear = () => {
+    setJobFilterField('');
+    setCompanyFilterField('');
+    setStatusFilterField('');
+    setRemoteFilterField('');
+    setCityFilterField('');
+    setStateFilterField('');
+    setCountryFilterField('');
+    setFromFilterField('');
   }
 
   return (
@@ -119,7 +147,7 @@ export default function Filters() {
               label="Job Title"
               fullWidth
               variant="outlined"
-              value={jobFilter}
+              value={jobFilterField}
               onChange={changeJobFilter}
               sx={{
                 color: '#ffffff',
@@ -141,7 +169,7 @@ export default function Filters() {
               label="Company"
               fullWidth
               variant="outlined"
-              value={companyFilter}
+              value={companyFilterField}
               onChange={changeCompanyFilter}
               sx={{
                 // color: '#ffffff',
@@ -164,7 +192,7 @@ export default function Filters() {
                 labelId="statusFilter-label"
                 id="statusFilter"
                 name="statusFilter"
-                value={statusFilter}
+                value={statusFilterField}
                 label="Status"
                 onChange={changeStatusFilter}
                 sx={{
@@ -196,7 +224,7 @@ export default function Filters() {
                 labelId="remoteFilter-label"
                 id="remoteFilter"
                 name="remoteFilter"
-                value={remoteFilter}
+                value={remoteFilterField}
                 label="Remote"
                 onChange={changeRemoteFilter}
                 sx={{
@@ -231,7 +259,7 @@ export default function Filters() {
               name="cityFilter"
               label="City"
               variant="outlined"
-              value={cityFilter}
+              value={cityFilterField}
               onChange={changeCityFilter}
               sx={{
                 color: '#ffffff',
@@ -254,7 +282,7 @@ export default function Filters() {
                 id="stateFilter"
                 name="stateFilter"
                 placeholder="State"
-                value={stateFilter}
+                value={stateFilterField}
                 label="State"
                 onChange={changeStateFilter}
                 sx={{
@@ -290,7 +318,7 @@ export default function Filters() {
               name="countryFilter"
               label="Country"
               variant="outlined"
-              value={countryFilter}
+              value={countryFilterField}
               onChange={changeCountryFilter}
               sx={{
                 color: '#ffffff',
@@ -312,7 +340,7 @@ export default function Filters() {
             label="Posting Found From"
             placeholder="LinkedIn, Indeed, etc."
             variant="outlined"
-            value={fromFilter}
+            value={fromFilterField}
             onChange={changeFromFilter}
             sx={{
               color: '#ffffff',
@@ -331,7 +359,7 @@ export default function Filters() {
           />
         </AccordionDetails>
         <AccordionActions>
-          <Button onClick={reset}>Reset</Button>
+          <Button onClick={clear}>Clear</Button>
           <Button onClick={apply}>Apply</Button>
         </AccordionActions>
       </Accordion>

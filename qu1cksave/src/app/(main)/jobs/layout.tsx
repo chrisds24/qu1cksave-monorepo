@@ -28,6 +28,10 @@ export default function JobsLayout({
   const [dialogJob, setDialogJob] = useState<Job | undefined>(undefined);
 
   // Filters
+  //   These are used for the initial load and whenever jobs changes through
+  //   add, edit, or delete. For example, we need to automatically apply
+  //   the applied filters whenever we change the jobs list.
+  // NOTE: These are not the values for the fields in the filters component.
   const [jobFilter, setJobFilter] = useState('');
   const [companyFilter, setCompanyFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState(''); // Dropdown
