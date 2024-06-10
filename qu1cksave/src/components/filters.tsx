@@ -461,6 +461,14 @@ export default function Filters() {
                   id: 'savedMonthField',
                   name: 'savedMonthField',
                 },
+                // https://stackoverflow.com/questions/74515452/mui-change-date-picker-header-elements-order
+                calendarHeader: {
+                  sx: {
+                    "& .MuiPickersCalendarHeader-label": {
+                      display: 'none'
+                    }
+                  }
+                }
               }}  
               sx={{
                 input: {
@@ -519,6 +527,13 @@ export default function Filters() {
                   id: 'appliedMonthField',
                   name: 'appliedMonthField',
                 },
+                calendarHeader: {
+                  sx: {
+                    "& .MuiPickersCalendarHeader-label": {
+                      display: 'none'
+                    }
+                  }
+                }
               }}  
               sx={{
                 input: {
@@ -577,6 +592,13 @@ export default function Filters() {
                   id: 'postedMonthField',
                   name: 'postedMonthField',
                 },
+                calendarHeader: {
+                  sx: {
+                    "& .MuiPickersCalendarHeader-label": {
+                      display: 'none'
+                    }
+                  }
+                }
               }}  
               sx={{
                 input: {
