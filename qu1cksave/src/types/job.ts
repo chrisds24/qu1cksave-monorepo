@@ -44,7 +44,7 @@ export interface Filters {
   us_state?: string; // state?: string;
   country?: string;
   found_from?: string; // from?: string;
-  saved?: YearMonthDateFilter;
-  applied?: YearMonthDateFilter;
-  posted?: YearMonthDateFilter;
+  date_saved?: YearMonthDateFilter;
+  date_applied?: YearMonthDateFilter;
+  date_posted?: YearMonthDateFilter;
 }

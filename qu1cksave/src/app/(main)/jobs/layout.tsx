@@ -111,7 +111,10 @@ export default function JobsLayout({
           cityFilter,
           stateFilter,
           countryFilter,
-          fromFilter
+          fromFilter,
+          savedFilter,
+          appliedFilter,
+          postedFilter
         ),
         sortBy,
         sortIncreasing
@@ -128,6 +131,8 @@ export default function JobsLayout({
 
   useEffect(() => {
     setJobsInPage(filteredJobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
+    // TODO: Calculate the stats and set it here (since the stats are for the
+    //   filtered jobs.)
   }, [filteredJobs]);
 
   return (

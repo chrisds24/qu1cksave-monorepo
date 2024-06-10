@@ -6,6 +6,8 @@ import { JobsContext } from "@/app/(main)/jobs/layout";
 import applyFilters from "@/lib/applyFilters";
 import sortJobs from "@/lib/sortJobs";
 import { DatePicker } from "@mui/x-date-pickers";
+import { YearMonthDateFilter } from "@/types/common";
+import dayjs from "dayjs";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
@@ -110,9 +112,29 @@ export default function Filters() {
   //   to wait for the state of the applied filters to update before updating
   //   the state for filteredJobs.
   const apply = () => {
-    // TODO: Do any field value checks here
     // TODO: The month date picker shows the year as the current year.
     //   Need a way to edit the year in the calendar to not show the year.
+
+    let savedFilterVal: YearMonthDateFilter | null = null;
+    if (savedYearField || savedMonthField) {
+      savedFilterVal = {};
+      if (savedYearField) savedFilterVal['year'] = dayjs(savedYearField as string).year();
+      if (savedMonthField) savedFilterVal['month'] = dayjs(savedMonthField as string).month();
+    }
+
+    let appliedFilterVal: YearMonthDateFilter | null = null;
+    if (appliedYearField || appliedMonthField) {
+      appliedFilterVal = {};
+      if (appliedYearField) appliedFilterVal['year'] = dayjs(appliedYearField as string).year();
+      if (appliedMonthField) appliedFilterVal['month'] = dayjs(appliedMonthField as string).month();
+    }
+
+    let postedFilterVal: YearMonthDateFilter | null = null;
+    if (postedYearField || postedMonthField) {
+      postedFilterVal = {};
+      if (postedYearField) postedFilterVal['year'] = dayjs(postedYearField as string).year();
+      if (postedMonthField) postedFilterVal['month'] = dayjs(postedMonthField as string).month();
+    }
 
     // Set the applied filters
     setJobFilter(jobFilterField)
@@ -123,6 +145,9 @@ export default function Filters() {
     setStateFilter(stateFilterField)
     setCountryFilter(countryFilterField)
     setFromFilter(fromFilterField)
+    setSavedFilter(savedFilterVal)
+    setAppliedFilter(appliedFilterVal)
+    setPostedFilter(postedFilterVal)
 
     // Set the filtered jobs
     setFilteredJobs(
@@ -136,7 +161,10 @@ export default function Filters() {
           cityFilterField,
           stateFilterField,
           countryFilterField,
-          fromFilterField
+          fromFilterField,
+          savedFilterVal,
+          appliedFilterVal,
+          postedFilterVal,
         ),
         sortBy,
         sortIncreasing
@@ -399,6 +427,7 @@ export default function Filters() {
             <Typography sx={{color: '#ffffff', paddingRight: 3, alignSelf: 'center'}}>
               {'Saved: '}
             </Typography>
+            {/* https://stackoverflow.com/questions/50556433/material-ui-datepicker-enable-only-year */}
             <DatePicker
               slotProps={{
                 textField: {

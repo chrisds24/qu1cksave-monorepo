@@ -1,4 +1,4 @@
-import { YearMonthDateFilter } from "@/types/common";
+import { YearMonthDate, YearMonthDateFilter } from "@/types/common";
 import { Filters, Job } from "@/types/job";
 
 function checkFilters(
@@ -14,15 +14,43 @@ function checkFilters(
   //     - Job can't satisfy the filters
   for (const key in filters) {
     // https://stackoverflow.com/questions/57086672/element-implicitly-has-an-any-type-because-expression-of-type-string-cant-b
-    // If the job doesn't have the property specified by the current filter
-    // Note that all filters at this point don't have a falsy value, so
+    // Note for non date related properties:
+    //   All filters at this point don't have a falsy value, so
     //   if jobProp ends up as false, then it means that the job
     //   either doesn't have the specified property or it is guaranteed to be
     //   different from filter since no filters are falsy.
-    const jobProp = job[key as keyof Job];
+    let jobProp = job[key as keyof Job];
     if (jobProp) {
-      if (jobProp !== filters[key as keyof Filters]) {
-        return false;
+      let filtersProp = filters[key as keyof Filters];
+      // jobProp will be a YearMonthDate. Need to go through year and month from filters.
+      // Note that date_saved is a string, so need to convert that to YearMonthDate
+      if (key === 'date_saved' || key === 'date_applied' || key === 'date_posted') {
+        if (key === 'date_saved') { 
+          const date = new Date(jobProp as string) // date_saved is a string
+          const yearMonthDateObj = {
+            year: date.getFullYear(),
+            month: date.getMonth(),
+            date: date.getDate()
+          } as YearMonthDate;
+          jobProp = yearMonthDateObj
+        } else {
+          jobProp = jobProp as YearMonthDate;
+        }
+        filtersProp = filtersProp as YearMonthDateFilter;
+        if (filtersProp.year) {
+          // The job's date saved/applied/posted doesn't have a year or it
+          //   doesn't match the year specified by the filter
+          if (!jobProp.year || jobProp.year !== filtersProp.year) return false
+        }
+        if (filtersProp.month) {
+          // The job's date saved/applied/posted doesn't have a month or it
+          //   doesn't match the month specified by the filter
+          if (!jobProp.month || jobProp.month !== filtersProp.month) return false
+        }
+      } else {
+        if (jobProp !== filtersProp) {
+          return false;
+        }
       }
     } else {
       return false;
@@ -43,15 +71,9 @@ export default function applyFilters(
   state: string,
   country: string,
   from: string,
-  // savedYear: number | null,
-  // savedMonth: number | null,
-  // savedDate: number | null,
-  // appliedYear: number | null,
-  // appliedMonth: number | null,
-  // appliedDate: number | null,
-  // postedYear: number | null,
-  // postedMonth: number | null,
-  // postedDate: number | null
+  saved: YearMonthDateFilter | null,
+  applied: YearMonthDateFilter | null,
+  posted: YearMonthDateFilter | null
 ): Job[] {
   const filters: Filters = {};
   if (job) filters['title'] = job
@@ -63,30 +85,9 @@ export default function applyFilters(
   if (country) filters['country'] = country
   if (from) filters['found_from'] = from
 
-  // // If at least one property for date saved was set, we can filter by date saved
-  // if (savedYear || savedMonth || savedDate) {
-  //   const saved: YearMonthDateFilter = {};
-  //   if (savedYear) saved['year'] = savedYear;
-  //   if (savedMonth !== null) saved['month'] = savedMonth; // Month can be 0
-  //   if (savedDate) saved['date'] = savedDate;
-  //   filters['saved'] = saved;
-  // }
-
-  // if (appliedYear || appliedMonth || appliedDate) {
-  //   const applied: YearMonthDateFilter = {};
-  //   if (appliedYear) applied['year'] = appliedYear;
-  //   if (appliedMonth !== null) applied['month'] = appliedMonth; // Month can be 0
-  //   if (appliedDate) applied['date'] = appliedDate;
-  //   filters['applied'] = applied;
-  // }
-
-  // if (postedYear || postedMonth || postedDate) {
-  //   const posted: YearMonthDateFilter = {};
-  //   if (postedYear) posted['year'] = postedYear;
-  //   if (postedMonth !== null) posted['month'] = postedMonth; // Month can be 0
-  //   if (postedDate) posted['date'] = postedDate;
-  //   filters['posted'] = posted;
-  // }
+  if (saved) filters['date_saved'] = saved
+  if (applied) filters['date_applied'] = applied
+  if (posted) filters['date_posted'] = posted
 
   // Filter jobs by those which satisfy all filters
   return jobs.filter((j) => checkFilters(j, filters))
