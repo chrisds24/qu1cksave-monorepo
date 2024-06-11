@@ -1,4 +1,4 @@
-import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
+import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useContext, useEffect, useState } from "react";
 import { states } from "@/lib/states";
@@ -10,6 +10,7 @@ import { YearMonthDateFilter } from "@/types/common";
 import dayjs from "dayjs";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
+const monthsList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 export default function Filters() {
   const {
@@ -25,6 +26,8 @@ export default function Filters() {
     setSavedFilter,
     setAppliedFilter,
     setPostedFilter,
+    // Current filters
+    currentFilters,
     // Filter fields
     jobFilterField,
     setJobFilterField,
@@ -206,7 +209,7 @@ export default function Filters() {
         </AccordionSummary>
         <AccordionDetails>
           {/* Filters go here. */}
-          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2}}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', marginBottom: 2}}>
             <TextField
               id="jobFilter"
               name="jobFilter"
@@ -251,8 +254,8 @@ export default function Filters() {
               }}
             />
           </Box>
-          <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2, justifyContent: 'space-between'}}>
-            <FormControl sx={{minWidth: 90}}>
+          <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2}}>
+            <FormControl sx={{minWidth: 90, marginRight: 2}}>
               <InputLabel sx={{color: '#636369'}} id="statusFilter-label">Status</InputLabel>
               <Select
                 labelId="statusFilter-label"
@@ -319,7 +322,7 @@ export default function Filters() {
               </Select>
             </FormControl>            
           </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2}}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', marginBottom: 2}}>
             <TextField
               id="cityFilter"
               name="cityFilter"
@@ -555,7 +558,7 @@ export default function Filters() {
               views={["month"]}
             />
           </Box>
-          <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2}}>
+          <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 3}}>
             <Typography sx={{color: '#ffffff', paddingRight: 3, alignSelf: 'center'}}>
               {'Posted: '}
             </Typography>
@@ -619,7 +622,40 @@ export default function Filters() {
               onChange={(val) => setPostedMonthField(val)}
               views={["month"]}
             />
-          </Box>         
+          </Box>
+          {
+            currentFilters && currentFilters.length > 0 ?
+              <Grid rowSpacing={1} columnSpacing={1} container direction='row'>
+                {currentFilters.map((filter: any, idx: number) => {
+                  if (filter.val) {
+                    if (filter.name === 'Saved' || filter.name === 'Applied' || filter.name === 'Posted') {
+                      const year = filter.val.year;
+                      const month = filter.val.month;
+                      const date = new Date(
+                        year ? year : 0,
+                        month ? month : 0
+                      );
+                      return (
+                        <Grid item key={idx}>
+                          <Chip
+                            label={`${filter.name}: ${month ? monthsList[date.getMonth()] : ''} ${year ? date.getFullYear() : ''}`}
+                            sx={{backgroundColor: '#1e1e1e', color: '#ffffff'}}
+                          />
+                        </Grid>
+                      );
+                    } else {
+                      return (
+                        <Grid item key={idx}>
+                          <Chip label={`${filter.name}: ${filter.val}`} sx={{backgroundColor: '#1e1e1e', color: '#ffffff'}} />
+                        </Grid>
+                      );
+                    }
+                  }
+                })}
+              </Grid>
+              :
+              undefined       
+          }
         </AccordionDetails>
         <AccordionActions>
           <Button onClick={clear}>Clear</Button>

@@ -70,6 +70,9 @@ export default function JobsLayout({
   const [postedMonthField, setPostedMonthField] = useState<Dayjs | null>(null);
   const [postedDateField, setPostedDateField] = useState<Dayjs | null>(null);
 
+  // Current Filters List
+  const [currentFilters, setCurrentFilters] = useState<any[]>([]);
+
   // Sort
   const [sortBy, setSortBy] = useState('Date Saved');
   const [sortIncreasing, setSortIncreasing] = useState(false);
@@ -135,6 +138,36 @@ export default function JobsLayout({
     //   filtered jobs.)
   }, [filteredJobs]);
 
+  useEffect(() => {
+    setCurrentFilters(
+      [
+        {name: 'Job Title', val: jobFilter},
+        {name: 'Company', val: companyFilter},
+        {name: 'Status', val: statusFilter},
+        {name: 'Remote', val: remoteFilter},
+        {name: 'City', val: cityFilter},
+        {name: 'State', val: stateFilter},
+        {name: 'Country', val: countryFilter},
+        {name: 'From', val: fromFilter},
+        {name: 'Saved', val: savedFilter},
+        {name: 'Applied', val: appliedFilter},
+        {name: 'Posted', val: postedFilter}
+      ]
+    )
+  }, [
+    jobFilter,
+    companyFilter,
+    statusFilter,
+    remoteFilter,
+    cityFilter,
+    stateFilter,
+    countryFilter,
+    fromFilter,
+    savedFilter,
+    appliedFilter,
+    postedFilter
+  ]);  
+
   return (
     <JobsContext.Provider
       value={{
@@ -181,6 +214,8 @@ export default function JobsLayout({
         setAppliedFilter,
         postedFilter,
         setPostedFilter,
+        // Current filters
+        currentFilters,
         // Filter field states
         jobFilterField,
         setJobFilterField,
