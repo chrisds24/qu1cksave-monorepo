@@ -151,6 +151,17 @@ export default function AddOrEditDialog() {
     }
     newJob['links'] = linksList;
 
+    // Resume
+    // TODO: In the documents page (LATER), I can use an iframe to embed the file into
+    // Links:
+    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file
+    // https://developer.mozilla.org/en-US/docs/Web/API/File
+    // https://developer.mozilla.org/en-US/docs/Web/API/FileReader
+    // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsArrayBuffer
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
+    // https://www.quora.com/Can-we-store-a-PDF-in-a-database
+    const resume = data.get('resume') as File;
+
     let fetchString = '/api/job';
     if (!isAdd) {
       fetchString += `/${dialogJob.id}`;
@@ -628,6 +639,20 @@ export default function AddOrEditDialog() {
             marginBottom: 2
           }}
         />
+        {/* accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" */}
+        <Box>
+          <label htmlFor="avatar">
+            <Typography sx={{color: '#ffffff'}} display={'inline'}>
+              {'Upload Resume:  '}
+            </Typography>
+          </label>
+          <input
+            type="file"
+            id="resume"
+            name="resume"
+            accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          />
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button sx={{color: '#ffffff'}} onClick={handleClose}>Cancel</Button>
