@@ -16,3 +16,17 @@ export interface YearMonthDateFilter {
   month?: number;
   date?: number;
 }
+
+export interface QuickStats {
+  'Not Applied': number;
+  'Applied': number;
+  'Assessment': number;
+  'Interview': number;
+  'Job Offered': number;
+  'Accepted Offer': number;
+  'Declined Offer': number;
+  'Rejected': number;
+  'Ghosted': number;
+  'Closed': number;
+}
+

@@ -70,8 +70,10 @@ export default function Filters() {
     sortBy,
     sortIncreasing,
     // Other
+    filteredJobs,
     setFilteredJobs,
     jobs,
+    quickStats
   } = useContext(JobsContext);
 
   const changeJobFilter = (event: any) => {
@@ -115,9 +117,6 @@ export default function Filters() {
   //   to wait for the state of the applied filters to update before updating
   //   the state for filteredJobs.
   const apply = () => {
-    // TODO: The month date picker shows the year as the current year.
-    //   Need a way to edit the year in the calendar to not show the year.
-
     let savedFilterVal: YearMonthDateFilter | null = null;
     if (savedYearField || savedMonthField) {
       savedFilterVal = {};
@@ -203,9 +202,9 @@ export default function Filters() {
           expandIcon={<ExpandMoreIcon sx={{color: '#ffffff'}} />}
           aria-controls="panel3-content"
           id="filters-header"
-          sx={{color: '#ffffff', fontWeight: 'bold', fontSize: '19px'}}
+          sx={{color: '#ffffff', fontWeight: 'bold', fontSize: '20px'}}
         >
-          Filters
+          Filters / Quick Stats
         </AccordionSummary>
         <AccordionDetails>
           {/* Filters go here. */}
@@ -625,7 +624,7 @@ export default function Filters() {
           </Box>
           {
             currentFilters && currentFilters.length > 0 ?
-              <Grid rowSpacing={1} columnSpacing={1} container direction='row'>
+              <Grid rowSpacing={1} columnSpacing={1} container direction='row' sx={{marginBottom: 3}}>
                 {currentFilters.map((filter: any, idx: number) => {
                   if (filter.val) {
                     if (filter.name === 'Saved' || filter.name === 'Applied' || filter.name === 'Posted') {
@@ -639,19 +638,47 @@ export default function Filters() {
                         <Grid item key={idx}>
                           <Chip
                             label={`${filter.name}: ${month ? monthsList[date.getMonth()] : ''} ${year ? date.getFullYear() : ''}`}
-                            sx={{backgroundColor: '#1e1e1e', color: '#ffffff'}}
+                            sx={{backgroundColor: '#1e1e1e', color: '#ffffff', fontSize: '16px'}}
                           />
                         </Grid>
                       );
                     } else {
                       return (
                         <Grid item key={idx}>
-                          <Chip label={`${filter.name}: ${filter.val}`} sx={{backgroundColor: '#1e1e1e', color: '#ffffff'}} />
+                          <Chip label={`${filter.name}: ${filter.val}`} sx={{backgroundColor: '#1e1e1e', color: '#ffffff', fontSize: '16px'}} />
                         </Grid>
                       );
                     }
                   }
                 })}
+              </Grid>
+              :
+              undefined       
+          }
+
+          {
+            quickStats ?
+              <Grid rowSpacing={1} columnSpacing={4} container direction='row'>
+                {Object.keys(quickStats).map((stat: string, idx: number) => {
+                  return (
+                    <Grid item key={idx}>
+                      <Typography sx={{fontSize: '17px', color: '#ffffff'}} display={'inline'}>
+                        {`${stat}: `}
+                      </Typography>
+                      <Typography sx={{fontSize: '17px', fontWeight: 'bold', color: '#ce9178'}} display={'inline'}>
+                        {`${quickStats[stat]}`}
+                      </Typography>
+                    </Grid>
+                  );                   
+                })}
+                <Grid item key={'totalkey'}>
+                  <Typography sx={{fontSize: '17px', color: '#ffffff'}} display={'inline'}>
+                    {`Total: `}
+                  </Typography>
+                  <Typography sx={{fontSize: '17px', fontWeight: 'bold', color: '#ce9178'}} display={'inline'}>
+                    {`${filteredJobs.length}`}
+                  </Typography>                  
+                </Grid>
               </Grid>
               :
               undefined       

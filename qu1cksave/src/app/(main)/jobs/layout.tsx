@@ -5,8 +5,9 @@ import { SessionUserContext } from "../layout";
 import { Job } from "@/types/job";
 import applyFilters from "@/lib/applyFilters";
 import sortJobs from "@/lib/sortJobs";
-import { YearMonthDateFilter } from "@/types/common";
+import { QuickStats, YearMonthDateFilter } from "@/types/common";
 import { Dayjs } from "dayjs";
+import getQuickStats from "@/lib/getQuickStats";
 
 export const JobsContext: Context<any> = createContext(null);
 
@@ -77,6 +78,9 @@ export default function JobsLayout({
   const [sortBy, setSortBy] = useState('Date Saved');
   const [sortIncreasing, setSortIncreasing] = useState(false);
 
+  // Quick Stats
+  const [quickStats, setQuickStats] = useState<QuickStats | null>(null);
+
   useEffect(() => {
     const getJobs = async () => {
       if (sessionUser) {
@@ -134,8 +138,7 @@ export default function JobsLayout({
 
   useEffect(() => {
     setJobsInPage(filteredJobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
-    // TODO: Calculate the stats and set it here (since the stats are for the
-    //   filtered jobs.)
+    setQuickStats(getQuickStats(filteredJobs));
   }, [filteredJobs]);
 
   useEffect(() => {
@@ -258,7 +261,10 @@ export default function JobsLayout({
         sortBy,
         setSortBy,
         sortIncreasing,
-        setSortIncreasing
+        setSortIncreasing,
+        // Quick Stats
+        quickStats,
+        setQuickStats
       }}
     >
       {children}
