@@ -16,7 +16,9 @@ Duis ultricies lacus sed turpis tincidunt id aliquet risus feugiat. Scelerisque 
 Sed egestas egestas fringilla phasellus faucibus scelerisque eleifend. Ut tristique et egestas quis ipsum. Mi quis hendrerit dolor magna eget est. Ullamcorper dignissim cras tincidunt lobortis feugiat vivamus at augue eget. Tellus molestie nunc non blandit massa enim nec dui nunc. Diam quis enim lobortis scelerisque fermentum dui faucibus in. In metus vulputate eu scelerisque felis imperdiet proin fermentum. Nisi vitae suscipit tellus mauris a diam maecenas sed. Ultricies integer quis auctor elit. Aliquam eleifend mi in nulla posuere sollicitudin.', 'On-site', 'United States', 'WA', 'Redmond', '{"year": 2024, "month": 3, "date": 5}', '{"year": 2024, "month": 3, "date": 4}', 'Applied', '["https://jobs.careers.microsoft.com/us/en/job/1706603/Software-Engineer?jobsource=linkedin", "https://www.linkedin.com/jobs/view/3922404302/?alternateChannel=search&refId=4K7UERFnDQArdfuca4T9HA%3D%3D&trackingId=I6KtTsgc02LmdZQATqMYuA%3D%3D"]', 'LinkedIn');
 INSERT INTO job(id, member_id, title, company_name, is_remote, job_status) VALUES ('018eae28-8323-7918-b93a-6cdb9d189686', '269a3d55-4eee-4a2e-8c64-e1fe386b76f8', 'Software Engineer', 'Fake Company', 'Hybrid', 'Not Applied');
 
-
+INSERT INTO job(id, member_id, resume_id, title, company_name, is_remote, job_status) VALUES ('017eae28-8323-7918-a39b-6cdb9d189686', '269a3d55-4eee-4a2e-8c64-e1fe386b76f8', '132a76f8-2bbb-e2a4-46c8-386be1fe3d55', 's0ftwar3 3ng1n33r', 'fak3 c0mpany', 'Remote', 'Applied');
+DELETE FROM resume;
+INSERT INTO resume(id, member_id, file_name) VALUES ('132a76f8-2bbb-e2a4-46c8-386be1fe3d55', '269a3d55-4eee-4a2e-8c64-e1fe386b76f8', 'ChristianDelosSantos_Resume.docx');
 
 
 

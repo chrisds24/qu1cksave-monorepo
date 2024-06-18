@@ -27,12 +27,13 @@
     "whatwg-fetch": "*"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.598.0",
     "bcrypt": "*",
     "cors": "*",
     "dotenv": "*",
     "express": "*",
-    "jsonwebtoken": "*",
     "jest-fetch-mock": "^3.0.3",
+    "jsonwebtoken": "*",
     "pg": "*",
     "swagger-ui-express": "*",
     "tsoa": "*"
