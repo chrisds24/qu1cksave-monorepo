@@ -4,20 +4,6 @@ import { ResumeService } from './service';
 
 @Route("resume")
 export class ResumeController extends Controller {
-  // TODO: Remove this later
-  // @Get()
-  // @Security('jwt', ['member'])
-  // @Response('401', 'Unauthorized')
-  // public async getMultiple(
-  //   @Query() id?: string
-  // ): Promise<Resume[]> {
-  //   return new ResumeService()
-  //     .getMultiple(id)
-  //     .then(async (resumes: Resume[]): Promise<Resume[]> => {
-  //       return resumes;
-  //     });
-  // }
-
   @Get('{id}')
   @Security('jwt', ['member'])
   @Response('401', 'Unauthorized')

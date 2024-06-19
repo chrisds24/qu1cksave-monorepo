@@ -3,22 +3,6 @@ import { pool } from "../db";
 import * as s3 from "./s3";
 
 export class ResumeService {
-  // TODO: REMOVE THIS LATER
-  // public async getMultiple(id?: string): Promise<Resume[]> {
-  //   let select = 'SELECT * FROM resume';
-  //   if (id) {
-  //     select += ' WHERE member_id = $1';
-  //   }
-  //   const values = id ? [id] : [];
-  //   const query = {
-  //     text: select,
-  //     values: values
-  //   };
-
-  //   const { rows } = await pool.query(query);
-  //   return rows as Resume[];
-  // }
-
   public async getOne(id: string): Promise<Resume | undefined> {
     let select = 'SELECT * FROM resume WHERE id = $1';
     const query = {
@@ -50,12 +34,18 @@ export class ResumeService {
         // TODO: Need a better way of doing this instead of appending .docx, .pdf, etc.
         const data = await s3.getObject(rows[0].id + '.docx');
 
-        if (data && data.Body) {
-          const bodyAsByteArray = await data.Body.transformToByteArray();
-          const blob = new Blob([bodyAsByteArray]);
-          const file = new File([blob], rows[0].name);
-          const resumeURL = URL.createObjectURL(file);
-          resume.url = resumeURL;
+        // OLD way, can't download properly
+        // if (data && data.Body) {
+        //   // OLD way, can't download properly
+        //   const bodyAsByteArray = await data.Body.transformToByteArray();
+        //   const blob = new Blob([bodyAsByteArray]);
+        //   const file = new File([blob], rows[0].name);
+        //   const resumeURL = URL.createObjectURL(file);
+        //   resume.url = resumeURL;
+        // }
+
+        if (data) {
+          resume.url = data
         }
         
         // 132a76f8-2bbb-e2a4-46c8-386be1fe3d55 (Use this resume for testing)

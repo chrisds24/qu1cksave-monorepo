@@ -3,6 +3,7 @@ import { YearMonthDate, YearMonthDateFilter } from "./common";
 export interface Job {
   id: string;
   member_id: string;
+  resume_id?: string;
   title: string;
   company_name: string;
   job_description?: string;

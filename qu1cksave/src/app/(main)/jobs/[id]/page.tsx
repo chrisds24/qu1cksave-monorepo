@@ -2,13 +2,15 @@
 
 import { Box, Button, Divider, List, ListItem, ListItemText, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { JobsContext } from "../layout";
 import { Job } from "@/types/job";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddOrEditDialog from "@/components/addOrEditDialog";
+import { Resume } from "@/types/resume";
+import DownloadIcon from '@mui/icons-material/Download';
 
 // Applied, Not Applied, Assessment, Interview, Job Offered, Accepted Offer, Declined Offer
 // Rejected, Ghosted, Closed
@@ -38,6 +40,41 @@ export default function Page({ params }: { params: { id: string } }) {
   const { jobs, setIsAdd, setOpen, setDialogJob } = useContext(JobsContext);
   const filteredJobs = (jobs as Job[]).filter((job) => job.id === params.id);
   const job = filteredJobs.length == 1 ? filteredJobs[0] : undefined;
+  const [resume, setResume] = useState<Resume | undefined>(undefined);
+  // WARNING !!! Putting the signedUrl returned by getSignedUrl into the download button
+  //   shows the credentials on hover !!!
+  // - https://stackoverflow.com/questions/50694881/how-to-download-file-in-react-js
+  //   -- Could be an alternative
+  // TODO: Remove resumeUrl state and getUrl related code
+
+
+  // const [resumeUrl, setResumeUrl] = useState<string>('');
+
+  // const getUrl = (resumeInput: Resume) => {
+  //   const blob = new Blob([resumeInput.file], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+  //   const file = new File([blob], resumeInput.name);
+  //   const resumeURL = URL.createObjectURL(file);
+  //   console.log(`resumeURL(page.tsx): ${resumeURL}`)
+  //   return resumeURL;
+  // }
+
+  useEffect(() => {
+    if (job?.resume_id) {
+      const getResume = async () => {
+        await fetch(`/api/resume/${job.resume_id}`)
+          .then((res) => {
+            if (res.ok) {
+              return res.json()
+            }
+          })
+          .then((resumeJson) => {
+            setResume(resumeJson);
+            // setResumeUrl(getUrl(resumeJson))
+          }) 
+      }
+      getResume();
+    }
+  }, [job?.resume_id])
 
   if (job) {
     const dateApplied = job.date_applied;
@@ -252,6 +289,17 @@ export default function Page({ params }: { params: { id: string } }) {
             {job.found_from ? job.found_from : 'N/A'} 
           </Typography>                 
         </Box>
+        {resume ?
+          (
+            <Button variant="contained" sx={{ backgroundColor: '#00274e' }} href={`${resume.url}`} download rel="noopener noreferrer">
+            {/* // <Button variant="contained" sx={{ backgroundColor: '#00274e' }} href={`${resumeUrl}`} download rel="noopener noreferrer"> */}
+              <DownloadIcon sx={{ color: '#ffffff', width: 40, height: 40, paddingRight: 1}} />
+              {resume.name}
+            </Button>            
+          )
+          :
+          undefined
+        }
       </Box>
     );
   }

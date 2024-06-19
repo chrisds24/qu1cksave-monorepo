@@ -1,4 +1,5 @@
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3"; // ES Modules import
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const bucketName = process.env.BUCKET_NAME as string;
 const region = process.env.BUCKET_REGION as string;
@@ -19,7 +20,14 @@ export async function getObject(key: string) {
     'Key': key, // required
   };
   const command = new GetObjectCommand(input);
-  const response = await client.send(command);
-  return response;
+
+  // https://aws.amazon.com/blogs/developer/generate-presigned-url-modular-aws-sdk-javascript/
+  const seconds = 3600;
+  const url = await getSignedUrl(client, command, { expiresIn: seconds });
+  return url;
+
+  // If not using getSignedUrl:
+  // const response = await client.send(command);
+  // return response;
 }
 

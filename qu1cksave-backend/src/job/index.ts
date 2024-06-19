@@ -12,7 +12,7 @@ export interface YearMonthDate {
 }
 
 // Columns in database table:
-//   id, member_id, title, company_name, job_description, notes, country, us_state, city,
+//   id, member_id, resume_id, title, company_name, job_description, notes, country, us_state, city,
 //   date_saved, date_applied, date_posted, job_status, links, found_from
 export interface Job {
   id: string;
