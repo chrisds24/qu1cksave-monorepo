@@ -2,7 +2,7 @@ export interface Resume {
   id: string;
   member_id: string;
   name: string;
-  // file?: File; // Not in database.
+  url: string; // Not in database.
 }
 
 export interface NewResume {
