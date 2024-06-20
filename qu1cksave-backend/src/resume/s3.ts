@@ -19,15 +19,17 @@ export async function getObject(key: string) {
     'Bucket': bucketName, // required
     'Key': key, // required
   };
+
   const command = new GetObjectCommand(input);
 
+  // If using getSignedUrl
   // https://aws.amazon.com/blogs/developer/generate-presigned-url-modular-aws-sdk-javascript/
-  const seconds = 3600;
-  const url = await getSignedUrl(client, command, { expiresIn: seconds });
-  return url;
+  // const seconds = 3600;
+  // const url = await getSignedUrl(client, command, { expiresIn: seconds });
+  // return url;
 
-  // If not using getSignedUrl:
-  // const response = await client.send(command);
-  // return response;
+  const response = await client.send(command);
+  console.log(`Called GetObjectCommand for S3`);
+  return response;
 }
 

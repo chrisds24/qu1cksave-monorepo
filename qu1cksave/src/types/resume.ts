@@ -1,12 +1,13 @@
 export interface Resume {
   id: string;
   member_id: string;
-  name: string;
-  url: string; // Not in database.
+  file_name: string;
+  bytearray_as_array: Uint8Array;  
+  url?: string;
 }
 
 export interface NewResume {
   member_id: string;
-  name: string;
+  file_name: string;
   file: File; 
 }

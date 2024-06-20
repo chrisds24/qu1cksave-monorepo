@@ -45,21 +45,11 @@ export default function Page({ params }: { params: { id: string } }) {
   //   shows the credentials on hover !!!
   // - https://stackoverflow.com/questions/50694881/how-to-download-file-in-react-js
   //   -- Could be an alternative
-  // TODO: Remove resumeUrl state and getUrl related code
-
-
-  // const [resumeUrl, setResumeUrl] = useState<string>('');
-
-  // const getUrl = (resumeInput: Resume) => {
-  //   const blob = new Blob([resumeInput.file], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
-  //   const file = new File([blob], resumeInput.name);
-  //   const resumeURL = URL.createObjectURL(file);
-  //   console.log(`resumeURL(page.tsx): ${resumeURL}`)
-  //   return resumeURL;
-  // }
 
   useEffect(() => {
-    if (job?.resume_id) {
+    // !resume prevents this from running twice, which leads to excessive
+    //   GetObjectCommand calls in s3
+    if (job?.resume_id && !resume) { 
       const getResume = async () => {
         await fetch(`/api/resume/${job.resume_id}`)
           .then((res) => {
@@ -67,9 +57,23 @@ export default function Page({ params }: { params: { id: string } }) {
               return res.json()
             }
           })
-          .then((resumeJson) => {
-            setResume(resumeJson);
-            // setResumeUrl(getUrl(resumeJson))
+          .then((resumeVal: Resume | undefined) => {
+            if (resumeVal) {
+              // TODO: Remove these later
+              console.log(`resumeVal.id: ${resumeVal.id}`);
+              console.log(`resumeVal.member_id: ${resumeVal.member_id}`);
+              console.log(`resumeVal.file_name: ${resumeVal.file_name}`);
+              console.log(`length (in page.tsx): ${resumeVal.bytearray_as_array.length}`);
+
+              // Convert the array into a byte array
+              const byteArray = Uint8Array.from(resumeVal.bytearray_as_array);
+              // https://stackoverflow.com/questions/74401312/javascript-convert-binary-string-to-blob
+              // const blob = new Blob([byteArray], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+              const blob = new Blob([byteArray], {type: 'application/pdf'});
+              const url = URL.createObjectURL(blob);
+              resumeVal.url = url;
+              setResume(resumeVal);
+            }
           }) 
       }
       getResume();
@@ -289,12 +293,11 @@ export default function Page({ params }: { params: { id: string } }) {
             {job.found_from ? job.found_from : 'N/A'} 
           </Typography>                 
         </Box>
-        {resume ?
+        {resume?.url ?
           (
             <Button variant="contained" sx={{ backgroundColor: '#00274e' }} href={`${resume.url}`} download rel="noopener noreferrer">
-            {/* // <Button variant="contained" sx={{ backgroundColor: '#00274e' }} href={`${resumeUrl}`} download rel="noopener noreferrer"> */}
               <DownloadIcon sx={{ color: '#ffffff', width: 40, height: 40, paddingRight: 1}} />
-              {resume.name}
+              {resume.file_name}
             </Button>            
           )
           :

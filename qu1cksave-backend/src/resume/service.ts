@@ -13,7 +13,6 @@ export class ResumeService {
 
     if (rows.length == 1) {
       try {
-        // TODO: Work with the output of getObject
         // https://stackoverflow.com/questions/67366381/aws-s3-v3-javascript-sdk-stream-file-from-bucket-getobjectcommand
         //   Examples:
         //   - Convert to base64 string
@@ -30,27 +29,26 @@ export class ResumeService {
         // https://stackoverflow.com/questions/23795034/creating-a-blob-or-a-file-from-javascript-binary-string-changes-the-number-of-by
         //   Don't use binary strings
 
+        // Use these resume ids for testing in swagger:
+        // 132a76f8-2bbb-e2a4-46c8-386be1fe3d55
+        // 2bbb76f8-46c8-e2a4-2bbb-3d55e1fe386b
+
         const resume = rows[0];
+
         // TODO: Need a better way of doing this instead of appending .docx, .pdf, etc.
-        const data = await s3.getObject(rows[0].id + '.docx');
+        // const data = await s3.getObject(rows[0].id + '.docx');
+        const data = await s3.getObject(rows[0].id + '.pdf');
 
-        // OLD way, can't download properly
-        // if (data && data.Body) {
-        //   // OLD way, can't download properly
-        //   const bodyAsByteArray = await data.Body.transformToByteArray();
-        //   const blob = new Blob([bodyAsByteArray]);
-        //   const file = new File([blob], rows[0].name);
-        //   const resumeURL = URL.createObjectURL(file);
-        //   resume.url = resumeURL;
-        // }
-
-        if (data) {
-          resume.url = data
+        if (data && data.Body) {
+          const bodyAsByteArray = await data.Body.transformToByteArray();
+          // https://stackoverflow.com/questions/49259231/sending-uint8array-bson-in-a-json-object
+          // Need to convert byte array to array so it can be put inside a json
+          const arr = Array.from(bodyAsByteArray); 
+          resume.bytearray_as_array = arr;
+          console.log(`length (in service.ts): ${resume.bytearray_as_array.length}`)
         }
-        
-        // 132a76f8-2bbb-e2a4-46c8-386be1fe3d55 (Use this resume for testing)
 
-        return resume
+        return resume;
       } catch {
         return undefined;
       } 
