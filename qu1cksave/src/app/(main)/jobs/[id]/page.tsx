@@ -47,9 +47,7 @@ export default function Page({ params }: { params: { id: string } }) {
   //   -- Could be an alternative
 
   useEffect(() => {
-    // !resume prevents this from running twice, which leads to excessive
-    //   GetObjectCommand calls in s3
-    if (job?.resume_id && !resume) { 
+    if (job?.resume_id) { 
       const getResume = async () => {
         await fetch(`/api/resume/${job.resume_id}`)
           .then((res) => {

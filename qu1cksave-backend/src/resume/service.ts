@@ -42,6 +42,36 @@ export class ResumeService {
         // - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
         //   -- Looks like I can use this to trigger a download once the API
         //      call returns a response.
+        // TODO:
+        //   On upload, how do I get the MIME type of file so I can store it as the mime_type?
+        // - https://stackoverflow.com/questions/18299806/how-to-check-file-mime-type-with-javascript-before-upload
+        // - https://stackoverflow.com/questions/74031278/how-to-get-actual-mime-type-of-file-loaded-with-html-input-type-file-accept
+        // - https://dev.to/victrexx2002/how-to-get-the-mime-type-of-a-file-in-nodejs-p6c
+        //
+        //  Also, does the MIME type map to one type of extension or not?
+        //    Ex. Does application/vnd.openxmlformats-officedocument.wordprocessingml.document
+        //        always map to docx?
+        //  If not, I should find a way to determine the extension on file upload.
+        //
+        //  I'll also need to find a way to change the file name into the
+        //    original name instead having the UUID as the name upon download.
+        //    (NOT THAT BIG OF A PRIORTY)
+        //
+        // TODO:
+        // - Change download/get resume functionality so that the call to s3
+        //   is only made upon clicking download (instead of on page load).
+        //   -- I'll need to have the ability to automatically download once
+        //      the API call returns a response (Look at Content-Disposition
+        //      to do this).
+        //   -- I'll also need to be able store the blob/uint8array
+        //      so I can "cache" it in a React state. So whenever a user
+        //      re-downloads this same file, it can just download it from the
+        //      cache instead of making another call to s3. (I should put
+        //      this cache on layout.tsx)
+        //      Note: This cache should update/reset on jobs page reload
+        //        and/or adding/updating/deleting a job. In the case of an
+        //        update, the update should search the cache for the resume
+        //        and update the content accordingly.
         let extension = '';
         switch (resume.mime_type) {
           case 'application/pdf':
