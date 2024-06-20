@@ -36,10 +36,32 @@ export class ResumeService {
         const resume = rows[0];
 
         // TODO: Need a better way of doing this instead of appending .docx, .pdf, etc.
-        // const data = await s3.getObject(rows[0].id + '.docx');
-        const data = await s3.getObject(rows[0].id + '.pdf');
+        // MIME Types, Content-Type, and Content-Disposition:
+        // - https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+        // - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type
+        // - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
+        //   -- Looks like I can use this to trigger a download once the API
+        //      call returns a response.
+        let extension = '';
+        switch (resume.mime_type) {
+          case 'application/pdf':
+            extension = '.pdf';
+            break;
+          case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+            extension = '.docx';
+            break;
+          default:
+            extension = '.pdf';
+        }
+        const data = await s3.getObject(rows[0].id + extension);
 
         if (data && data.Body) {
+          // TESTING
+          const contentType = data.ContentType;
+          const mediaType = contentType?.split(';')[0];
+          console.log(`contentType: ${contentType}`);
+          console.log(`mediaType: ${mediaType}`);
+
           const bodyAsByteArray = await data.Body.transformToByteArray();
           // https://stackoverflow.com/questions/49259231/sending-uint8array-bson-in-a-json-object
           // Need to convert byte array to array so it can be put inside a json

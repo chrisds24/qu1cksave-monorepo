@@ -63,13 +63,13 @@ export default function Page({ params }: { params: { id: string } }) {
               console.log(`resumeVal.id: ${resumeVal.id}`);
               console.log(`resumeVal.member_id: ${resumeVal.member_id}`);
               console.log(`resumeVal.file_name: ${resumeVal.file_name}`);
+              console.log(`resumeVal.mime_type: ${resumeVal.mime_type}`);
               console.log(`length (in page.tsx): ${resumeVal.bytearray_as_array.length}`);
 
               // Convert the array into a byte array
               const byteArray = Uint8Array.from(resumeVal.bytearray_as_array);
               // https://stackoverflow.com/questions/74401312/javascript-convert-binary-string-to-blob
-              // const blob = new Blob([byteArray], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
-              const blob = new Blob([byteArray], {type: 'application/pdf'});
+              const blob = new Blob([byteArray], {type: resumeVal.mime_type});
               const url = URL.createObjectURL(blob);
               resumeVal.url = url;
               setResume(resumeVal);
