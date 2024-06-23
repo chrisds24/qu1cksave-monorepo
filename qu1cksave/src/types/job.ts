@@ -1,9 +1,11 @@
 import { YearMonthDate, YearMonthDateFilter } from "./common";
+import { NewResume, Resume } from "./resume";
 
 export interface Job {
   id: string;
   member_id: string;
   resume_id?: string;
+  resume?: Resume;
   title: string;
   company_name: string;
   job_description?: string;
@@ -21,6 +23,8 @@ export interface Job {
 }
 
 export interface NewJob {
+  resume_id?: string;
+  resume?: NewResume;
   title: string;
   company_name: string;
   job_description?: string;

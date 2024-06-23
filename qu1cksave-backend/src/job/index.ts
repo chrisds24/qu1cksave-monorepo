@@ -5,6 +5,8 @@
 //  */
 // export type UUID = string;
 
+import { NewResume, Resume } from "../resume";
+
 export interface YearMonthDate {
   year: number;
   month: number;
@@ -14,10 +16,13 @@ export interface YearMonthDate {
 // Columns in database table:
 //   id, member_id, resume_id, title, company_name, job_description, notes, country, us_state, city,
 //   date_saved, date_applied, date_posted, job_status, links, found_from
+//   Note that resume is not a column in the database, but is something we can add to a Job after
+//   being returned from the database.
 export interface Job {
   id: string;
   member_id: string;
   resume_id?: string;
+  resume?: Resume;
   title: string;
   company_name: string;
   job_description?: string;
@@ -36,6 +41,8 @@ export interface Job {
 
 export interface NewJob {
   // No id, member_id, and date_saved
+  resume_id?: string;
+  resume?: NewResume;
   title: string;
   company_name: string;
   job_description?: string;

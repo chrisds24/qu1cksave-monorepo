@@ -21,6 +21,8 @@ export class JobService {
 
     const { rows } = await pool.query(query);
     return rows as Job[];
+
+    // TODO: Update this to also get the resumes if a job has a resume
   }
 
   public async create(newJob: NewJob, memberId: string): Promise<Job | undefined> {
