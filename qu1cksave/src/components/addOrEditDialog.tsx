@@ -96,6 +96,9 @@ export default function AddOrEditDialog() {
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    // 'title', 'company_name', 'job_description', 'notes', 'is_remote', 'country',
+    // 'us_state', 'city', 'date_applied', 'date_posted', 'job_status', 'links', 'found_from'
+
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     // Add additional validation here to make sure that that required values are given.
@@ -149,7 +152,7 @@ export default function AddOrEditDialog() {
         linksList.push(link as string);
       }
     }
-    newJob['links'] = linksList;
+    if (linksList.length > 0) newJob['links'] = linksList;
 
     // Resume
     // TODO: In the documents page (LATER), I can use an iframe to embed the file into
@@ -160,7 +163,8 @@ export default function AddOrEditDialog() {
     // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsArrayBuffer
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
     // https://www.quora.com/Can-we-store-a-PDF-in-a-database
-    const resume = data.get('resume') as File;
+
+    // const resume = data.get('resume') as File;
 
     let fetchString = '/api/job';
     if (!isAdd) {
@@ -640,7 +644,7 @@ export default function AddOrEditDialog() {
           }}
         />
         {/* accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" */}
-        <Box>
+        {/* <Box>
           <label htmlFor="avatar">
             <Typography sx={{color: '#ffffff'}} display={'inline'}>
               {'Upload Resume:  '}
@@ -652,7 +656,7 @@ export default function AddOrEditDialog() {
             name="resume"
             accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           />
-        </Box>
+        </Box> */}
       </DialogContent>
       <DialogActions>
         <Button sx={{color: '#ffffff'}} onClick={handleClose}>Cancel</Button>

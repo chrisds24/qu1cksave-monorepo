@@ -1,6 +1,12 @@
 import { Job, NewJob } from ".";
 import { pool } from "../db";
 
+// No id, member_id, and date_saved since those are unchangeable
+const keys = [
+  'title', 'company_name', 'job_description', 'notes', 'is_remote', 'country',
+  'us_state', 'city', 'date_applied', 'date_posted', 'job_status', 'links', 'found_from'
+];
+
 export class JobService {
   public async getMultiple(id?: string): Promise<Job[]> {
     let select = 'SELECT * FROM job';
@@ -62,20 +68,23 @@ export class JobService {
   }
 
   public async edit(newJob: NewJob, memberId: string, jobId: string): Promise<Job | undefined> {
-    // id, member_id, title, company_name, job_description, notes, is_remote, country,
-    // us_state, city, date_saved, date_applied, date_posted, job_status, links, found_from
+    // 'title', 'company_name', 'job_description', 'notes', 'is_remote', 'country',
+    // 'us_state', 'city', 'date_applied', 'date_posted', 'job_status', 'links', 'found_from'
     let txt = 'UPDATE job SET ';
     let count = 1;
     const vals: any[] = [];
-    for (const key in newJob) {
-      txt += `${key} = $${count}, `;
-      count++;
-
-      vals.push(
-        key === 'links' || key === 'date_applied' || key === 'date_posted' ?
-        JSON.stringify(newJob[key as keyof typeof newJob]) :
-        newJob[key as keyof typeof newJob]
-      )
+    for (const key of keys) {
+      if (key in newJob) {
+        txt += `${key} = $${count}, `;
+        count++;
+        vals.push(
+          key === 'links' || key === 'date_applied' || key === 'date_posted' ?
+          JSON.stringify(newJob[key as keyof typeof newJob]) :
+          newJob[key as keyof typeof newJob]        
+        );
+      } else {
+        txt +=  `${key} = NULL, `;
+      }
     }
     // Remove the final comma and space then add remaining part of the query
     txt = txt.slice(0, txt.length-2) + ` WHERE id = $${count} AND member_id = $${count + 1} RETURNING *`;
