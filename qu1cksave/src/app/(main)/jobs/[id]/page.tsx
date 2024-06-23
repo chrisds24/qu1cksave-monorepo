@@ -38,6 +38,7 @@ const statusColor = {
 export default function Page({ params }: { params: { id: string } }) {
   const router = useRouter();
   const { jobs, setIsAdd, setOpen, setDialogJob } = useContext(JobsContext);
+  // Not to be confused with the filteredJobs state (where we apply the filters to)
   const filteredJobs = (jobs as Job[]).filter((job) => job.id === params.id);
   const job = filteredJobs.length == 1 ? filteredJobs[0] : undefined;
   const [resume, setResume] = useState<Resume | undefined>(undefined);
