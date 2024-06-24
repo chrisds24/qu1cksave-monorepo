@@ -9,7 +9,8 @@ const keys = [
 
 export class JobService {
   public async getMultiple(id?: string): Promise<Job[]> {
-    let select = 'SELECT * FROM job';
+    // let select = 'SELECT * FROM job';
+    let select = 'SELECT * FROM job INNER JOIN resume ON job.resume_id = resume.resume_id';
     if (id) {
       select += ' WHERE member_id = $1';
     }
@@ -18,11 +19,38 @@ export class JobService {
       text: select,
       values: values
     };
-
     const { rows } = await pool.query(query);
-    return rows as Job[];
 
-    // TODO: Update this to also get the resumes if a job has a resume
+    // Things I learned about INNER JOIN:
+    // 1.) When joining from two tables, those tables can't have the same
+    //     column names except for what we're joining on
+    //     Ex. We had a join on job.resume_id = resume.resume_id so it's fine
+    //     if both have a resume_id column. However, we didn't have a join on
+    //     job.member_id and resume.member_id so they both can't have a
+    //     member_id.
+    // 2.) INNER JOIN filters out returned rows based on
+    //     job.resume_id = resume.resume_id. So if a job doesn't have a
+    //     resume_id, it won't get returned. I initially thought that they will
+    //     and that the join only gets resume data for jobs that have a resume.
+    //     Turns out I was wrong.
+    // TODO:
+    // 1.) Search about using JOIN, INNER JOIN, etc. when tables have the same
+    //     column names (So I don't have to change the column names for resume)
+    // 2.) Find a way so INNER JOIN returns jobs that don't have a resume_id.
+    // 3.) Find a way to put the columns from the second table into a column
+    //     in the first table instead of having those columns take up one
+    //     column each.
+
+    const jobs = [];
+    for (const job of rows) {
+      console.log(`---------- Job ${job.id} ----------`)
+      for (const key in job) {
+        console.log(`${key}: ${job[key]}`)
+      }
+    }
+
+    // return rows as Job[];
+    return [] as Job[];
   }
 
   public async create(newJob: NewJob, memberId: string): Promise<Job | undefined> {
