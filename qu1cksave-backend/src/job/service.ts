@@ -26,6 +26,13 @@ export class JobService {
     // https://stackoverflow.com/questions/35154357/select-columns-into-a-json-from-postgres
     // https://www.postgresql.org/docs/current/functions-json.html
     // - When getting columns, put them into 1 column (The 3 links above are about this topic)
+    // https://dba.stackexchange.com/questions/315232/postgresql-join-select-null-if-record-on-one-of-both-table-not-exist
+    // https://dba.stackexchange.com/questions/174627/include-null-row-on-join
+    // https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-full-outer-join/
+    // https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-inner-join/
+    // https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-left-join/
+    // https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-right-join/
+    // https://www.freecodecamp.org/news/sql-join-types-inner-join-vs-outer-join-example
     let select = `SELECT 
       j.*,
       json_build_object(
@@ -37,7 +44,7 @@ export class JobService {
       ) AS resume
     FROM 
       job j
-      INNER JOIN resume r ON j.resume_id = r.id`;
+      LEFT JOIN resume r ON j.resume_id = r.id`;
     if (id) {
       select += ' WHERE j.member_id = $1';
     }
