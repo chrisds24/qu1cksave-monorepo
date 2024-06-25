@@ -35,13 +35,13 @@ export class JobService {
     // https://www.freecodecamp.org/news/sql-join-types-inner-join-vs-outer-join-example
     let select = `SELECT 
       j.*,
-      json_build_object(
+      json_strip_nulls(json_build_object(
         'id', r.id, 
         'member_id', r.member_id,
         'job_id', r.job_id,
         'file_name', r.file_name,
         'mime_type', r.mime_type
-      ) AS resume
+      )) AS resume
     FROM 
       job j
       LEFT JOIN resume r ON j.resume_id = r.id`;
@@ -90,6 +90,20 @@ export class JobService {
     //     }
     //   }
     // }
+
+    // TODO:
+    // 1.) Don't return null columns
+    //     *** Try this: I could use json_build_object on the job columns
+    //         and the resume (which was built using json_build_object). Then
+    //         just call json_strip_nulls on that. (So basically a nested
+    //         json_build_object)
+    //     *** https://stackoverflow.com/questions/66017080/postgres-create-a-nested-json-object-from-two-json-objects  
+    // *** OR I could just simply check the object[key] value intead of just
+    //   the key whenever I need to check if a column/attribute exists
+    // 2.) If the object returned by json_build_object doesn't have attributes,
+    //     don't return the object
+    // 3.) Add job_id and member_id as a condition for the join
+    // 4.) Add job_ids to the 2 resume entries I have
 
     return rows as Job[];
   }
