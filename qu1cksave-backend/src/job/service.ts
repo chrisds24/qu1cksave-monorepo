@@ -9,10 +9,37 @@ const keys = [
 
 export class JobService {
   public async getMultiple(id?: string): Promise<Job[]> {
-    // let select = 'SELECT * FROM job';
-    let select = 'SELECT * FROM job INNER JOIN resume ON job.resume_id = resume.resume_id';
+    // Job columns
+    //   id, member_id, resume_id, title, company_name, job_description, notes, is_remote, country,
+    //   us_state, city, date_saved, date_applied, date_posted, job_status, links, found_from
+    // Resume columns
+    //   id, member_id, job_id, file_name, mime_type
+
+    // Get jobs and include resume data when available
+    //
+    // ----- Resources ------
+    // https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-inner-join/
+    // - To get data from another table
+    // https://stackoverflow.com/questions/76960675/in-postgres-how-to-join-tables-with-columns-of-the-same-name-and-alter-column-n
+    // - Specify which columns to get (Useful when joining tables that have the same column names)
+    // https://stackoverflow.com/questions/34163209/postgres-aggregate-two-columns-into-one-item
+    // https://stackoverflow.com/questions/35154357/select-columns-into-a-json-from-postgres
+    // https://www.postgresql.org/docs/current/functions-json.html
+    // - When getting columns, put them into 1 column (The 3 links above are about this topic)
+    let select = `SELECT 
+      j.*,
+      json_build_object(
+        'id', r.id, 
+        'member_id', r.member_id,
+        'job_id', r.job_id,
+        'file_name', r.file_name,
+        'mime_type', r.mime_type
+      ) AS resume
+    FROM 
+      job j
+      INNER JOIN resume r ON j.resume_id = r.id`;
     if (id) {
-      select += ' WHERE member_id = $1';
+      select += ' WHERE j.member_id = $1';
     }
     const values = id ? [id] : [];
     const query = {
@@ -21,36 +48,43 @@ export class JobService {
     };
     const { rows } = await pool.query(query);
 
-    // Things I learned about INNER JOIN:
+    // Some notes about joining tables, aliases, 
     // 1.) When joining from two tables, those tables can't have the same
     //     column names except for what we're joining on
     //     Ex. We had a join on job.resume_id = resume.resume_id so it's fine
     //     if both have a resume_id column. However, we didn't have a join on
     //     job.member_id and resume.member_id so they both can't have a
     //     member_id.
+    //     *** SOLVED using column aliases ***
+    //     - In WHERE clause, since I have 2 member_ids (one from job and one
+    //       from resume), I need to specify which one I'm using
     // 2.) INNER JOIN filters out returned rows based on
     //     job.resume_id = resume.resume_id. So if a job doesn't have a
     //     resume_id, it won't get returned. I initially thought that they will
     //     and that the join only gets resume data for jobs that have a resume.
     //     Turns out I was wrong.
-    // TODO:
-    // 1.) Search about using JOIN, INNER JOIN, etc. when tables have the same
-    //     column names (So I don't have to change the column names for resume)
-    // 2.) Find a way so INNER JOIN returns jobs that don't have a resume_id.
     // 3.) Find a way to put the columns from the second table into a column
     //     in the first table instead of having those columns take up one
     //     column each.
+    //     *** SOLVED using json_build_object
 
-    const jobs = [];
-    for (const job of rows) {
-      console.log(`---------- Job ${job.id} ----------`)
-      for (const key in job) {
-        console.log(`${key}: ${job[key]}`)
-      }
-    }
+    // FOR TESTING
+    // for (const job of rows) {
+    //   console.log(`---------- Job ${job.id} ----------`)
+    //   for (const key in job) {
+    //     console.log(`${key}: ${job[key]}`)
+    //     if (key == 'resume') {
+    //       const resume = job[key];
+    //       console.log('**** Resume ****')
+    //       for (const rkey in resume) {
+    //         console.log(`${rkey}: ${resume[rkey]}`)
+    //       }
+    //       console.log('************')
+    //     }
+    //   }
+    // }
 
-    // return rows as Job[];
-    return [] as Job[];
+    return rows as Job[];
   }
 
   public async create(newJob: NewJob, memberId: string): Promise<Job | undefined> {

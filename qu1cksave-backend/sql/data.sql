@@ -18,11 +18,8 @@ INSERT INTO job(id, member_id, resume_id, title, company_name, is_remote, job_st
 INSERT INTO job(id, member_id, resume_id, title, company_name, is_remote, job_status) VALUES ('017eae28-8323-7918-a39b-6cdb9d189686', '269a3d55-4eee-4a2e-8c64-e1fe386b76f8', '132a76f8-2bbb-e2a4-46c8-386be1fe3d55', 's0ftwar3 3ng1n33r', 'fak3 c0mpany', 'Remote', 'Applied');
 
 DELETE FROM resume;
--- The 2 commented lines use id and member_id instead of resume_id and resume_member_id
--- INSERT INTO resume(id, member_id, file_name, mime_type) VALUES ('132a76f8-2bbb-e2a4-46c8-386be1fe3d55', '269a3d55-4eee-4a2e-8c64-e1fe386b76f8', 'ChristianDelosSantos_Resume.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
--- INSERT INTO resume(id, member_id, file_name, mime_type) VALUES ('2bbb76f8-46c8-e2a4-2bbb-3d55e1fe386b', '269a3d55-4eee-4a2e-8c64-e1fe386b76f8', 'ChristianDelosSantos_Resume.pdf', 'application/pdf');
-INSERT INTO resume(resume_id, resume_member_id, file_name, mime_type) VALUES ('132a76f8-2bbb-e2a4-46c8-386be1fe3d55', '269a3d55-4eee-4a2e-8c64-e1fe386b76f8', 'ChristianDelosSantos_Resume.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-INSERT INTO resume(resume_id, resume_member_id, file_name, mime_type) VALUES ('2bbb76f8-46c8-e2a4-2bbb-3d55e1fe386b', '269a3d55-4eee-4a2e-8c64-e1fe386b76f8', 'ChristianDelosSantos_Resume.pdf', 'application/pdf');
+INSERT INTO resume(id, member_id, file_name, mime_type) VALUES ('132a76f8-2bbb-e2a4-46c8-386be1fe3d55', '269a3d55-4eee-4a2e-8c64-e1fe386b76f8', 'ChristianDelosSantos_Resume.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+INSERT INTO resume(id, member_id, file_name, mime_type) VALUES ('2bbb76f8-46c8-e2a4-2bbb-3d55e1fe386b', '269a3d55-4eee-4a2e-8c64-e1fe386b76f8', 'ChristianDelosSantos_Resume.pdf', 'application/pdf');
 
 
 
