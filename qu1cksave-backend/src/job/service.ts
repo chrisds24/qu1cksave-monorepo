@@ -33,18 +33,20 @@ export class JobService {
     // https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-left-join/
     // https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-right-join/
     // https://www.freecodecamp.org/news/sql-join-types-inner-join-vs-outer-join-example
+    // Note: To not include nulls: Apply json_strip_nulls to the built object
     let select = `SELECT 
       j.*,
-      json_strip_nulls(json_build_object(
+      json_build_object(
         'id', r.id, 
         'member_id', r.member_id,
         'job_id', r.job_id,
         'file_name', r.file_name,
         'mime_type', r.mime_type
-      )) AS resume
+      ) AS resume
     FROM 
       job j
-      LEFT JOIN resume r ON j.resume_id = r.id`;
+      LEFT JOIN resume r ON j.resume_id = r.id AND j.member_id = r.member_id AND j.id = r.job_id`;
+
     if (id) {
       select += ' WHERE j.member_id = $1';
     }
@@ -102,8 +104,8 @@ export class JobService {
     //   the key whenever I need to check if a column/attribute exists
     // 2.) If the object returned by json_build_object doesn't have attributes,
     //     don't return the object
-    // 3.) Add job_id and member_id as a condition for the join
-    // 4.) Add job_ids to the 2 resume entries I have
+    // 3.) Add job_id and member_id as a condition for the join   DONE
+    // 4.) Add job_ids to the 2 resume entries I have   DONE
 
     return rows as Job[];
   }
