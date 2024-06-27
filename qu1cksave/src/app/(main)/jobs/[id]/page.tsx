@@ -41,43 +41,65 @@ export default function Page({ params }: { params: { id: string } }) {
   // Not to be confused with the filteredJobs state (where we apply the filters to)
   const filteredJobs = (jobs as Job[]).filter((job) => job.id === params.id);
   const job = filteredJobs.length == 1 ? filteredJobs[0] : undefined;
-  const [resume, setResume] = useState<Resume | undefined>(undefined);
+
+  // const [resume, setResume] = useState<Resume | undefined>(undefined);
   // WARNING !!! Putting the signedUrl returned by getSignedUrl into the download button
   //   shows the credentials on hover !!!
   // - https://stackoverflow.com/questions/50694881/how-to-download-file-in-react-js
   //   -- Could be an alternative
 
-  useEffect(() => {
-    if (job?.resume_id) { 
-      const getResume = async () => {
-        await fetch(`/api/resume/${job.resume_id}`)
-          .then((res) => {
-            if (res.ok) {
-              return res.json()
-            }
-          })
-          .then((resumeVal: Resume | undefined) => {
-            if (resumeVal) {
-              // TODO: Remove these later
-              console.log(`resumeVal.id: ${resumeVal.id}`);
-              console.log(`resumeVal.member_id: ${resumeVal.member_id}`);
-              console.log(`resumeVal.file_name: ${resumeVal.file_name}`);
-              console.log(`resumeVal.mime_type: ${resumeVal.mime_type}`);
-              console.log(`length (in page.tsx): ${resumeVal.bytearray_as_array.length}`);
+  // TODO: Remove later once new download functionality is done.
+  // useEffect(() => {
+  //   if (job?.resume_id) { 
+  //     const getResume = async () => {
+  //       await fetch(`/api/resume/${job.resume_id}`)
+  //         .then((res) => {
+  //           if (res.ok) {
+  //             return res.json()
+  //           }
+  //         })
+  //         .then((resumeVal: Resume | undefined) => {
+  //           if (resumeVal) {
+  //             // Convert the array into a byte array
+  //             // const byteArray = Uint8Array.from(resumeVal.bytearray_as_array);
+  //             const byteArray = Uint8Array.from(resumeVal.bytearray_as_array!);
+  //             // https://stackoverflow.com/questions/74401312/javascript-convert-binary-string-to-blob
+  //             // const blob = new Blob([byteArray], {type: resumeVal.mime_type});
+  //             const blob = new Blob([byteArray], {type: resumeVal.mime_type!});
+  //             const url = URL.createObjectURL(blob);
+  //             resumeVal.url = url;
+  //             setResume(resumeVal);
+  //           }
+  //         }) 
+  //     }
+  //     getResume();
+  //   }
+  // }, [job?.resume_id])
 
-              // Convert the array into a byte array
-              const byteArray = Uint8Array.from(resumeVal.bytearray_as_array);
-              // https://stackoverflow.com/questions/74401312/javascript-convert-binary-string-to-blob
-              const blob = new Blob([byteArray], {type: resumeVal.mime_type});
-              const url = URL.createObjectURL(blob);
-              resumeVal.url = url;
-              setResume(resumeVal);
-            }
-          }) 
-      }
-      getResume();
-    }
-  }, [job?.resume_id])
+  const downloadResume = async (resume: Resume) => {
+    // const getResume = async () => {
+    //   await fetch(`/api/resume/${resume.id}`)
+    //     .then((res) => {
+    //       if (res.ok) {
+    //         return res.json()
+    //       }
+    //     })
+    //     .then((resumeVal: Resume | undefined) => {
+    //       if (resumeVal) {
+    //         // Convert the array into a byte array
+    //         // const byteArray = Uint8Array.from(resumeVal.bytearray_as_array);
+    //         const byteArray = Uint8Array.from(resumeVal.bytearray_as_array!);
+    //         // https://stackoverflow.com/questions/74401312/javascript-convert-binary-string-to-blob
+    //         // const blob = new Blob([byteArray], {type: resumeVal.mime_type});
+    //         const blob = new Blob([byteArray], {type: resumeVal.mime_type!});
+    //         const url = URL.createObjectURL(blob);
+    //         resumeVal.url = url;
+    //         setResume(resumeVal);
+    //       }
+    //     }) 
+    // }
+    // getResume();
+  }
 
   if (job) {
     const dateApplied = job.date_applied;
@@ -292,7 +314,8 @@ export default function Page({ params }: { params: { id: string } }) {
             {job.found_from ? job.found_from : 'N/A'} 
           </Typography>                 
         </Box>
-        {resume?.url ?
+        {/* TODO: REMOVE THE COMMENTED SECTION OF CODE AFTER NEW DOWNLOAD BUTTON IS DONE !!! */}
+        {/* {resume?.url ?
           (
             <Button variant="contained" sx={{ backgroundColor: '#00274e' }} href={`${resume.url}`} download rel="noopener noreferrer">
               <DownloadIcon sx={{ color: '#ffffff', width: 40, height: 40, paddingRight: 1}} />
@@ -301,7 +324,42 @@ export default function Page({ params }: { params: { id: string } }) {
           )
           :
           undefined
-        }
+        } */}
+        <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
+        <Box>
+          <Typography display={'inline'} color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
+            {'Resume:'} 
+          </Typography>
+          <Typography display={'inline'} color='#ffffff' sx={{fontSize: '20px', marginRight: 2}}>
+            {job.resume?.file_name ? job.resume.file_name : 'N/A'} 
+          </Typography>
+          {job.resume?.id ?
+            (
+              <Button
+                variant="contained"
+                sx={{
+                  color: '#ffffff',
+                  backgroundColor: '#000000',
+                  marginRight: 1,
+                  '&:hover': {
+                    backgroundColor: '#0b0b0b',
+                  },
+                  alignSelf: 'center'
+                }}
+                onClick={
+                  () =>  {
+                    downloadResume(job.resume!);
+                  }
+                }
+              >
+                <DownloadIcon sx={{ color: '#ffffff', width: 30, height: 30, paddingRight: 1}} />
+                {'Download'}
+              </Button>             
+            )
+            :
+            undefined
+          }               
+        </Box>
       </Box>
     );
   }
