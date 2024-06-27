@@ -34,6 +34,7 @@ export class JobService {
     // https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-right-join/
     // https://www.freecodecamp.org/news/sql-join-types-inner-join-vs-outer-join-example
     // Note: To not include nulls: Apply json_strip_nulls to the built object
+    // https://stackoverflow.com/questions/66017080/postgres-create-a-nested-json-object-from-two-json-objects
     let select = `SELECT 
       j.*,
       json_build_object(
@@ -57,26 +58,6 @@ export class JobService {
     };
     const { rows } = await pool.query(query);
 
-    // Some notes about joining tables, aliases, 
-    // 1.) When joining from two tables, those tables can't have the same
-    //     column names except for what we're joining on
-    //     Ex. We had a join on job.resume_id = resume.resume_id so it's fine
-    //     if both have a resume_id column. However, we didn't have a join on
-    //     job.member_id and resume.member_id so they both can't have a
-    //     member_id.
-    //     *** SOLVED using column aliases ***
-    //     - In WHERE clause, since I have 2 member_ids (one from job and one
-    //       from resume), I need to specify which one I'm using
-    // 2.) INNER JOIN filters out returned rows based on
-    //     job.resume_id = resume.resume_id. So if a job doesn't have a
-    //     resume_id, it won't get returned. I initially thought that they will
-    //     and that the join only gets resume data for jobs that have a resume.
-    //     Turns out I was wrong.
-    // 3.) Find a way to put the columns from the second table into a column
-    //     in the first table instead of having those columns take up one
-    //     column each.
-    //     *** SOLVED using json_build_object
-
     // FOR TESTING
     // for (const job of rows) {
     //   console.log(`---------- Job ${job.id} ----------`)
@@ -92,20 +73,6 @@ export class JobService {
     //     }
     //   }
     // }
-
-    // TODO:
-    // 1.) Don't return null columns
-    //     *** Try this: I could use json_build_object on the job columns
-    //         and the resume (which was built using json_build_object). Then
-    //         just call json_strip_nulls on that. (So basically a nested
-    //         json_build_object)
-    //     *** https://stackoverflow.com/questions/66017080/postgres-create-a-nested-json-object-from-two-json-objects  
-    // *** OR I could just simply check the object[key] value intead of just
-    //   the key whenever I need to check if a column/attribute exists
-    // 2.) If the object returned by json_build_object doesn't have attributes,
-    //     don't return the object
-    // 3.) Add job_id and member_id as a condition for the join   DONE
-    // 4.) Add job_ids to the 2 resume entries I have   DONE
 
     return rows as Job[];
   }
