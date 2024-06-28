@@ -61,8 +61,16 @@ export default function Page({ params }: { params: { id: string } }) {
     //       The Resume type is still used for the resume that we attach to jobs when getting jobs
 
     // TODO: To download from "cache", just have a conditional here that
-    //   checks the job's url field. If it has one, then just use window.open()
+    //   checks the job's resume's url field. If it has one, then just use window.open()
     //   to download from that instead of making the API call.
+    //   OR maybe check the job's resume's bytearray_as_array field instead
+    //   then create the url each time.
+    // NOTE: One issue with the "caching" in state is that it will use a lot of RAM.
+    // IMPORTANT: Also, I noticed that the blob stays in memory even without storing
+    //   it in state (gone after refresh). How do I clear this out?
+    // Alternatives
+    //   IndexedDB
+    //   - https://stackoverflow.com/questions/55353250/what-is-considered-too-much-data-in-react-state
 
     await fetch(`/api/resume/${resume.id}`)
       .then((res) => { 
@@ -83,9 +91,15 @@ export default function Page({ params }: { params: { id: string } }) {
           // TODO: Add the url to this job, then update the jobs list state.
           //   Future download clicks downloads from that "cached" url instead
           //   of making the API call.
+          // OR maybe store bytearray_as_array instead?
 
           // https://stackoverflow.com/questions/69555158/http-response-with-content-disposition-doesnt-trigger-download
-          window.open(url);
+          window.open(url); // window.open(url, 'Download'); also works
+          // Alternatives:
+          // Create an <a href=... then programatically click
+          // - https://stackoverflow.com/questions/71843638/content-disposition-download-file-automatically
+          // - https://stackoverflow.com/questions/20830309/download-file-using-an-ajax-request/20830337#20830337
+          // 
         }
       })
       .catch((err) => {
