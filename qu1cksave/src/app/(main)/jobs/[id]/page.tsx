@@ -77,6 +77,17 @@ export default function Page({ params }: { params: { id: string } }) {
   // }, [job?.resume_id])
 
   const downloadResume = async (resume: Resume) => {
+    // TODO:
+    // 1.) Read Content-Disposition
+    // 2.) API probably needs to return blob, then set its Content-Disposition
+    // 3.) Need to change API call
+    //     - Get resume from database using the id path parameter + the user's id in the request.
+    //       (Look at how create in the job controller does it)
+    //     - If resume is found, use the id to make the S3 call.
+    //     - Return as a Blob
+    //     - Note: So the API call to get a resume won't use the Resume type as its return
+    //       The Resume type is still used for the resume that we attach to jobs when getting jobs
+
     // const getResume = async () => {
     //   await fetch(`/api/resume/${resume.id}`)
     //     .then((res) => {
