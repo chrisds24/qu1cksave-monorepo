@@ -42,39 +42,11 @@ export default function Page({ params }: { params: { id: string } }) {
   const filteredJobs = (jobs as Job[]).filter((job) => job.id === params.id);
   const job = filteredJobs.length == 1 ? filteredJobs[0] : undefined;
 
-  // const [resume, setResume] = useState<Resume | undefined>(undefined);
-  // WARNING !!! Putting the signedUrl returned by getSignedUrl into the download button
-  //   shows the credentials on hover !!!
+  // WARNING !!! Reason why I didn't use getSignedUrl:
+  //   Putting the signedUrl returned by getSignedUrl into the download button
+  //   shows the credentials on hover.
   // - https://stackoverflow.com/questions/50694881/how-to-download-file-in-react-js
-  //   -- Could be an alternative
-
-  // TODO: Remove later once new download functionality is done.
-  // useEffect(() => {
-  //   if (job?.resume_id) { 
-  //     const getResume = async () => {
-  //       await fetch(`/api/resume/${job.resume_id}`)
-  //         .then((res) => {
-  //           if (res.ok) {
-  //             return res.json()
-  //           }
-  //         })
-  //         .then((resumeVal: Resume | undefined) => {
-  //           if (resumeVal) {
-  //             // Convert the array into a byte array
-  //             // const byteArray = Uint8Array.from(resumeVal.bytearray_as_array);
-  //             const byteArray = Uint8Array.from(resumeVal.bytearray_as_array!);
-  //             // https://stackoverflow.com/questions/74401312/javascript-convert-binary-string-to-blob
-  //             // const blob = new Blob([byteArray], {type: resumeVal.mime_type});
-  //             const blob = new Blob([byteArray], {type: resumeVal.mime_type!});
-  //             const url = URL.createObjectURL(blob);
-  //             resumeVal.url = url;
-  //             setResume(resumeVal);
-  //           }
-  //         }) 
-  //     }
-  //     getResume();
-  //   }
-  // }, [job?.resume_id])
+  //   -- Using Content-Disposition to download upon API call response
 
   const downloadResume = async (resume: Resume) => {
     // TODO:
@@ -88,28 +60,37 @@ export default function Page({ params }: { params: { id: string } }) {
     //     - Note: So the API call to get a resume won't use the Resume type as its return
     //       The Resume type is still used for the resume that we attach to jobs when getting jobs
 
-    // const getResume = async () => {
-    //   await fetch(`/api/resume/${resume.id}`)
-    //     .then((res) => {
-    //       if (res.ok) {
-    //         return res.json()
-    //       }
-    //     })
-    //     .then((resumeVal: Resume | undefined) => {
-    //       if (resumeVal) {
-    //         // Convert the array into a byte array
-    //         // const byteArray = Uint8Array.from(resumeVal.bytearray_as_array);
-    //         const byteArray = Uint8Array.from(resumeVal.bytearray_as_array!);
-    //         // https://stackoverflow.com/questions/74401312/javascript-convert-binary-string-to-blob
-    //         // const blob = new Blob([byteArray], {type: resumeVal.mime_type});
-    //         const blob = new Blob([byteArray], {type: resumeVal.mime_type!});
-    //         const url = URL.createObjectURL(blob);
-    //         resumeVal.url = url;
-    //         setResume(resumeVal);
-    //       }
-    //     }) 
-    // }
-    // getResume();
+    // TODO: To download from "cache", just have a conditional here that
+    //   checks the job's url field. If it has one, then just use window.open()
+    //   to download from that instead of making the API call.
+
+    await fetch(`/api/resume/${resume.id}`)
+      .then((res) => { 
+        if (!res.ok) {
+          throw res;
+        }
+        return res.json()
+      })
+      .then((resumeVal: Resume | undefined) => {
+        if (resumeVal) {
+          // Convert the array into a byte array
+          // const byteArray = Uint8Array.from(resumeVal.bytearray_as_array);
+          const byteArray = Uint8Array.from(resumeVal.bytearray_as_array!);
+          // https://stackoverflow.com/questions/74401312/javascript-convert-binary-string-to-blob
+          // const blob = new Blob([byteArray], {type: resumeVal.mime_type});
+          const blob = new Blob([byteArray], {type: resumeVal.mime_type!});
+          const url = URL.createObjectURL(blob);
+          // TODO: Add the url to this job, then update the jobs list state.
+          //   Future download clicks downloads from that "cached" url instead
+          //   of making the API call.
+
+          // https://stackoverflow.com/questions/69555158/http-response-with-content-disposition-doesnt-trigger-download
+          window.open(url);
+        }
+      })
+      .catch((err) => {
+        console.log('Error getting resume!')
+      }) 
   }
 
   if (job) {
@@ -325,17 +306,6 @@ export default function Page({ params }: { params: { id: string } }) {
             {job.found_from ? job.found_from : 'N/A'} 
           </Typography>                 
         </Box>
-        {/* TODO: REMOVE THE COMMENTED SECTION OF CODE AFTER NEW DOWNLOAD BUTTON IS DONE !!! */}
-        {/* {resume?.url ?
-          (
-            <Button variant="contained" sx={{ backgroundColor: '#00274e' }} href={`${resume.url}`} download rel="noopener noreferrer">
-              <DownloadIcon sx={{ color: '#ffffff', width: 40, height: 40, paddingRight: 1}} />
-              {resume.file_name}
-            </Button>            
-          )
-          :
-          undefined
-        } */}
         <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
         <Box>
           <Typography display={'inline'} color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>

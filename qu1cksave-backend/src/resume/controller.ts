@@ -1,6 +1,7 @@
-import { Controller, Path, Route, Get, Security, Response, Query } from 'tsoa';
+import { Controller, Path, Route, Get, Security, Response, Request } from 'tsoa';
 import { Resume } from '.';
 import { ResumeService } from './service';
+import * as express from 'express';
 
 @Route("resume")
 export class ResumeController extends Controller {
@@ -8,11 +9,12 @@ export class ResumeController extends Controller {
   @Security('jwt', ['member'])
   @Response('401', 'Unauthorized')
   @Response('404', 'Not Found')
-  public async getOne(
-    @Path() id: string
+  public async getOneFile(
+    @Path() id: string,
+    @Request() request: express.Request
   ): Promise<Resume | undefined> {
     return new ResumeService()
-      .getOne(id)
+      .getOne(id, request.user.id)
       .then(async (resume: Resume | undefined): Promise<Resume | undefined> => {
         return resume;
       });

@@ -19,6 +19,7 @@ export interface Resume {
   url?: string;
 }
 
+// Unused for now
 export interface NewResume {
   member_id: string;
   job_id?: string;

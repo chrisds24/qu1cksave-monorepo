@@ -17,7 +17,7 @@ export interface Resume {
   bytearray_as_array?: number[];
 }
 
-
+// Unused for now
 export interface NewResume {
   member_id: string;
   job_id?: string;
