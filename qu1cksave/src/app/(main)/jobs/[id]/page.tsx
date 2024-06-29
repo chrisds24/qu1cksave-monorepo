@@ -365,8 +365,8 @@ export default function Page({ params }: { params: { id: string } }) {
                   alignSelf: 'center'
                 }}
                 onClick={
-                  async (event) =>  {
-                    await downloadResume(job.resume!, event.currentTarget);
+                  (event) =>  {
+                    downloadResume(job.resume!, event.currentTarget);
                   }
                 }
               >
