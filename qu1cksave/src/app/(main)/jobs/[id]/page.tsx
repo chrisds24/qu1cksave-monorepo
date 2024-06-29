@@ -37,7 +37,7 @@ const statusColor = {
 
 export default function Page({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { jobs, setIsAdd, setOpen, setDialogJob } = useContext(JobsContext);
+  const { jobs, setIsAdd, setOpen, setDialogJob, setJobs } = useContext(JobsContext);
   // Not to be confused with the filteredJobs state (where we apply the filters to)
   const filteredJobs = (jobs as Job[]).filter((job) => job.id === params.id);
   const job = filteredJobs.length == 1 ? filteredJobs[0] : undefined;
@@ -46,18 +46,40 @@ export default function Page({ params }: { params: { id: string } }) {
   //   Putting the signedUrl returned by getSignedUrl into the download button
   //   shows the credentials on hover.
 
-  const downloadResume = async (resume: Resume) => {
-    // TODO: To download from "cache", just have a conditional here that
-    //   checks the job's resume's bytearray_as_array field, then create a url
-    //   from that if it exists.
-    // NOTE: One issue with the "caching" in state is that it will use a lot of RAM.
+  const downloadResume = async (resume: Resume, target: any) => {
+    // IMPORTANT: One issue with the "caching" in state is that it will use a lot of RAM.
     // IMPORTANT: Also, I noticed that the blob stays in memory even without storing
     //   it in state (gone after refresh). How do I clear this out?
     // Alternatives
     //   IndexedDB
     //   - https://stackoverflow.com/questions/55353250/what-is-considered-too-much-data-in-react-state
 
-    await fetch(`/api/resume/${resume.id}`)
+    target.disabled = true;
+
+    // Resume file in "cache"
+    if (resume.bytearray_as_array) {
+        // Convert the array into a byte array
+        const byteArray = Uint8Array.from(resume.bytearray_as_array!);
+        // https://stackoverflow.com/questions/74401312/javascript-convert-binary-string-to-blob
+        const blob = new Blob([byteArray], {type: resume.mime_type!});
+        const url = URL.createObjectURL(blob);
+        
+        // Create an <a href=... then programatically click
+        // - https://stackoverflow.com/questions/50694881/how-to-download-file-in-react-js
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute(
+          'download',
+          resume.file_name!,
+        );
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.style['display'] = 'none';
+        document.body.appendChild(link); // Append to html link element page
+        link.click(); // Start download
+        link.parentNode!.removeChild(link); // Clean up and remove the link
+    } else { // Fetch the resume file
+      await fetch(`/api/resume/${resume.id}`)
       .then((res) => { 
         if (!res.ok) {
           throw res;
@@ -71,7 +93,14 @@ export default function Page({ params }: { params: { id: string } }) {
           // https://stackoverflow.com/questions/74401312/javascript-convert-binary-string-to-blob
           const blob = new Blob([byteArray], {type: resumeVal.mime_type!});
           const url = URL.createObjectURL(blob);
-          // TODO: Add the url (or byte_array_as_array) to this job, then update the jobs list state.
+
+          // Just replace the job's resume data with resumeVal
+          // Then replace the job in jobs
+          // - This function can only be called when there's a job with a resume
+          job!.resume! = resumeVal;
+          const newJobs = jobs.filter((j: Job) => j.id !== job!.id);
+          newJobs.push(job);
+          setJobs(newJobs);
 
           // Create an <a href=... then programatically click
           // - https://stackoverflow.com/questions/50694881/how-to-download-file-in-react-js
@@ -83,6 +112,7 @@ export default function Page({ params }: { params: { id: string } }) {
           );
           link.target = '_blank';
           link.rel = 'noopener noreferrer';
+          link.style['display'] = 'none';
           document.body.appendChild(link); // Append to html link element page
           link.click(); // Start download
           link.parentNode!.removeChild(link); // Clean up and remove the link
@@ -94,7 +124,10 @@ export default function Page({ params }: { params: { id: string } }) {
       })
       .catch((err) => {
         console.log('Error getting resume!')
-      }) 
+      }); 
+    }
+
+    target.disabled = false;
   }
 
   if (job) {
@@ -332,8 +365,8 @@ export default function Page({ params }: { params: { id: string } }) {
                   alignSelf: 'center'
                 }}
                 onClick={
-                  () =>  {
-                    downloadResume(job.resume!);
+                  async (event) =>  {
+                    await downloadResume(job.resume!, event.currentTarget);
                   }
                 }
               >
