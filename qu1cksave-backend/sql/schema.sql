@@ -13,8 +13,4 @@ CREATE TABLE resume(id UUID UNIQUE PRIMARY KEY DEFAULT gen_random_uuid(), member
 -- FOREIGN KEYS
 -- https://www.postgresql.org/docs/current/tutorial-fk.html
 -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK
-
--- INNER JOIN
--- https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-inner-join/
 -- https://stackoverflow.com/questions/46184534/reference-to-foreign-key-row-postgresql
--- https://stackoverflow.com/questions/17434929/joining-two-tables-with-specific-columns

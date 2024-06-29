@@ -1,14 +1,5 @@
-// export interface Resume {
-//   id: string;
-//   member_id: string;
-//   job_id?: string;
-//   file_name: string;
-//   mime_type: string;
-//   bytearray_as_array?: Uint8Array;  
-//   url?: string;
-// }
-
-// TODO: Use this until SQL query is updated
+// string | null used since postgres query fills in empty columns with
+//   null open return (due to LEFT JOIN)
 export interface Resume {
   id: string | null;
   member_id: string | null;
@@ -16,7 +7,6 @@ export interface Resume {
   file_name: string | null;
   mime_type: string | null;
   bytearray_as_array?: Uint8Array;  
-  url?: string;
 }
 
 // Unused for now

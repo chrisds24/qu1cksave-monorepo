@@ -58,22 +58,6 @@ export class JobService {
     };
     const { rows } = await pool.query(query);
 
-    // FOR TESTING
-    // for (const job of rows) {
-    //   console.log(`---------- Job ${job.id} ----------`)
-    //   for (const key in job) {
-    //     console.log(`${key}: ${job[key]}`)
-    //     if (key == 'resume') {
-    //       const resume = job[key];
-    //       console.log('**** Resume ****')
-    //       for (const rkey in resume) {
-    //         console.log(`${rkey}: ${resume[rkey]}`)
-    //       }
-    //       console.log('************')
-    //     }
-    //   }
-    // }
-
     return rows as Job[];
   }
 
@@ -105,7 +89,7 @@ export class JobService {
     // const insert =
     //     "INSERT INTO products(cat_id, poster_id, image_id, title, description, price) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *";
     const insert = txt + txtVals;
-    // insert when all values are filled
+    // What insert looks like when all values are filled
     // const insert =
     //     "INSERT INTO job(member_id, title, company_name, job_description, notes, is_remote, country, us_state, city, date_applied, date_posted, job_status, links, found_from) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *"
     const query = {

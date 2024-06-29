@@ -62,12 +62,11 @@ export class JobController extends Controller {
 }
 
 // ================== DELETE LATER ========================
-// This is code to generate jobs for the database
-//
 // View processes listening to 3010:    lsof -i :3010
 // Kill process 37905:                  kill -9 37905
 // - Replace 37905 with whatever gets shown by the lsof command above
 
+// The code below is to generate jobs for the database
 
 // function getRandomInt(min: number, max: number) {
 //   const minCeiled = Math.ceil(min);

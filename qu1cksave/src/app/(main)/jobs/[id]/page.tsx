@@ -45,26 +45,11 @@ export default function Page({ params }: { params: { id: string } }) {
   // WARNING !!! Reason why I didn't use getSignedUrl:
   //   Putting the signedUrl returned by getSignedUrl into the download button
   //   shows the credentials on hover.
-  // - https://stackoverflow.com/questions/50694881/how-to-download-file-in-react-js
-  //   -- Using Content-Disposition to download upon API call response
 
   const downloadResume = async (resume: Resume) => {
-    // TODO:
-    // 1.) Read Content-Disposition
-    // 2.) API probably needs to return blob, then set its Content-Disposition
-    // 3.) Need to change API call
-    //     - Get resume from database using the id path parameter + the user's id in the request.
-    //       (Look at how create in the job controller does it)
-    //     - If resume is found, use the id to make the S3 call.
-    //     - Return as a Blob
-    //     - Note: So the API call to get a resume won't use the Resume type as its return
-    //       The Resume type is still used for the resume that we attach to jobs when getting jobs
-
     // TODO: To download from "cache", just have a conditional here that
-    //   checks the job's resume's url field. If it has one, then just use window.open()
-    //   to download from that instead of making the API call.
-    //   OR maybe check the job's resume's bytearray_as_array field instead
-    //   then create the url each time.
+    //   checks the job's resume's bytearray_as_array field, then create a url
+    //   from that if it exists.
     // NOTE: One issue with the "caching" in state is that it will use a lot of RAM.
     // IMPORTANT: Also, I noticed that the blob stays in memory even without storing
     //   it in state (gone after refresh). How do I clear this out?
@@ -82,24 +67,29 @@ export default function Page({ params }: { params: { id: string } }) {
       .then((resumeVal: Resume | undefined) => {
         if (resumeVal) {
           // Convert the array into a byte array
-          // const byteArray = Uint8Array.from(resumeVal.bytearray_as_array);
           const byteArray = Uint8Array.from(resumeVal.bytearray_as_array!);
           // https://stackoverflow.com/questions/74401312/javascript-convert-binary-string-to-blob
-          // const blob = new Blob([byteArray], {type: resumeVal.mime_type});
           const blob = new Blob([byteArray], {type: resumeVal.mime_type!});
           const url = URL.createObjectURL(blob);
-          // TODO: Add the url to this job, then update the jobs list state.
-          //   Future download clicks downloads from that "cached" url instead
-          //   of making the API call.
-          // OR maybe store bytearray_as_array instead?
+          // TODO: Add the url (or byte_array_as_array) to this job, then update the jobs list state.
 
-          // https://stackoverflow.com/questions/69555158/http-response-with-content-disposition-doesnt-trigger-download
-          window.open(url); // window.open(url, 'Download'); also works
-          // Alternatives:
           // Create an <a href=... then programatically click
-          // - https://stackoverflow.com/questions/71843638/content-disposition-download-file-automatically
-          // - https://stackoverflow.com/questions/20830309/download-file-using-an-ajax-request/20830337#20830337
-          // 
+          // - https://stackoverflow.com/questions/50694881/how-to-download-file-in-react-js
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute(
+            'download',
+            resumeVal.file_name!,
+          );
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          document.body.appendChild(link); // Append to html link element page
+          link.click(); // Start download
+          link.parentNode!.removeChild(link); // Clean up and remove the link
+
+          // Alternative:
+          // https://stackoverflow.com/questions/69555158/http-response-with-content-disposition-doesnt-trigger-download
+          // window.open(url);
         }
       })
       .catch((err) => {
