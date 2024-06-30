@@ -15,5 +15,5 @@ export interface NewResume {
   job_id?: string;
   file_name: string;
   mime_type: string;
-  file: File; // May need to change
+  bytearray_as_array: Uint8Array;  
 }

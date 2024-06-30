@@ -33,3 +33,10 @@ export async function getObject(key: string) {
   return response;
 }
 
+// TODO: putObject 
+// - https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/command/PutObjectCommand/
+// - I can just set Bucket, Key, and Body for the input.
+// - For the Body, I can just have a Uint8Array
+//   -- https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/Package/-smithy-types/TypeAlias/StreamingBlobPayloadInputTypes/
+//      + NodeJsRuntimeStreamingBlobPayloadInputTypes includes a Uint8Array
+

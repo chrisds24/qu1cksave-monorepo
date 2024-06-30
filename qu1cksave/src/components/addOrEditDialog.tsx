@@ -643,7 +643,75 @@ export default function AddOrEditDialog() {
             marginBottom: 2
           }}
         />
-        {/* accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" */}
+        {/* 
+          TODO: View this GitHub issue by me: https://github.com/users/chrisds24/projects/2/views/1?pane=issue&itemId=68365376
+          1.) User uploads file here
+              - MUI has a nice-looking file upload example: https://mui.com/material-ui/react-button/
+              - IMPORTANT: For now, only accept docx and pdf files.
+              - When user uploads the file, I can get the File object from the input
+              - NOTE: There's some options to change the behavior when uploading a file.
+                -- From some limited testing I did: After the user uploads a file, then starts the upload process
+                   again (by clicking upload which opens the file search window), then cancels it, the file that
+                   was uploaded earlier gets removed. NEED TO CHANGE THIS
+              - Using MUI's example, the name of the uploaded file is hidden. This is what I want. However, I
+                still want a state that keeps track of the name of the currently uploaded file. Not only is this
+                helpful to the user, but this state is used to check if the original file that we got from the
+                job in the database was changed during EDIT.
+                This means that I need to process the File even before the user clicks upload.
+              - NOTE: When the upload process is happening, the submit button should be disabled.
+
+          2.) Submit is clicked. File will need to be processed.
+                -- Both ADD and EDIT mode use a NewJob with a resume field of type NewResume.          
+                -- Need to get its file name, mime type, and convert it to an array byte array (bytearray_as_array)
+                   + https://stackoverflow.com/questions/18299806/how-to-check-file-mime-type-with-javascript-before-upload
+                -- If there is a file to be processed, we are able to fill all the fields with the info we have
+
+                * For ADD, there will be two cases
+                A.) Name and input field are BOTH empty. Send a NewJob with no resume field.
+                B.) ... are BOTH filled. Send a NewJob with a resume (NewResume) field.
+                *** ADD will use a POST request
+
+                * For EDIT, there will be 3 cases:
+                A.) Name field is filled while resume field is empty.
+                    + Case for editing a job with a resume but not updating its resume.
+                    + Send a NewJob with no resume field, but has a resume_id.
+                      IMPORTANT: Have keepResume field that is set to true (So the API can differentiate it from case 3)
+                B.) Name and resume fields are both filled. Two subcases:
+                    a.) The job (dialogJob) does not have a resume_id and a null resume field.
+                        This is the case for when we're adding a resume to the job for the first time.
+                        Send a NewJob with a resume (NewResume) field.
+                          But both NewJob (and the NewResume won't have a resume_id.
+                    b.) The job has a resume_id and a non-null resume field.
+                        This is the case for when we're editing a job's resume.
+                        Send a NewJob with a resume (NewResume) field.
+                          Both NewJob and NewResume will have a resume_id.
+                          (Note that NewResume will retain the old resume's resume_id. It won't get a new
+                            database entry, but will just replace the old one with its details.)
+                    *** I'll just use the NewJob's resume_id to check between the two cases
+                C.) Name and resume fields are both empty. Two subcases:
+                    a.) Job does not have a resume in the first place.
+                        Send a NewJob with an empty resume field and no resume_id.
+                    b.) We are deleting the job's resume.
+                        Send a NewJob with an empty resume field but with a resume_id.
+                        IMPORTANT: Have a keepResume field that is set to false.
+                *** EDIT will use a PUT request.
+
+          3.) NewJob is to the API.
+              - For ADD, it's simple. Just two cases and goes to the POST route
+              - For EDIT, all go to the PUT route and there's plenty of cases:
+                The API relies on a combination of a NewResume field in NewJob, a resume_id in NewJob, and the value of keepResume.
+                1.) No NewResume, no resume_id (Case C.a):
+                -- Job has no resume to edit/remove
+                2.) No NewResume, has resume_id, keepResume is true (Case A):
+                -- Job has a resume, but we won't edit/remove it
+                3.) No NewResume, has resume_id, keepResume is false (Case C.b):
+                -- Job has a resume, which we will delete.
+                4.) Has NewResume, but no resume_id (Case B.a):
+                -- We're adding a resume to the job
+                5.) Has NewResume and a resume_id (Case B.b):
+                -- We're editing the resume specified by resume_id                            
+        */}
+
         {/* <Box>
           <label htmlFor="avatar">
             <Typography sx={{color: '#ffffff'}} display={'inline'}>
