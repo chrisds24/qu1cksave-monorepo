@@ -6,7 +6,9 @@ export interface Resume {
   job_id?: string | null;
   file_name: string | null;
   mime_type: string | null;
-  bytearray_as_array?: Uint8Array;  
+  // For some reason this works even though the API returns a number[]
+  //   bytearray_as_array?: Uint8Array;
+  bytearray_as_array?: number[];
 }
 
 // Unused for now
@@ -15,5 +17,6 @@ export interface NewResume {
   job_id?: string;
   file_name: string;
   mime_type: string;
-  bytearray_as_array: Uint8Array;  
+  // bytearray_as_array: Uint8Array;  
+  bytearray_as_array?: number[];
 }

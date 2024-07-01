@@ -10,6 +10,8 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import dayjs, {Dayjs} from 'dayjs'
 import { NewJob } from "@/types/job";
 import { YearMonthDate } from "@/types/common";
+import FileUploadSection from "./fileUploadSection";
+import { NewResume } from "@/types/resume";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
@@ -77,11 +79,11 @@ export default function AddOrEditDialog() {
   const [links, setLinks] = useState<JSX.Element[]>([link1]);
 
   useEffect(() => {
-    if (!isAdd && dialogJob) {
-      setRemote(dialogJob.is_remote)
-      setStatus(dialogJob.job_status)
-      if (dialogJob.us_state) setState(dialogJob.us_state)
-      if (dialogJob.links) setLinks(existingLinks)
+    if (!isAdd && dialogJob) { // In edit mode and the job has been loaded
+      setRemote(dialogJob.is_remote);
+      setStatus(dialogJob.job_status);
+      if (dialogJob.us_state) setState(dialogJob.us_state);
+      if (dialogJob.links) setLinks(existingLinks);
     }
   }, [isAdd, dialogJob]);
 
@@ -155,16 +157,41 @@ export default function AddOrEditDialog() {
     if (linksList.length > 0) newJob['links'] = linksList;
 
     // Resume
-    // TODO: In the documents page (LATER), I can use an iframe to embed the file into
-    // Links:
-    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file
-    // https://developer.mozilla.org/en-US/docs/Web/API/File
-    // https://developer.mozilla.org/en-US/docs/Web/API/FileReader
-    // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsArrayBuffer
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
-    // https://www.quora.com/Can-we-store-a-PDF-in-a-database
+    //    TODO: In the documents page (LATER), I can use an iframe to embed the file into
 
-    // const resume = data.get('resume') as File;
+    // TODO: Remove this comment section later
+    // -- Both ADD and EDIT mode use a NewJob with a resume field of type NewResume.          
+    // -- Need to get its file name, mime type, and convert it to an array byte array (bytearray_as_array)
+    //    + https://stackoverflow.com/questions/18299806/how-to-check-file-mime-type-with-javascript-before-upload
+    // -- If there is a file to be processed, we are able to fill all the fields with the info we have
+    // 
+    // * For ADD, there will be two cases
+    // A.) Name and input field are BOTH empty. Send a NewJob with no resume field.
+    // B.) ... are BOTH filled. Send a NewJob with a resume (NewResume) field.
+    // *** ADD will use a POST request
+
+    if (isAdd) { // TODO: Remove this conditional later
+      const resumeInput = document!.getElementById("inputFile") as HTMLInputElement;
+      const resumeFiles = resumeInput.files;
+      // Don't need to wrap in isAdd conditional later
+      if (resumeFiles && resumeFiles.length > 0) {
+        const resumeFile = resumeFiles[0];
+        // https://developer.mozilla.org/en-US/docs/Web/API/Blob
+        // https://bun.sh/guides/read-file/uint8array
+        // https://bun.sh/guides/binary/blob-to-typedarray (I used this)
+        const blob = new Blob([resumeFile],{type: resumeFile.type})
+        const byteArray = new Uint8Array(await blob.arrayBuffer());
+        const arr = Array.from(byteArray);
+        const newResume: NewResume = {
+          member_id: dialogJob.member_id,
+          job_id: dialogJob.id,
+          file_name: resumeFile.name,
+          mime_type: resumeFile.type,
+          bytearray_as_array: arr   
+        }
+        newJob.resume = newResume;
+      }
+    }
 
     let fetchString = '/api/job';
     if (!isAdd) {
@@ -712,19 +739,8 @@ export default function AddOrEditDialog() {
                 -- We're editing the resume specified by resume_id                            
         */}
 
-        {/* <Box>
-          <label htmlFor="avatar">
-            <Typography sx={{color: '#ffffff'}} display={'inline'}>
-              {'Upload Resume:  '}
-            </Typography>
-          </label>
-          <input
-            type="file"
-            id="resume"
-            name="resume"
-            accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-          />
-        </Box> */}
+        <FileUploadSection />
+
       </DialogContent>
       <DialogActions>
         <Button sx={{color: '#ffffff'}} onClick={handleClose}>Cancel</Button>
