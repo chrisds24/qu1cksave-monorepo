@@ -3,8 +3,6 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { Box, Typography } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
-import { JobsContext } from '@/app/(main)/jobs/layout';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -18,41 +16,32 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-export default function FileUploadSection() {
-  const { dialogJob } = useContext(JobsContext);
-  const [resumeName, setResumeName] = useState<string>('');
-
-  useEffect(() => {
-    if (dialogJob) {
-      if (dialogJob.resume && dialogJob.resume.file_name) setResumeName(dialogJob.resume.file_name);
-    }
-  }, [dialogJob]);
-
+export default function FileUploadSection(props: any) {
   const changeFileInput = (event: any) => {
     // https://github.com/microsoft/TypeScript/issues/31816
     const target = event.target as HTMLInputElement;
     const files = target.files;
     if (files && files.length > 0) {
       const file = files[0];
-      setResumeName(file.name);
+      props.setFileName(file.name);
     } else { // File was removed
       // Before updating cancel behavior:
       // - When you upload a file, then try uploading again but cancel that one, the file you
-      //   uploaded earlier gets removed, which triggers this.
+      //   uploaded earlier gets removed, which triggers this change event.
       // - However, when you haven't uploaded a file yet (regardless of whether dialogJob had
       //   a resume name or not), changeFileInput will not trigger if you try uploading then
       //   cancelling it.
-      setResumeName('N/A');
+      props.setFileName('N/A');
     }
   };
 
   return (
     <Box>
       <Typography display={'inline'} color='#ffffff' sx={{fontSize: '19px', fontWeight: 'bold', marginRight: 2}}>
-        {'Resume:'} 
+        {props.fileType === 'resume' ? 'Resume:' : 'Cover Letter:'} 
       </Typography>
       <Typography display={'inline'} color='#ffffff' sx={{fontSize: '19px', marginRight: 2}}>
-        {resumeName ? resumeName : 'N/A'} 
+        {props.fileName ? props.fileName : 'N/A'} 
       </Typography>   
       <Button
         component="label"
@@ -73,8 +62,8 @@ export default function FileUploadSection() {
         Upload
         <VisuallyHiddenInput
           type="file"
-          id="resumeInput"
-          name="resumeInput"
+          id={`${props.fileType}Input`}
+          name={`${props.fileType}Input`}
           accept=".pdf,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           onChange={changeFileInput}
         />
@@ -82,17 +71,3 @@ export default function FileUploadSection() {
     </Box>
   );
 }
-
-{/* <Box>
-  <label htmlFor="avatar">
-    <Typography sx={{color: '#ffffff'}} display={'inline'}>
-      {'Upload Resume:  '}
-    </Typography>
-  </label>
-  <input
-    type="file"
-    id="resume"
-    name="resume"
-    accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-  />
-</Box> */}

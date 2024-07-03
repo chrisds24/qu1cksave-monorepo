@@ -77,6 +77,7 @@ export default function AddOrEditDialog() {
   const [status, setStatus] = useState('Not Applied');
   const [state, setState] = useState('');
   const [links, setLinks] = useState<JSX.Element[]>([link1]);
+  const [resumeName, setResumeName] = useState<string>('');
 
   useEffect(() => {
     if (!isAdd && dialogJob) { // In edit mode and the job has been loaded
@@ -84,6 +85,9 @@ export default function AddOrEditDialog() {
       setStatus(dialogJob.job_status);
       if (dialogJob.us_state) setState(dialogJob.us_state);
       if (dialogJob.links) setLinks(existingLinks);
+      // dialogJob.resume.file_name is needed since dialog.resume could be an empty {}
+      //   due to how the postgresql query is constructed
+      if (dialogJob.resume.file_name) setResumeName(dialogJob.resume.file_name);
     }
   }, [isAdd, dialogJob]);
 
@@ -95,6 +99,7 @@ export default function AddOrEditDialog() {
     setLinks([link1]);
     setDialogJob(undefined);
     setIsAdd(true);
+    setResumeName('N/A');
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -158,22 +163,20 @@ export default function AddOrEditDialog() {
 
     // Resume
     //    TODO: In the documents page (LATER), I can use an iframe to embed the file into
-
     // TODO: Remove this comment section later
     // -- Both ADD and EDIT mode use a NewJob with a resume field of type NewResume.          
-    // -- Need to get its file name, mime type, and convert it to an array byte array (bytearray_as_array)
+    // -- Need to get its file name, mime type, then convert the File to a byte array and then a number array (bytearray_as_array)
     //    + https://stackoverflow.com/questions/18299806/how-to-check-file-mime-type-with-javascript-before-upload
-    // -- If there is a file to be processed, we are able to fill all the fields with the info we have
+    // -- With the File we just processed, we are able to fill all the newResume fields with the info we have
     // 
     // * For ADD, there will be two cases
     // A.) Name and input field are BOTH empty. Send a NewJob with no resume field.
     // B.) ... are BOTH filled. Send a NewJob with a resume (NewResume) field.
     // *** ADD will use a POST request
 
-    if (isAdd) { // TODO: Remove this conditional later
-      const resumeInput = document!.getElementById("inputFile") as HTMLInputElement;
+    if (isAdd) { // TODO: Remove this conditional later once job edit resume features are finished
+      const resumeInput = document!.getElementById('resumeInput') as HTMLInputElement;
       const resumeFiles = resumeInput.files;
-      // Don't need to wrap in isAdd conditional later
       if (resumeFiles && resumeFiles.length > 0) {
         const resumeFile = resumeFiles[0];
         // https://developer.mozilla.org/en-US/docs/Web/API/Blob
@@ -184,7 +187,7 @@ export default function AddOrEditDialog() {
         const arr = Array.from(byteArray);
         const newResume: NewResume = {
           member_id: dialogJob.member_id,
-          job_id: dialogJob.id,
+          // job_id: dialogJob.id,
           file_name: resumeFile.name,
           mime_type: resumeFile.type,
           bytearray_as_array: arr   
@@ -739,7 +742,11 @@ export default function AddOrEditDialog() {
                 -- We're editing the resume specified by resume_id                            
         */}
 
-        <FileUploadSection />
+        <FileUploadSection
+          fileType={'resume'}
+          fileName={resumeName}
+          setFileName={setResumeName}
+        />
 
       </DialogContent>
       <DialogActions>
