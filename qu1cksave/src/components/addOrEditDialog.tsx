@@ -87,7 +87,7 @@ export default function AddOrEditDialog() {
       if (dialogJob.links) setLinks(existingLinks);
       // dialogJob.resume.file_name is needed since dialog.resume could be an empty {}
       //   due to how the postgresql query is constructed
-      if (dialogJob.resume.file_name) setResumeName(dialogJob.resume.file_name);
+      if (dialogJob.resume && dialogJob.resume.file_name) setResumeName(dialogJob.resume.file_name);
     }
   }, [isAdd, dialogJob]);
 
@@ -99,7 +99,7 @@ export default function AddOrEditDialog() {
     setLinks([link1]);
     setDialogJob(undefined);
     setIsAdd(true);
-    setResumeName('N/A');
+    setResumeName('');
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -174,26 +174,24 @@ export default function AddOrEditDialog() {
     // B.) ... are BOTH filled. Send a NewJob with a resume (NewResume) field.
     // *** ADD will use a POST request
 
-    if (isAdd) { // TODO: Remove this conditional later once job edit resume features are finished
-      const resumeInput = document!.getElementById('resumeInput') as HTMLInputElement;
-      const resumeFiles = resumeInput.files;
-      if (resumeFiles && resumeFiles.length > 0) {
-        const resumeFile = resumeFiles[0];
-        // https://developer.mozilla.org/en-US/docs/Web/API/Blob
-        // https://bun.sh/guides/read-file/uint8array
-        // https://bun.sh/guides/binary/blob-to-typedarray (I used this)
-        const blob = new Blob([resumeFile],{type: resumeFile.type})
-        const byteArray = new Uint8Array(await blob.arrayBuffer());
-        const arr = Array.from(byteArray);
-        const newResume: NewResume = {
-          member_id: dialogJob.member_id,
-          // job_id: dialogJob.id,
-          file_name: resumeFile.name,
-          mime_type: resumeFile.type,
-          bytearray_as_array: arr   
-        }
-        newJob.resume = newResume;
+    const resumeInput = document!.getElementById('resumeInput') as HTMLInputElement;
+    const resumeFiles = resumeInput.files;
+    if (resumeFiles && resumeFiles.length > 0) {
+      const resumeFile = resumeFiles[0];
+      // https://developer.mozilla.org/en-US/docs/Web/API/Blob
+      // https://bun.sh/guides/read-file/uint8array
+      // https://bun.sh/guides/binary/blob-to-typedarray (I used this)
+      const blob = new Blob([resumeFile],{type: resumeFile.type})
+      const byteArray = new Uint8Array(await blob.arrayBuffer());
+      const arr = Array.from(byteArray);
+      const newResume: NewResume = {
+        // member_id: dialogJob.member_id,
+        // job_id: dialogJob.id,
+        file_name: resumeFile.name,
+        mime_type: resumeFile.type,
+        bytearray_as_array: arr   
       }
+      newJob.resume = newResume;
     }
 
     let fetchString = '/api/job';

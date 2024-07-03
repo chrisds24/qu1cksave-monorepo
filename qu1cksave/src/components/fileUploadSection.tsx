@@ -31,7 +31,7 @@ export default function FileUploadSection(props: any) {
       // - However, when you haven't uploaded a file yet (regardless of whether dialogJob had
       //   a resume name or not), changeFileInput will not trigger if you try uploading then
       //   cancelling it.
-      props.setFileName('N/A');
+      props.setFileName('');
     }
   };
 

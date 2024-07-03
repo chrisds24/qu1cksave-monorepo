@@ -71,19 +71,19 @@ export class JobService {
 
     // Add the new resume to the resume table, if there's one
     const newResume = newJob.resume;
-    let resume;
+    let resume = undefined;
     if (newResume) {
       // member_id, job_id?, file_name, mime_type
       const insert = "INSERT INTO resume(member_id, file_name, mime_type) VALUES ($1, $2, $3) RETURNING *";
       const query = {
         text: insert,
-        values: [newResume.member_id, newResume.file_name, newResume.mime_type],
+        values: [memberId, newResume.file_name, newResume.mime_type],
       };
       try {
         const { rows } = await pool.query(query);
         resume = rows[0];
-      } catch(e) {
-        console.log(e);
+      } catch {
+        console.log('Insert resume unsuccessful');
         return undefined;
       }
     }
@@ -131,28 +131,28 @@ export class JobService {
       text: insert,
       values: vals,
     };
-    let job;
+    let job: Job | undefined = undefined;
     try {
       const { rows } = await pool.query(query);
       job = rows[0];
-    } catch(e) {
+    } catch {
       // TODO: Need to undo the resume insert into the resume table
-      console.log(e);
+      console.log('Insert job unsuccessful.');
       return undefined;
     }
 
     // If there's a resume, add the file to S3
     if (resume && newResume) {
-      job.resume = resume // Add the resume to the job
+      job!.resume = resume // Add the resume to the job
 
       // Make the S3 call to add the resume file
       const s3Key = s3.getResumeS3Key(resume.id, resume.mime_type)
       try {
         const byteArray = Uint8Array.from(newResume.bytearray_as_array!);
         await s3.putObject(s3Key, byteArray);
-      } catch(e) {
+      } catch {
         // TODO: Need to undo add resume and job to database
-        console.log(e);
+        console.log('Insert into S3 unsucessful.');
         return undefined;
       }
     }

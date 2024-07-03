@@ -10,7 +10,9 @@ export interface Resume {
 }
 
 export interface NewResume {
-  member_id: string;
+  // There's a ? in the case that we're adding a new job
+  //   Though, this isn't needed since we should be using the request.user.id from the request
+  member_id?: string;
   job_id?: string;
   file_name: string;
   mime_type: string;
