@@ -14,20 +14,8 @@ export class ResumeService {
     if (rows.length == 1) {
       try {
         const resume = rows[0];
-
-        // TODO: Need a better way of doing this instead of appending .docx, .pdf, etc.
-        let extension = '';
-        switch (resume.mime_type) {
-          case 'application/pdf':
-            extension = '.pdf';
-            break;
-          case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-            extension = '.docx';
-            break;
-          default:
-            extension = '.pdf';
-        }
-        const data = await s3.getObject(resume.id + extension);
+        const s3Key = s3.getResumeS3Key(resume.id, resume.mime_type);
+        const data = await s3.getObject(s3Key);
 
         if (data && data.Body) {
           const bodyAsByteArray = await data.Body.transformToByteArray();

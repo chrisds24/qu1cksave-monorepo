@@ -1,4 +1,4 @@
-import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3"; // ES Modules import
+import { S3Client, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3"; // ES Modules import
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const bucketName = process.env.BUCKET_NAME as string;
@@ -33,10 +33,39 @@ export async function getObject(key: string) {
   return response;
 }
 
-// TODO: putObject 
-// - https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/command/PutObjectCommand/
-// - I can just set Bucket, Key, and Body for the input.
-// - For the Body, I can just have a Uint8Array
-//   -- https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/Package/-smithy-types/TypeAlias/StreamingBlobPayloadInputTypes/
-//      + NodeJsRuntimeStreamingBlobPayloadInputTypes includes a Uint8Array
+export async function putObject(key: string, byteArray: Uint8Array) {
+  // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/command/PutObjectCommand/
+  // - I can just set Bucket, Key, and Body for the input.
+  // - For the Body, I can just have a Uint8Array.
+  //   -- https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/Package/-smithy-types/TypeAlias/StreamingBlobPayloadInputTypes/
+  //      + NodeJsRuntimeStreamingBlobPayloadInputTypes includes a Uint8Array
+  const input = { // PutObjectRequest
+    'Bucket': bucketName, // required
+    'Key': key, // required
+    'Body': byteArray
+  };
+
+  const command = new PutObjectCommand(input);
+
+  const response = await client.send(command);
+  console.log(`Called PutObjectCommand for S3`);
+  return response;
+}
+
+export function getResumeS3Key(id: string, mimeType: string): string {
+    // TODO: Need a better way of doing this instead of appending .docx, .pdf, etc.
+    let extension = '';
+    switch (mimeType) {
+      case 'application/pdf':
+        extension = '.pdf';
+        break;
+      case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+        extension = '.docx';
+        break;
+      default:
+        extension = '.pdf';
+    }
+
+    return id + extension;
+}
 

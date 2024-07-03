@@ -1,5 +1,6 @@
 import { Job, NewJob } from ".";
 import { pool } from "../db";
+import * as s3 from "../resume/s3";
 
 // No id, member_id, and date_saved since those are unchangeable
 const keys = [
@@ -46,7 +47,7 @@ export class JobService {
       ) AS resume
     FROM 
       job j
-      LEFT JOIN resume r ON j.resume_id = r.id AND j.member_id = r.member_id AND j.id = r.job_id`;
+      LEFT JOIN resume r ON j.resume_id = r.id AND j.member_id = r.member_id`;
 
     if (id) {
       select += ' WHERE j.member_id = $1';
@@ -62,13 +63,40 @@ export class JobService {
   }
 
   public async create(newJob: NewJob, memberId: string): Promise<Job | undefined> {
-    // id, member_id, title, company_name, job_description, notes, is_remote, country,
-    // us_state, city, date_saved, date_applied, date_posted, job_status, links, found_from
+    // 1.) Add the new resume to the resume table.
+    // 2.) Use the returned resume's id as newJob's resume_id
+    // 3.) Add the new job to the job table
+    // 4.) Add the file to S3
+    // 5.) Return the job with resume data attached
+
+    // Add the new resume to the resume table, if there's one
+    const newResume = newJob.resume;
+    let resume;
+    if (newResume) {
+      // member_id, job_id?, file_name, mime_type
+      const insert = "INSERT INTO resume(member_id, file_name, mime_type) VALUES ($1, $2, $3) RETURNING *";
+      const query = {
+        text: insert,
+        values: [newResume.member_id, newResume.file_name, newResume.mime_type],
+      };
+      try {
+        const { rows } = await pool.query(query);
+        resume = rows[0];
+      } catch(e) {
+        console.log(e);
+        return undefined;
+      }
+    }
+
+    // Add the new job to the job table
+    //   id, member_id, title, company_name, job_description, notes, is_remote, country,
+    //   us_state, city, date_saved, date_applied, date_posted, job_status, links, found_from
     let txt = 'INSERT INTO job(member_id, ';
     let count = 2;
     let txtVals = 'VALUES ($1, ';
     const vals: any[] = [memberId];
-    for (const key in newJob) {
+    for (const key in newJob) {     
+      if (key === 'resume') continue // Skip resume for now
       txt += `${key}, `;
       txtVals += `$${count}, `;
       count++;
@@ -81,6 +109,13 @@ export class JobService {
         newJob[key as keyof typeof newJob]
       )
     }
+    // Add resume_id to the query here if there was a resume that was added
+    if (resume) {
+      txt += 'resume_id, ';
+      txtVals += `$${count}, `;
+      count++;
+      vals.push(resume.id);
+    }
     // txt.length-2 since we want to remove the final comma and space
     txt = txt.slice(0, txt.length-2) + ') ';
     txtVals = txtVals.slice(0, txtVals.length-2) + ') RETURNING *';
@@ -88,21 +123,41 @@ export class JobService {
     // Example:
     // const insert =
     //     "INSERT INTO products(cat_id, poster_id, image_id, title, description, price) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *";
-    const insert = txt + txtVals;
-    // What insert looks like when all values are filled
+    // What insert looks like when all values are filled:
     // const insert =
     //     "INSERT INTO job(member_id, title, company_name, job_description, notes, is_remote, country, us_state, city, date_applied, date_posted, job_status, links, found_from) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *"
+    const insert = txt + txtVals;
     const query = {
       text: insert,
       values: vals,
     };
+    let job;
     try {
       const { rows } = await pool.query(query);
-      return rows[0];
+      job = rows[0];
     } catch(e) {
+      // TODO: Need to undo the resume insert into the resume table
       console.log(e);
       return undefined;
     }
+
+    // If there's a resume, add the file to S3
+    if (resume && newResume) {
+      job.resume = resume // Add the resume to the job
+
+      // Make the S3 call to add the resume file
+      const s3Key = s3.getResumeS3Key(resume.id, resume.mime_type)
+      try {
+        const byteArray = Uint8Array.from(newResume.bytearray_as_array!);
+        await s3.putObject(s3Key, byteArray);
+      } catch(e) {
+        // TODO: Need to undo add resume and job to database
+        console.log(e);
+        return undefined;
+      }
+    }
+
+    return job;
   }
 
   public async edit(newJob: NewJob, memberId: string, jobId: string): Promise<Job | undefined> {
