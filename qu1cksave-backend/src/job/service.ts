@@ -161,6 +161,93 @@ export class JobService {
   }
 
   public async edit(newJob: NewJob, memberId: string, jobId: string): Promise<Job | undefined> {
+    // 1.) First, insert, update, or delete the specified resume in the resume table
+    // 2.) Either add or remove the resume_id for the specified job in the job table if appropriate
+    //     - When updating a job's resume (when the job already has one), we don't
+    //       change its resume_id
+    // 3.) Make the S3 call to add, replace, or delete the file from S3
+    //     - When adding and replacing, we use putObjectCommand for both
+
+    // ------------------- Update resume table -------------------------
+
+    // For EDIT, all go to the PUT route and there's plenty of cases:
+    //   The API relies on a combination of a NewResume field in NewJob, a resume_id in NewJob, and the value of keepResume.
+    // 1.) No NewResume, no resume_id (Case C.a):
+    // -- Job has no resume to edit/remove
+    // 2.) No NewResume, has resume_id, keepResume is true (Case A):
+    // -- Job has a resume, but we won't edit/remove it
+    // 3.) No NewResume, has resume_id, keepResume is false (Case C.b):
+    // -- Job has a resume, which we will delete.
+    // 4.) Has NewResume, but no resume_id (Case B.a):
+    // -- We're adding a resume to the job
+    // 5.) Has NewResume and a resume_id (Case B.b):
+    // -- We're editing the resume specified by resume_id
+    
+    const newResume = newJob.resume;
+    const resumeId = newJob.resume_id;
+    // resId is used later to decide if we're adding or removing a resume_id from a job
+    let resId: string | undefined = undefined;
+    // newJob does not have a resume field, so we're either keeping or deleting an existing one
+    //   or there isn't a resume in the first place
+    if (!newResume) {
+      // When newJob doesn't have a resume_id, the job doesn't have a resume in the first place
+      // Otherwise, we're either keeping or deleting the current one
+      if (resumeId) { 
+        // If we're keeping the old resume, there's nothing to do
+        // Otherwise, we delete the current one
+        if (!newJob.keepResume) {
+          // DELETE from resume table
+          const remove = "DELETE FROM resume WHERE id = $1 AND member_id = $2 RETURNING *";
+          const query = {
+            text: remove,
+            values: [resumeId, memberId],
+          };
+          try {
+            await pool.query(query);
+            // resId stays undefined
+          } catch {
+            console.log('Delete resume unsuccessful');
+            return undefined;
+          }
+        }
+      }
+    } else { // newJob has a resume field, so we're either adding a resume to the job or editing an existing one
+      if (!resumeId) {
+        // INSERT into resume table
+        const insert = "INSERT INTO resume(member_id, file_name, mime_type) VALUES ($1, $2, $3) RETURNING *";
+        const query = {
+          text: insert,
+          values: [memberId, newResume.file_name, newResume.mime_type],
+        };
+        try {
+          const { rows } = await pool.query(query);
+          resId = rows[0].id;
+        } catch {
+          console.log('Insert resume unsuccessful');
+          return undefined;
+        }
+      } else {
+        // UPDATE resume table
+        // id, member_id, job_id, file_name, mime_type, bytearray_as_array   Resume properties
+        const update = 'UPDATE resume SET file_name = $1, mime_type = $2 WHERE id = $3 AND member_id = $4 RETURNING *'
+        const query = {
+          text: update,
+          values: [newResume.file_name, newResume.mime_type, resumeId, memberId],
+        };
+        try {
+          const { rows } = await pool.query(query);
+          resId = rows[0].id;
+        } catch {
+          console.log('Update resume unsuccessful');
+          return undefined;
+        }
+      }
+    }
+
+    // ------------------- Update job table -------------------------
+    // Update example:
+    //   UPDATE resume SET file_name = $1, mime_type = $2 WHERE id = $3 AND member_id = $4 RETURNING *
+
     // 'title', 'company_name', 'job_description', 'notes', 'is_remote', 'country',
     // 'us_state', 'city', 'date_applied', 'date_posted', 'job_status', 'links', 'found_from'
     let txt = 'UPDATE job SET ';
@@ -179,6 +266,16 @@ export class JobService {
         txt +=  `${key} = NULL, `;
       }
     }
+
+    // Update resume_id
+    if (resId) {
+      txt += `resume_id = $${count}, `;
+      count++;
+      vals.push(resId);
+    } else {
+      txt +=  'resume_id = NULL, ';
+    }
+
     // Remove the final comma and space then add remaining part of the query
     txt = txt.slice(0, txt.length-2) + ` WHERE id = $${count} AND member_id = $${count + 1} RETURNING *`;
     vals.push(jobId);
@@ -195,6 +292,10 @@ export class JobService {
       console.log(e);
       return undefined;
     }
+
+    // TODO: s3 call to add, replace, or delete a file
+    //   IMPORTANT: When making s3 calls, I probably shouldn't include the extension
+    //     But only do this if you're able to upload and have the key just be the UUID
   }
 
   // public async getOne(id: string): Promise<Job | undefined> {
