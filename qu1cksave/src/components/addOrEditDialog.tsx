@@ -161,38 +161,74 @@ export default function AddOrEditDialog() {
     }
     if (linksList.length > 0) newJob['links'] = linksList;
 
-    // Resume
-    //    TODO: In the documents page (LATER), I can use an iframe to embed the file into
-    // TODO: Remove this comment section later
-    // -- Both ADD and EDIT mode use a NewJob with a resume field of type NewResume.          
-    // -- Need to get its file name, mime type, then convert the File to a byte array and then a number array (bytearray_as_array)
-    //    + https://stackoverflow.com/questions/18299806/how-to-check-file-mime-type-with-javascript-before-upload
-    // -- With the File we just processed, we are able to fill all the newResume fields with the info we have
-    // 
-    // * For ADD, there will be two cases
-    // A.) Name and input field are BOTH empty. Send a NewJob with no resume field.
-    // B.) ... are BOTH filled. Send a NewJob with a resume (NewResume) field.
-    // *** ADD will use a POST request
+    // -------------------- PROCESS RESUME --------------------
+    // TODO: In the documents page (LATER), I can use an iframe to embed the file into
 
     const resumeInput = document!.getElementById('resumeInput') as HTMLInputElement;
     const resumeFiles = resumeInput.files;
-    if (resumeFiles && resumeFiles.length > 0) {
-      const resumeFile = resumeFiles[0];
-      // https://developer.mozilla.org/en-US/docs/Web/API/Blob
-      // https://bun.sh/guides/read-file/uint8array
-      // https://bun.sh/guides/binary/blob-to-typedarray (I used this)
-      const blob = new Blob([resumeFile],{type: resumeFile.type})
-      const byteArray = new Uint8Array(await blob.arrayBuffer());
-      const arr = Array.from(byteArray);
-      const newResume: NewResume = {
-        // member_id: dialogJob.member_id,
-        // job_id: dialogJob.id,
-        file_name: resumeFile.name,
-        mime_type: resumeFile.type,
-        bytearray_as_array: arr   
+
+    // For ADD and EDIT mode
+    // Note that resumeFiles will always be true regardless if there's a file uploaded or not.
+    if (resumeFiles) { // There's a resume file in the resume input field
+      if (resumeFiles.length > 0) {
+        // Case ADD.B: resumeName === resumeFile.name, so we can just use either
+
+        const resumeFile = resumeFiles[0];
+        // https://developer.mozilla.org/en-US/docs/Web/API/Blob
+        // https://bun.sh/guides/read-file/uint8array
+        // https://bun.sh/guides/binary/blob-to-typedarray (I used this)
+        const blob = new Blob([resumeFile],{type: resumeFile.type})
+        const byteArray = new Uint8Array(await blob.arrayBuffer());
+        const arr = Array.from(byteArray);
+        const newResume: NewResume = {
+          // Regarding member_id
+          // - When adding, there won't be a dialogJob
+          // - When editing, we can just use the one from the user's JWT during the request
+          // member_id: dialogJob.member_id, // IMPORTANT: I probably should remove this from NewResume
+          // job_id: dialogJob.id, // IMPORTANT: I'm removing job_id from NewResume
+          // resume_id: ... // Once again, can just get it from NewJob once we're in the backend
+          file_name: resumeFile.name,
+          mime_type: resumeFile.type,
+          bytearray_as_array: arr   
+        }
+
+        // Case EDIT.B.a and Case EDIT.B.b both go here
+        //   (SEE BELOW) Just need to either include the resume_id in the NewJob or not
+
+        newJob.resume = newResume;
+      } else {
+        // For EDIT MODE
+        // There's no resume to be processed, need to set keepResume
+        if (!isAdd) {
+          // Case EDIT.A: When the job has a resume, but user didn't change it.
+          // - If we used dialogJob.resume.file_name, this case would always be true
+          //   if the job had a resume from the beginning (WRONG BEHAVIOR)
+          if (resumeName) {
+            newJob.keepResume = true;
+            // (SEE BELOW) Also include the resume_id in the NewJob
+          } else { // Either the job had a resume and the user specified to delete it OR it never had one to begin with
+            // Case EDIT.C.b: Job had a resume, which is to be deleted
+            if (dialogJob.resume_id) { 
+              newJob.keepResume = false;
+              // (SEE BELOW) Also include the resume_id in the NewJob
+            }
+            // Case EDIT.C.a: No need to set keepResume if the job didn't have a resume to begin with
+            //   Also implies no resume_id
+          }
+        }
+        // Case ADD.A: No need to do anything if there's no uploaded resume
       }
-      newJob.resume = newResume;
     }
+
+    // For EDIT mode, include the resume_id in the NewJob if the job had one
+    // - Deals with the cases when we're not changing a job's resume(if it had
+    //   one in the first place), when we're deleting a job's resume, or we're
+    //   editing an existing one.
+    if (!isAdd && dialogJob && dialogJob.resume_id) {
+      newJob.resume_id = dialogJob.resumeId
+    }
+
+    // ------------------------------------------------------------
 
     let fetchString = '/api/job';
     if (!isAdd) {
@@ -671,6 +707,7 @@ export default function AddOrEditDialog() {
             marginBottom: 2
           }}
         />
+
         {/* 
           TODO: View this GitHub issue by me: https://github.com/users/chrisds24/projects/2/views/1?pane=issue&itemId=68365376
           1.) User uploads file here

@@ -56,4 +56,6 @@ export interface NewJob {
   job_status: string;
   links?: string[];
   found_from?: string;
+  // In job EDIT mode, used to determine if resume is to be deleted or not
+  keepResume?: boolean; 
 }
