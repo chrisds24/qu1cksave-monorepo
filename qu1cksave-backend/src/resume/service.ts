@@ -14,8 +14,9 @@ export class ResumeService {
     if (rows.length == 1) {
       try {
         const resume = rows[0];
-        const s3Key = s3.getResumeS3Key(resume.id, resume.mime_type);
-        const data = await s3.getObject(s3Key);
+        // const s3Key = s3.getResumeS3Key(resume.id, resume.mime_type);
+        // const data = await s3.getObject(s3Key);
+        const data = await s3.getObject(resume.id);
 
         if (data && data.Body) {
           const bodyAsByteArray = await data.Body.transformToByteArray();

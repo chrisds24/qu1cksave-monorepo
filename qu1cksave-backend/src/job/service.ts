@@ -147,10 +147,11 @@ export class JobService {
       job!.resume = resume // Add the resume to the job
 
       // Make the S3 call to add the resume file
-      const s3Key = s3.getResumeS3Key(resume.id, resume.mime_type)
+      // const s3Key = s3.getResumeS3Key(resume.id, resume.mime_type)
       try {
         const byteArray = Uint8Array.from(newResume.bytearray_as_array!);
-        await s3.putObject(s3Key, byteArray);
+        // await s3.putObject(s3Key, byteArray);
+        await s3.putObject(resume.id, byteArray);
       } catch {
         // TODO: Need to undo add resume and job to database
         console.log('Insert into S3 unsucessful.');
@@ -164,7 +165,7 @@ export class JobService {
   public async edit(newJob: NewJob, memberId: string, jobId: string): Promise<Job | undefined> {
     // 1.) First, insert, update, or delete the specified resume in the resume table
     // 2.) Either add or remove the resume_id for the specified job in the job table if appropriate
-    //     - When updating a job's resume (when the job already has one), we don't
+    //     - When updating (or not) a job's resume (when the job already has one), we don't
     //       change its resume_id
     // 3.) Make the S3 call to add, replace, or delete the file from S3
     //     - When adding and replacing, we use putObjectCommand for both
@@ -346,9 +347,11 @@ export class JobService {
     //   But only do this if you're able to upload and have the key just be the UUID
 
     // Make the S3 call to add the resume file
-    //   No s3 action to take for Cases 1 and 2
+    //   No s3 action to take for Cases 1 and 2 (no resume or didn't change resume)
     if (resume) {
       // There is a resume for Cases 2, 4, and 5
+      //   Attach the resume if we didn't change it, we added one to a job, or updated an existing one
+      //   We don't attach anything if there wasn't one or we deleted one (Cases 1 and 3)
       job!.resume = resume; // Attach the resume to the job
 
       // Cases 4 and 5
@@ -364,8 +367,7 @@ export class JobService {
           return undefined;
         }
       }
-    } else {
-      // There is no resume for Cases 1 (no resume) and 3 (delete)
+    } else { // There is no resume for Cases 1 (no resume) and 3 (delete)
       if (action === 'delete') { // Case 3 (delete)
         try {
           await s3.deleteObject(resumeId!);
