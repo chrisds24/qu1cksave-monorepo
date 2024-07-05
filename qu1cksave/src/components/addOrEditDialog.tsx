@@ -178,8 +178,11 @@ export default function AddOrEditDialog() {
         // https://bun.sh/guides/read-file/uint8array
         // https://bun.sh/guides/binary/blob-to-typedarray (I used this)
         const blob = new Blob([resumeFile],{type: resumeFile.type})
+        console.log(`blob.size: ${blob.size}`) // TEST
         const byteArray = new Uint8Array(await blob.arrayBuffer());
+        console.log(`byteArray.length: ${byteArray.length}`) // TEST
         const arr = Array.from(byteArray);
+        console.log(`arr.length: ${arr.length}`) // TEST
         const newResume: NewResume = {
           // Regarding member_id
           // - When adding, there won't be a dialogJob

@@ -72,7 +72,7 @@ export class JobService {
 
     // Add the new resume to the resume table, if there's one
     const newResume = newJob.resume;
-    let resume = undefined;
+    let resume: Resume | undefined = undefined;
     if (newResume) {
       // member_id, job_id?, file_name, mime_type
       const insert = "INSERT INTO resume(member_id, file_name, mime_type) VALUES ($1, $2, $3) RETURNING *";
@@ -151,7 +151,7 @@ export class JobService {
       try {
         const byteArray = Uint8Array.from(newResume.bytearray_as_array!);
         // await s3.putObject(s3Key, byteArray);
-        await s3.putObject(resume.id, byteArray);
+        await s3.putObject(resume.id!, byteArray);
       } catch {
         // TODO: Need to undo add resume and job to database
         console.log('Insert into S3 unsucessful.');

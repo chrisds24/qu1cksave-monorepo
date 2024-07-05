@@ -47,9 +47,10 @@ export async function putObject(key: string, byteArray: Uint8Array) {
 
   const command = new PutObjectCommand(input);
 
-  const response = await client.send(command);
+  // const response = await client.send(command);
+  await client.send(command);
   console.log(`Called PutObjectCommand for S3`);
-  return response;
+  // return response;
 }
 
 export async function deleteObject(key: string) {
