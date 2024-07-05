@@ -1,3 +1,4 @@
+import { Resume } from "src/resume";
 import { Job, NewJob } from ".";
 import { pool } from "../db";
 import * as s3 from "../resume/s3";
@@ -167,6 +168,7 @@ export class JobService {
     //       change its resume_id
     // 3.) Make the S3 call to add, replace, or delete the file from S3
     //     - When adding and replacing, we use putObjectCommand for both
+    // 4.) Return the updated job with a resume attached (no file)
 
     // ------------------- Update resume table -------------------------
 
@@ -182,20 +184,46 @@ export class JobService {
     // -- We're adding a resume to the job
     // 5.) Has NewResume and a resume_id (Case B.b):
     // -- We're editing the resume specified by resume_id
+    //
+    // ----- When returning the job -----
+    // For 1, we don't have a resume to attach
+    // For 2, we still need to get the resume from the resume table so we
+    //   can attach it to the job.
+    // For 3, we don't attach a resume to the job
+    // For 4 and 5, we also get the resume from the table and attach it to the job
     
     const newResume = newJob.resume;
     const resumeId = newJob.resume_id;
-    // resId is used later to decide if we're adding or removing a resume_id from a job
-    let resId: string | undefined = undefined;
+    // resume is used later to decide if we're adding or removing a resume_id from a job
+    //   Will also get attached to the the job we're returning from the API call
+    let resume: Resume | undefined = undefined;
+    let action: string | undefined = undefined; // 'put', 'delete', or undefined
     // newJob does not have a resume field, so we're either keeping or deleting an existing one
     //   or there isn't a resume in the first place
     if (!newResume) {
-      // When newJob doesn't have a resume_id, the job doesn't have a resume in the first place
+      // Case 1: When newJob doesn't have a resume_id, the job doesn't have a resume in the first place
+      //   Don't have a resume to attach
       // Otherwise, we're either keeping or deleting the current one
       if (resumeId) { 
-        // If we're keeping the old resume, there's nothing to do
-        // Otherwise, we delete the current one
-        if (!newJob.keepResume) {
+        // Case 2: If we're keeping the old resume, there's nothing to do
+        //   Still need to attach a resume, so we need to get it from the table
+        if (newJob.keepResume) {
+          // SELECT from resume table
+          let select = 'SELECT * FROM resume WHERE id = $1 AND member_id = $2';
+          const query = {
+            text: select,
+            values: [resumeId, memberId]
+          };
+          try {
+            const { rows } = await pool.query(query);
+            resume = rows[0];
+          } catch {
+            console.log('Select resume unsuccessful');
+            return undefined;
+          }
+        } else {
+          // Case 3: Otherwise, we delete the current one
+          //   We don't have a resume to attach to the job
           // DELETE from resume table
           const remove = "DELETE FROM resume WHERE id = $1 AND member_id = $2 RETURNING *";
           const query = {
@@ -204,15 +232,20 @@ export class JobService {
           };
           try {
             await pool.query(query);
-            // resId stays undefined
+            // resume stays undefined
+            action = 'delete';
           } catch {
             console.log('Delete resume unsuccessful');
             return undefined;
           }
         }
       }
-    } else { // newJob has a resume field, so we're either adding a resume to the job or editing an existing one
+    } else {
+      // This ELSE branch is for Cases 4 and 5
+      //   newJob has a resume field, so we're either adding a resume to the job or editing an existing one
+      //   We can just attach the resume returned here to the job
       if (!resumeId) {
+        // Case 4
         // INSERT into resume table
         const insert = "INSERT INTO resume(member_id, file_name, mime_type) VALUES ($1, $2, $3) RETURNING *";
         const query = {
@@ -221,12 +254,14 @@ export class JobService {
         };
         try {
           const { rows } = await pool.query(query);
-          resId = rows[0].id;
+          resume = rows[0];
+          action = 'put';
         } catch {
           console.log('Insert resume unsuccessful');
           return undefined;
         }
       } else {
+        // Case 5
         // UPDATE resume table
         // id, member_id, job_id, file_name, mime_type, bytearray_as_array   Resume properties
         const update = 'UPDATE resume SET file_name = $1, mime_type = $2 WHERE id = $3 AND member_id = $4 RETURNING *'
@@ -236,7 +271,8 @@ export class JobService {
         };
         try {
           const { rows } = await pool.query(query);
-          resId = rows[0].id;
+          resume = rows[0];
+          action = 'put';
         } catch {
           console.log('Update resume unsuccessful');
           return undefined;
@@ -268,10 +304,19 @@ export class JobService {
     }
 
     // Update resume_id
-    if (resId) {
+    // - 1st case is when we're adding/updating a job's resume and also when
+    //   we're keeping a job's resume and not changing it. In the case of
+    //   an update and when keeping the original resume, there's no actual
+    //   change to resume_id.
+    //   (Cases 2, 4, and 5 above)
+    // - 2nd case is when we're deleting a resume or when the job doesn't have
+    //   a resume in the first place. In the case that the job doesn't have a
+    //   resume, setting resume_id to NULL still works.
+    //   (Cases 1 and 3 above)
+    if (resume) {
       txt += `resume_id = $${count}, `;
       count++;
-      vals.push(resId);
+      vals.push(resume.id);
     } else {
       txt +=  'resume_id = NULL, ';
     }
@@ -281,21 +326,60 @@ export class JobService {
     vals.push(jobId);
     vals.push(memberId);
     
+    let job: Job | undefined = undefined;
     const query = {
       text: txt,
       values: vals,
     };
     try {
       const { rows } = await pool.query(query);
-      return rows[0];
-    } catch(e) {
-      console.log(e);
+      job = rows[0];
+    } catch {
+      // TODO: Undo the change to the resume table;
+      console.log('Update job unsuccessful');
       return undefined;
     }
 
-    // TODO: s3 call to add, replace, or delete a file
-    //   IMPORTANT: When making s3 calls, I probably shouldn't include the extension
-    //     But only do this if you're able to upload and have the key just be the UUID
+    // -------------------- Make S3 call -------------------
+
+    // IMPORTANT: When making s3 calls, I probably shouldn't include the extension
+    //   But only do this if you're able to upload and have the key just be the UUID
+
+    // Make the S3 call to add the resume file
+    //   No s3 action to take for Cases 1 and 2
+    if (resume) {
+      // There is a resume for Cases 2, 4, and 5
+      job!.resume = resume; // Attach the resume to the job
+
+      // Cases 4 and 5
+      if (action === 'put') { // We're either adding or replacing a file
+        // const s3Key = s3.getResumeS3Key(resume.id!, resume.mime_type!)
+        try {
+          const byteArray = Uint8Array.from(newResume!.bytearray_as_array!);
+          // await s3.putObject(s3Key, byteArray);
+          await s3.putObject(resume.id!, byteArray);
+        } catch {
+          // TODO: Need to undo add resume and job to database
+          console.log('Insert into S3 unsucessful.');
+          return undefined;
+        }
+      }
+    } else {
+      // There is no resume for Cases 1 (no resume) and 3 (delete)
+      if (action === 'delete') { // Case 3 (delete)
+        try {
+          await s3.deleteObject(resumeId!);
+        } catch {
+          // TODO: Need to undo add resume and job to database
+          console.log('Delete from S3 unsucessful.');
+          return undefined;
+        }
+      }
+    }
+
+    // TODO: Test adding a resume to s3 without an extension
+
+    return job;
   }
 
   // public async getOne(id: string): Promise<Job | undefined> {

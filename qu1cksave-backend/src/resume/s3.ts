@@ -1,4 +1,4 @@
-import { S3Client, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3"; // ES Modules import
+import { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3"; // ES Modules import
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const bucketName = process.env.BUCKET_NAME as string;
@@ -49,6 +49,18 @@ export async function putObject(key: string, byteArray: Uint8Array) {
 
   const response = await client.send(command);
   console.log(`Called PutObjectCommand for S3`);
+  return response;
+}
+
+export async function deleteObject(key: string) {
+  const input = { // GetObjectRequest
+    'Bucket': bucketName, // required
+    'Key': key, // required
+  };
+
+  const command = new DeleteObjectCommand(input);
+  const response = await client.send(command);
+  console.log(`Called DeleteObjectCommand for S3`);
   return response;
 }
 
