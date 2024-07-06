@@ -14,7 +14,7 @@ export async function addOrEditJob(newJob: Partial<NewJob>, jobId: string | unde
     fetchString += `/${jobId}`;
   }
 
-  // TODO: Getting 413 Payload Too Large
+  // TODO: Getting 413 Payload Too Large (SOLVED)
   // Possible solutions
   // - https://nextjs.org/docs/app/api-reference/next-config-js/serverActions
   //   -- Set server actions bodySizeLimit in next.config.mjs (DIDN'T WORK)
@@ -22,10 +22,9 @@ export async function addOrEditJob(newJob: Partial<NewJob>, jobId: string | unde
   //   -- "For anyone reading this, I was with this problem for 1 month and
   //       turns out it was nginx settings and not NextJS. Just added
   //       client_max_body_size config and it worked!"
-  // - https://blog.hubspot.com/website/413-request-entity-too-large
-  //   -- Has something about nginx
-  // - https://stackoverflow.com/questions/60947294/error-413-payload-too-large-when-upload-image
-  // 
+  // SOLVED
+  // - Turns out it was coming from the express backend
+  // - I set the limit to 2mb
 
   const job: Job | undefined = await fetch(fetchString, {
     method: jobId ? "PUT" : "POST",
