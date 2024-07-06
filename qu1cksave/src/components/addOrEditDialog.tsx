@@ -173,6 +173,10 @@ export default function AddOrEditDialog() {
       if (resumeFiles.length > 0) {
         // Case ADD.B: resumeName === resumeFile.name, so we can just use either
 
+        // TODO: I might just use a server action for POST/PUT.
+        // https://nextjs.org/docs/app/api-reference/next-config-js/serverActions
+        // - It has an option to set body size limit, unlike route handler
+
         const resumeFile = resumeFiles[0];
         // https://developer.mozilla.org/en-US/docs/Web/API/Blob
         // https://bun.sh/guides/read-file/uint8array
