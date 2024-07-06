@@ -97,17 +97,6 @@ export class UserService {
     });
   }
 
-  public async getOne(id: string): Promise<User | undefined> {
-    const select = "SELECT id, name, email, roles FROM member WHERE id = $1";
-    const query = {
-      text: select,
-      values: [id]
-    };
-    const { rows } = await pool.query(query);
-    // return rows ? rows[0] : undefined; // WRONG
-    return rows.length == 1 ? rows[0] : undefined;
-  }
-
   public async getMultiple(): Promise<User[]> {
     const select = "SELECT id, name, email, roles FROM member";
     const query = {

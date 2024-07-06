@@ -43,23 +43,6 @@ export class UserController extends Controller {
       });
   }
 
-  @Get('{id}')
-  @Security("jwt", ["member"])
-  @Response('401', 'Unauthorized')
-  @Response('404', 'Not Found')
-  public async getOne(
-    @Path() id: string
-  ): Promise<User | undefined> {
-    return new UserService()
-      .getOne(id)
-      .then(async (user: User | undefined): Promise<User | undefined> => {
-        if (!user) {
-          this.setStatus(404);
-        }
-        return user;
-      });
-  }
-
   @Get()
   @Security("jwt", ["member"])
   @Response('401', 'Unauthorized')
