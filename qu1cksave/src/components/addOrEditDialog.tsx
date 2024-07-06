@@ -8,10 +8,11 @@ import { states } from "@/lib/states";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import dayjs, {Dayjs} from 'dayjs'
-import { NewJob } from "@/types/job";
+import { Job, NewJob } from "@/types/job";
 import { YearMonthDate } from "@/types/common";
 import FileUploadSection from "./fileUploadSection";
 import { NewResume } from "@/types/resume";
+import { addOrEditJob } from "@/actions/job";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
@@ -182,11 +183,8 @@ export default function AddOrEditDialog() {
         // https://bun.sh/guides/read-file/uint8array
         // https://bun.sh/guides/binary/blob-to-typedarray (I used this)
         const blob = new Blob([resumeFile],{type: resumeFile.type})
-        console.log(`blob.size: ${blob.size}`) // TEST
         const byteArray = new Uint8Array(await blob.arrayBuffer());
-        console.log(`byteArray.length: ${byteArray.length}`) // TEST
         const arr = Array.from(byteArray);
-        console.log(`arr.length: ${arr.length}`) // TEST
         const newResume: NewResume = {
           // Regarding member_id
           // - When adding, there won't be a dialogJob
@@ -237,46 +235,70 @@ export default function AddOrEditDialog() {
 
     // ------------------------------------------------------------
 
-    let fetchString = '/api/job';
-    if (!isAdd) {
-      fetchString += `/${dialogJob.id}`;
-    }
-    await fetch(fetchString, {
-      method: isAdd ? "POST" : "PUT",
-      body: JSON.stringify(newJob),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw res;
-        }
-        return res.json();
-      })
-      .then((job) => {
-        // Add this job to jobs, then set jobs
-        let newJobs = [...jobs];
-        if (!isAdd) {
-          // When editing, remove the outdated job from the jobs list.
-          newJobs = newJobs.filter((j) => j.id !== job.id);
-        }
+    // Using route handlers
+    // let fetchString = '/api/job';
+    // if (!isAdd) {
+    //   fetchString += `/${dialogJob.id}`;
+    // }
+    // await fetch(fetchString, {
+    //   method: isAdd ? "POST" : "PUT",
+    //   body: JSON.stringify(newJob),
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // })
+    //   .then((res) => {
+    //     if (!res.ok) {
+    //       throw res;
+    //     }
+    //     return res.json();
+    //   })
+    //   .then((job) => {
+    //     // Add this job to jobs, then set jobs
+    //     let newJobs = [...jobs];
+    //     if (!isAdd) {
+    //       // When editing, remove the outdated job from the jobs list.
+    //       newJobs = newJobs.filter((j) => j.id !== job.id);
+    //     }
 
-        newJobs.push(job)
-        // NOTE: Whenever jobs is set, apply the filters.
-        // This is done in layout.tsx to get filteredJobs
-        setJobs(newJobs)
-        // NOTE: The useEffect to automatically update jobsInPage when jobs
-        //   changes is in job/page.tsx
-        // NOTE: For some reason, the links are weird in the single job view.
-        //   If I create link fields in the modal and set it to for example,
-        //   a bunch of spaces. It creates a link to the single job page for
-        //   the current job.
-        //   (Turns out this is the case for anything that isn't a link)
-      })
-      .catch((err) => {
-        console.error(err)
-      });
+    //     newJobs.push(job)
+    //     // NOTE: Whenever jobs is set, apply the filters.
+    //     // This is done in layout.tsx to get filteredJobs
+    //     setJobs(newJobs)
+    //     // NOTE: The useEffect to automatically update jobsInPage when jobs
+    //     //   changes is in job/page.tsx
+    //     // NOTE: For some reason, the links are weird in the single job view.
+    //     //   If I create link fields in the modal and set it to for example,
+    //     //   a bunch of spaces. It creates a link to the single job page for
+    //     //   the current job.
+    //     //   (Turns out this is the case for anything that isn't a link)
+    //   })
+    //   .catch((err) => {
+    //     console.error(err)
+    //   });
+
+    // Using server actions
+    const job: Job | undefined = await addOrEditJob(newJob, !isAdd ? dialogJob.id : undefined)
+    if (job) {
+      // Add this job to jobs, then set jobs
+      let newJobs = [...jobs];
+      if (!isAdd) {
+        // When editing, remove the outdated job from the jobs list.
+        newJobs = newJobs.filter((j) => j.id !== job.id);
+      }
+
+      newJobs.push(job)
+      // NOTE: Whenever jobs is set, apply the filters.
+      // This is done in layout.tsx to get filteredJobs
+      setJobs(newJobs)
+      // NOTE: The useEffect to automatically update jobsInPage when jobs
+      //   changes is in job/page.tsx
+      // NOTE: For some reason, the links are weird in the single job view.
+      //   If I create link fields in the modal and set it to for example,
+      //   a bunch of spaces. It creates a link to the single job page for
+      //   the current job.
+      //   (Turns out this is the case for anything that isn't a link)
+    }
 
     handleClose();
   };
