@@ -163,13 +163,10 @@ export class JobService {
   }
 
   public async edit(newJob: NewJob, memberId: string, jobId: string): Promise<Job | undefined> {
-    // 1.) First, insert, update, or delete the specified resume in the resume table
-    // 2.) Either add or remove the resume_id for the specified job in the job table if appropriate
-    //     - When updating (or not) a job's resume (when the job already has one), we don't
-    //       change its resume_id
-    // 3.) Make the S3 call to add, replace, or delete the file from S3
-    //     - When adding and replacing, we use putObjectCommand for both
-    // 4.) Return the updated job with a resume attached (no file)
+    // 1.) Select, insert, update, or delete from resume table
+    // 2.) Update job, including the resume_id, in job table
+    // 3.) Make call to S3 add, replace, or delete a resume file
+    // 4.) Return the job, attaching the resume when appropriate
 
     // ------------------- Update resume table -------------------------
 
@@ -185,31 +182,21 @@ export class JobService {
     // -- We're adding a resume to the job
     // 5.) Has NewResume and a resume_id (Case B.b):
     // -- We're editing the resume specified by resume_id
-    //
-    // ----- When returning the job -----
-    // For 1, we don't have a resume to attach
-    // For 2, we still need to get the resume from the resume table so we
-    //   can attach it to the job.
-    // For 3, we don't attach a resume to the job
-    // For 4 and 5, we also get the resume from the table and attach it to the job
-    
     const newResume = newJob.resume;
     const resumeId = newJob.resume_id;
-    // resume is used later to decide if we're adding or removing a resume_id from a job
-    //   Will also get attached to the the job we're returning from the API call
     let resume: Resume | undefined = undefined;
     let action: string | undefined = undefined; // 'put', 'delete', or undefined
-    // newJob does not have a resume field, so we're either keeping or deleting an existing one
-    //   or there isn't a resume in the first place
-    if (!newResume) {
+
+    if (!newResume) { // Cases 1, 2, and 3
       // Case 1: When newJob doesn't have a resume_id, the job doesn't have a resume in the first place
-      //   Don't have a resume to attach
-      // Otherwise, we're either keeping or deleting the current one
-      if (resumeId) { 
-        // Case 2: If we're keeping the old resume, there's nothing to do
-        //   Still need to attach a resume, so we need to get it from the table
+      if (resumeId) { // Cases 2 and 3
+        console.log(`newJob has no newResume, but has a resume_id.`)
         if (newJob.keepResume) {
-          // SELECT from resume table
+          // Case 2: Keep the resume given the resumeId. Need to select it using the given id     
+          // SELECT from resume table. Attach this resume later.
+          console.log(`newJob has keepResume as TRUE.`)
+          console.log(`Case 2: Didn't edit existing resume.`)
+
           let select = 'SELECT * FROM resume WHERE id = $1 AND member_id = $2';
           const query = {
             text: select,
@@ -223,9 +210,11 @@ export class JobService {
             return undefined;
           }
         } else {
-          // Case 3: Otherwise, we delete the current one
-          //   We don't have a resume to attach to the job
-          // DELETE from resume table
+          // Case 3: Delete resume given the resumeId
+          // DELETE from resume table. No resume to attach.
+          console.log(`newJob has keepResume as FALSE.`)
+          console.log(`Case 3: Deleting existing resume.`)
+
           const remove = "DELETE FROM resume WHERE id = $1 AND member_id = $2 RETURNING *";
           const query = {
             text: remove,
@@ -240,14 +229,18 @@ export class JobService {
             return undefined;
           }
         }
+      } else { // Just here to console log Case 1
+        console.log(`newJob has no newResume and no resume_id.`)
+        console.log(`Case 1: No resume to edit or remove.`)
       }
-    } else {
-      // This ELSE branch is for Cases 4 and 5
-      //   newJob has a resume field, so we're either adding a resume to the job or editing an existing one
-      //   We can just attach the resume returned here to the job
+    } else { // Cases 4 and 5
+      // For both cases, need to attach a resume to the job later
       if (!resumeId) {
-        // Case 4
+        // Case 4: Add new resume
         // INSERT into resume table
+        console.log(`newJob has a newResume, but no resume_id.`)
+        console.log(`Case 4: Adding newResume into resume table. Attach this later`)
+
         const insert = "INSERT INTO resume(member_id, file_name, mime_type) VALUES ($1, $2, $3) RETURNING *";
         const query = {
           text: insert,
@@ -262,9 +255,12 @@ export class JobService {
           return undefined;
         }
       } else {
-        // Case 5
+        // Case 5: Update existing resume
         // UPDATE resume table
-        // id, member_id, job_id, file_name, mime_type, bytearray_as_array   Resume properties
+        console.log(`newJob has a newResume and also has a resume_id.`)
+        console.log(`Case 5: Updating an existing resume in the resume table. Attach this later`)
+
+        // id, member_id, job_id, file_name, mime_type, bytearray_as_array   (Resume properties)
         const update = 'UPDATE resume SET file_name = $1, mime_type = $2 WHERE id = $3 AND member_id = $4 RETURNING *'
         const query = {
           text: update,
@@ -304,21 +300,25 @@ export class JobService {
       }
     }
 
+    // ----- When returning the job later -----
+    // For 1 (no resume), no attached resume
+    // For 2 (keep existing resume), select from resume table then attach
+    // For 3 (delete resume), nothing to attach
+    // For 4 (add new resume) and 5 (edit resume), attach the returned resume for both
+
     // Update resume_id
-    // - 1st case is when we're adding/updating a job's resume and also when
-    //   we're keeping a job's resume and not changing it. In the case of
-    //   an update and when keeping the original resume, there's no actual
-    //   change to resume_id.
-    //   (Cases 2, 4, and 5 above)
-    // - 2nd case is when we're deleting a resume or when the job doesn't have
-    //   a resume in the first place. In the case that the job doesn't have a
-    //   resume, setting resume_id to NULL still works.
-    //   (Cases 1 and 3 above)
     if (resume) {
+      // Cases 2, 4, and 5 would have a resume.
+      // For Cases 2 and 5, we still just update resume_id even though there's no
+      //   actual change to it.
+      console.log(`resume_id set to ${resume.id}`)
       txt += `resume_id = $${count}, `;
       count++;
       vals.push(resume.id);
     } else {
+      // Cases 1 and 3 won't have a resume
+      // For Case 1, setting resume_id to NULL still works
+      console.log(`resume_id set to NULL.`)
       txt +=  'resume_id = NULL, ';
     }
 
@@ -343,19 +343,16 @@ export class JobService {
 
     // -------------------- Make S3 call -------------------
 
-    // IMPORTANT: When making s3 calls, I probably shouldn't include the extension
-    //   But only do this if you're able to upload and have the key just be the UUID
-
     // Make the S3 call to add the resume file
     //   No s3 action to take for Cases 1 and 2 (no resume or didn't change resume)
     if (resume) {
-      // There is a resume for Cases 2, 4, and 5
-      //   Attach the resume if we didn't change it, we added one to a job, or updated an existing one
-      //   We don't attach anything if there wasn't one or we deleted one (Cases 1 and 3)
+      console.log(`Attaching resume`)
+      // There is a resume for Cases 2, 4, and 5 (no change, add new, and update)
       job!.resume = resume; // Attach the resume to the job
 
       // Cases 4 and 5
       if (action === 'put') { // We're either adding or replacing a file
+        console.log(`S3 call attempted. In cases 4 (add) or 5 (replace)`)
         // const s3Key = s3.getResumeS3Key(resume.id!, resume.mime_type!)
         try {
           const byteArray = Uint8Array.from(newResume!.bytearray_as_array!);
@@ -363,12 +360,15 @@ export class JobService {
           await s3.putObject(resume.id!, byteArray);
         } catch {
           // TODO: Need to undo add resume and job to database
-          console.log('Insert into S3 unsucessful.');
+          console.log('Insert/replace in S3 unsucessful.');
           return undefined;
         }
+      } else {
+        console.log(`No S3 call. In Case 2 (no change in resume)`)
       }
     } else { // There is no resume for Cases 1 (no resume) and 3 (delete)
       if (action === 'delete') { // Case 3 (delete)
+        console.log(`S3 call attempted. In cases 3, delete`)
         try {
           await s3.deleteObject(resumeId!);
         } catch {
@@ -376,10 +376,10 @@ export class JobService {
           console.log('Delete from S3 unsucessful.');
           return undefined;
         }
+      } else {
+        console.log(`No S3 call. In Case 1 (no resume)`)
       }
     }
-
-    // TODO: Test adding a resume to s3 without an extension
 
     return job;
   }
