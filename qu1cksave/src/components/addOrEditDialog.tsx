@@ -165,18 +165,49 @@ export default function AddOrEditDialog() {
     // -------------------- PROCESS RESUME --------------------
     // TODO: In the documents page (LATER), I can use an iframe to embed the file into
 
+    // ----- Cases -----
+    // ADD
+    // A.) Name and input field both empty. (No resume was uploaded)
+    //     - Send a newJob with no newResume and no resume_id
+    // B.) Both are filled (A resume was uploaded)
+    //     - Send a newJob with a newResume, but no resume_id
+    //
+    // EDIT
+    // A.) Name is filled, but input is empty.
+    //     - When loaded job has a resume, but user didn't change it.
+    //     - Send a newJob with no newResume, but has a resume_id.
+    //     - Also set keepResume to true. (To differentiate it from case EDIT.C.b)
+    // B.) Name and resume field are both filled.
+    //     a.) dialogJob does not have a resume_id
+    //         - This is when we're adding a job to the resume for the first time
+    //         - Send a newJob with a newResume, but no resume_id
+    //     b.) dialogJob has a resume_id
+    //         - This is when we're editing a job's resume
+    //         - Send a newJob with a newResume + a resume_id
+    //         - NOTE: newResume will retain the old resume's resume_id.
+    //           It won't get a new database entry in the resume table, but will
+    //           just replace the old one with its details.
+    // C.) Name and resume fields are both empty
+    //     a.) dialogJob has no resume_id
+    //         - Job had no resume in the first place
+    //         - Send a newJob with no newResume and no resume_id
+    //     b.) dialogJob has a resume_id
+    //         - We're deleting the job's resume
+    //         - Send a newJob with no newResume but has a resume_id
+    //         - Also set keepResume to false (To differentiate it from case EDIT.A)
+
     const resumeInput = document!.getElementById('resumeInput') as HTMLInputElement;
     const resumeFiles = resumeInput.files;
 
-    // For ADD and EDIT mode
-    // Note that resumeFiles will always be true regardless if there's a file uploaded or not.
-    if (resumeFiles) { // There's a resume file in the resume input field
-      if (resumeFiles.length > 0) {
-        // Case ADD.B: resumeName === resumeFile.name, so we can just use either
-
-        // TODO: I might just use a server action for POST/PUT.
-        // https://nextjs.org/docs/app/api-reference/next-config-js/serverActions
-        // - It has an option to set body size limit, unlike route handler
+    if (resumeFiles) {
+      // For both ADD and EDIT mode
+      //   Note that resumeFiles will always be true regardless if there's a file uploaded or not.
+      if (resumeFiles.length > 0) { // There's an uploaded resume file in the resume input field
+        // This branch is for Cases ADD.B, EDIT.B.a, and EDIT.B.b
+        // - There's an uploaded resume, so process it and create a newResume
+        // - For EDIT.B.a, dialogJob won't have a resume_id that we can attach,
+        //   to newJob. For EDIT.B.b, we need to attach the resume_id to newJob
+        //   -- This is done outside if (resumeFiles) { ... }
 
         const resumeFile = resumeFiles[0];
         // https://developer.mozilla.org/en-US/docs/Web/API/Blob
@@ -186,54 +217,70 @@ export default function AddOrEditDialog() {
         const byteArray = new Uint8Array(await blob.arrayBuffer());
         const arr = Array.from(byteArray);
         const newResume: NewResume = {
-          // Regarding member_id
-          // - When adding, there won't be a dialogJob
-          // - When editing, we can just use the one from the user's JWT during the request
-          // member_id: dialogJob.member_id, // IMPORTANT: I probably should remove this from NewResume
-          // job_id: dialogJob.id, // IMPORTANT: I'm removing job_id from NewResume
-          // resume_id: ... // Once again, can just get it from NewJob once we're in the backend
-          file_name: resumeFile.name,
+          // For member_id, job_id, and resume_id, I can just attach it to newJob and get
+          //   it from there when we need it
+          file_name: resumeFile.name, // Or resumeName, since they're the same in this case
           mime_type: resumeFile.type,
           bytearray_as_array: arr   
         }
 
-        // Case EDIT.B.a and Case EDIT.B.b both go here
-        //   (SEE BELOW) Just need to either include the resume_id in the NewJob or not
-
         newJob.resume = newResume;
-      } else {
-        // For EDIT MODE
-        // There's no resume to be processed, need to set keepResume
+      } else { // There's no resume to be processed
         if (!isAdd) {
-          // Case EDIT.A: When the job has a resume, but user didn't change it.
-          // - If we used dialogJob.resume.file_name, this case would always be true
-          //   if the job had a resume from the beginning (WRONG BEHAVIOR)
+          // For EDIT MODE only
           if (resumeName) {
+            // Case EDIT.A: When the job originally had a resume and the user didn't change it.
+            // - If we used dialogJob.resume.file_name, this case would always be true
+            //   if the job had a resume from the beginning (WRONG BEHAVIOR)
             newJob.keepResume = true;
             // (SEE BELOW) Also include the resume_id in the NewJob
-          } else { // Either the job had a resume and the user specified to delete it OR it never had one to begin with
-            // Case EDIT.C.b: Job had a resume, which is to be deleted
+          } else {
+            // This branch is for cases EDIT.C.a and EDIT.C.b
+            // - Either the job had a resume and the user specified to delete it
+            //   OR it never had one to begin with
             if (dialogJob.resume_id) { 
+              // Case EDIT.C.b: Job had a resume, which is to be deleted
               newJob.keepResume = false;
               // (SEE BELOW) Also include the resume_id in the NewJob
             }
             // Case EDIT.C.a: No need to set keepResume if the job didn't have a resume to begin with
-            //   Also implies no resume_id
           }
         }
         // Case ADD.A: No need to do anything if there's no uploaded resume
       }
     }
 
-    // For EDIT mode, include the resume_id in the NewJob if the job had one
-    // - Deals with the cases when we're not changing a job's resume(if it had
-    //   one in the first place), when we're deleting a job's resume, or we're
-    //   editing an existing one.
+    // For EDIT mode, include the resume_id in the NewJob if dialogJob had one
+    // - Deals with cases EDIT.A, EDIT.C.b, and EDIT.B.b
     if (!isAdd && dialogJob && dialogJob.resume_id) {
-      newJob.resume_id = dialogJob.resumeId
+      // newJob.resume_id = dialogJob.resumeId
+      newJob.resume_id = dialogJob.resume_id
     }
 
     // ------------------------------------------------------------
+
+    // Using server actions
+    const job: Job | undefined = await addOrEditJob(newJob, !isAdd ? dialogJob.id : undefined)
+    if (job) {
+      // Add this job to jobs, then set jobs
+      let newJobs = [...jobs];
+      if (!isAdd) {
+        // When editing, remove the outdated job from the jobs list.
+        newJobs = newJobs.filter((j) => j.id !== job.id);
+      }
+
+      newJobs.push(job)
+      // NOTE: Whenever jobs is set, apply the filters.
+      // This is done in layout.tsx to get filteredJobs
+      setJobs(newJobs)
+      // NOTE: The useEffect to automatically update jobsInPage when jobs
+      //   changes is in job/page.tsx
+      // NOTE: For some reason, the links are weird in the single job view.
+      //   If I create link fields in the modal and set it to for example,
+      //   a bunch of spaces. It creates a link to the single job page for
+      //   the current job.
+      //   (Turns out this is the case for anything that isn't a link)
+    }
 
     // Using route handlers
     // let fetchString = '/api/job';
@@ -276,29 +323,6 @@ export default function AddOrEditDialog() {
     //   .catch((err) => {
     //     console.error(err)
     //   });
-
-    // Using server actions
-    const job: Job | undefined = await addOrEditJob(newJob, !isAdd ? dialogJob.id : undefined)
-    if (job) {
-      // Add this job to jobs, then set jobs
-      let newJobs = [...jobs];
-      if (!isAdd) {
-        // When editing, remove the outdated job from the jobs list.
-        newJobs = newJobs.filter((j) => j.id !== job.id);
-      }
-
-      newJobs.push(job)
-      // NOTE: Whenever jobs is set, apply the filters.
-      // This is done in layout.tsx to get filteredJobs
-      setJobs(newJobs)
-      // NOTE: The useEffect to automatically update jobsInPage when jobs
-      //   changes is in job/page.tsx
-      // NOTE: For some reason, the links are weird in the single job view.
-      //   If I create link fields in the modal and set it to for example,
-      //   a bunch of spaces. It creates a link to the single job page for
-      //   the current job.
-      //   (Turns out this is the case for anything that isn't a link)
-    }
 
     handleClose();
   };
@@ -738,72 +762,19 @@ export default function AddOrEditDialog() {
         />
 
         {/* 
-          TODO: View this GitHub issue by me: https://github.com/users/chrisds24/projects/2/views/1?pane=issue&itemId=68365376
-          1.) User uploads file here
+          View this GitHub issue by me: https://github.com/users/chrisds24/projects/2/views/1?pane=issue&itemId=68365376
+            User uploads file here
               - MUI has a nice-looking file upload example: https://mui.com/material-ui/react-button/
-              - IMPORTANT: For now, only accept docx and pdf files.
-              - When user uploads the file, I can get the File object from the input
-              - NOTE: There's some options to change the behavior when uploading a file.
+              - TODO: For now, only accept docx and pdf files. Need to accept other file formats
+              - TODO: There's some options to change the behavior when uploading a file.
                 -- From some limited testing I did: After the user uploads a file, then starts the upload process
-                   again (by clicking upload which opens the file search window), then cancels it, the file that
-                   was uploaded earlier gets removed. NEED TO CHANGE THIS
+                    again (by clicking upload which opens the file search window), then cancels it, the file that
+                    was uploaded earlier gets removed. NEED TO CHANGE THIS
               - Using MUI's example, the name of the uploaded file is hidden. This is what I want. However, I
                 still want a state that keeps track of the name of the currently uploaded file. Not only is this
                 helpful to the user, but this state is used to check if the original file that we got from the
                 job in the database was changed during EDIT.
-                This means that I need to process the File even before the user clicks upload.
-              - NOTE: When the upload process is happening, the submit button should be disabled.
-
-          2.) Submit is clicked. File will need to be processed.
-                -- Both ADD and EDIT mode use a NewJob with a resume field of type NewResume.          
-                -- Need to get its file name, mime type, and convert it to an array byte array (bytearray_as_array)
-                   + https://stackoverflow.com/questions/18299806/how-to-check-file-mime-type-with-javascript-before-upload
-                -- If there is a file to be processed, we are able to fill all the fields with the info we have
-
-                * For ADD, there will be two cases
-                A.) Name and input field are BOTH empty. Send a NewJob with no resume field.
-                B.) ... are BOTH filled. Send a NewJob with a resume (NewResume) field.
-                *** ADD will use a POST request
-
-                * For EDIT, there will be 3 cases:
-                A.) Name field is filled while resume field is empty.
-                    + Case for editing a job with a resume but not updating its resume.
-                    + Send a NewJob with no resume field, but has a resume_id.
-                      IMPORTANT: Have keepResume field that is set to true (So the API can differentiate it from case 3)
-                B.) Name and resume fields are both filled. Two subcases:
-                    a.) The job (dialogJob) does not have a resume_id and a null resume field.
-                        This is the case for when we're adding a resume to the job for the first time.
-                        Send a NewJob with a resume (NewResume) field.
-                          But both NewJob (and the NewResume won't have a resume_id.
-                    b.) The job has a resume_id and a non-null resume field.
-                        This is the case for when we're editing a job's resume.
-                        Send a NewJob with a resume (NewResume) field.
-                          Both NewJob and NewResume will have a resume_id.
-                          (Note that NewResume will retain the old resume's resume_id. It won't get a new
-                            database entry, but will just replace the old one with its details.)
-                    *** I'll just use the NewJob's resume_id to check between the two cases
-                C.) Name and resume fields are both empty. Two subcases:
-                    a.) Job does not have a resume in the first place.
-                        Send a NewJob with an empty resume field and no resume_id.
-                    b.) We are deleting the job's resume.
-                        Send a NewJob with an empty resume field but with a resume_id.
-                        IMPORTANT: Have a keepResume field that is set to false.
-                *** EDIT will use a PUT request.
-
-          3.) NewJob is to the API.
-              - For ADD, it's simple. Just two cases and goes to the POST route
-              - For EDIT, all go to the PUT route and there's plenty of cases:
-                The API relies on a combination of a NewResume field in NewJob, a resume_id in NewJob, and the value of keepResume.
-                1.) No NewResume, no resume_id (Case C.a):
-                -- Job has no resume to edit/remove
-                2.) No NewResume, has resume_id, keepResume is true (Case A):
-                -- Job has a resume, but we won't edit/remove it
-                3.) No NewResume, has resume_id, keepResume is false (Case C.b):
-                -- Job has a resume, which we will delete.
-                4.) Has NewResume, but no resume_id (Case B.a):
-                -- We're adding a resume to the job
-                5.) Has NewResume and a resume_id (Case B.b):
-                -- We're editing the resume specified by resume_id                            
+              - TODO: When the upload process is happening, the submit button should be disabled.                         
         */}
 
         <FileUploadSection
