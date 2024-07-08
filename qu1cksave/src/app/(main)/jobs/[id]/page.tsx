@@ -45,6 +45,11 @@ export default function Page({ params }: { params: { id: string } }) {
   // WARNING !!! Reason why I didn't use getSignedUrl:
   //   Putting the signedUrl returned by getSignedUrl into the download button
   //   shows the credentials on hover.
+  // UPDATE: It only shows the access key, which is not a security risk as long
+  //   as the secret key isn't exposed.
+  // - https://stackoverflow.com/questions/57539514/presigned-url-for-private-s3-bucket-displays-aws-access-key-id-and-bucket-name
+  // - https://stackoverflow.com/questions/57692006/how-can-i-hide-my-access-key-in-pre-signed-url-by-aws-s3-using-python
+  // - https://stackoverflow.com/questions/7678835/how-secure-are-amazon-aws-access-keys/7684662#7684662
 
   const downloadResume = async (resume: Resume, target: any) => {
     // IMPORTANT: One issue with the "caching" in state is that it will use a lot of RAM.
