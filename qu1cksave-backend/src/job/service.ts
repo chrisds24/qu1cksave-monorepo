@@ -370,8 +370,10 @@ export class JobService {
       if (action === 'delete') { // Case 3 (delete)
         console.log(`S3 call attempted. In cases 3, delete`)
         try {
+          console.log(`Deleting file with id: ${resumeId}`);
           await s3.deleteObject(resumeId!);
-        } catch {
+        } catch (err) {
+          console.error(err);
           // TODO: Need to undo add resume and job to database
           console.log('Delete from S3 unsucessful.');
           return undefined;
@@ -380,6 +382,8 @@ export class JobService {
         console.log(`No S3 call. In Case 1 (no resume)`)
       }
     }
+
+    console.log('----------------------')
 
     return job;
   }
