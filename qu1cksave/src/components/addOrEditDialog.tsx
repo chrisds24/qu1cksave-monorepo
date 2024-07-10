@@ -202,8 +202,13 @@ export default function AddOrEditDialog() {
     if (resumeFiles) {
       // For both ADD and EDIT mode
       //   Note that resumeFiles will always be true regardless if there's a file uploaded or not.
-      if (resumeFiles.length > 0) { // There's an uploaded resume file in the resume input field
+      if (resumeName && resumeFiles.length > 0) {
         // This branch is for Cases ADD.B, EDIT.B.a, and EDIT.B.b
+        // - Note that when there's an uploaded file in the field, there will
+        //   always be a resume name. (Though, just because there's a name
+        //   doesn't mean that there's an uploaded file...Such as when we're
+        //   editing a job with a resume). This is important since the "remove
+        //   file" button only clears out the name.
         // - There's an uploaded resume, so process it and create a newResume
         // - For EDIT.B.a, dialogJob won't have a resume_id that we can attach,
         //   to newJob. For EDIT.B.b, we need to attach the resume_id to newJob

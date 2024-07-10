@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { Box, Typography } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -68,6 +69,16 @@ export default function FileUploadSection(props: any) {
           onChange={changeFileInput}
         />
       </Button>
+      <Button
+        variant="contained"
+        sx={{ color: '#ffffff' }}
+        color='error'
+        onClick={() => props.setFileName('')}
+        startIcon={<DeleteIcon sx={{ color: '#ffffff'}} />}
+        tabIndex={-1}
+      >
+        Remove
+      </Button> 
     </Box>
   );
 }
