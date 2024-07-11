@@ -32,3 +32,30 @@ export async function PUT(
     })
   return Response.json(job);
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const token = request.cookies.get('session')?.value;
+  if (!token) {
+    return Response.json(undefined);
+  }
+
+  const job: Job | undefined = await fetch(`http://localhost:3010/api/v0/job/${params.id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: 'Bearer ' + token,
+    },
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw res;
+      }
+      return res.json()
+    })
+    .catch((err) => {
+      return undefined;
+    })
+  return Response.json(job);
+}

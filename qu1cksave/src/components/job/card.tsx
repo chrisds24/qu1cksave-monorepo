@@ -35,7 +35,9 @@ export default function JobCard(props: any) {
   const job: Job | undefined = props.job;
   const router = useRouter();
 
-  const {setOpen, setIsAdd, setDialogJob} = useContext(JobsContext);
+  // const {setOpen, setIsAdd, setDialogJob} = useContext(JobsContext);
+  // TODO: Remove jobs and setJobs once modal is done.
+  const {setOpen, setIsAdd, setDialogJob, jobs, setJobs} = useContext(JobsContext);
 
   if (job) {
     const dateApplied = job.date_applied;
@@ -151,6 +153,34 @@ export default function JobCard(props: any) {
               variant="contained"
               sx={{ color: '#ffffff' }}
               color='error'
+              onClick={
+                async (event) =>  {
+                  event.stopPropagation();
+                  // TODO: Should open confirmation modal instead once modal is done
+                  await fetch(`/api/job/${job.id}`, {
+                    method: 'DELETE',
+                  })
+                    .then((res) => {
+                      if (!res.ok) {
+                        throw res;
+                      }
+                      return res.json();
+                    })
+                    .then((job) => {
+                      // Remove this job from jobs, then set jobs
+                      let newJobs = [...jobs];
+                      newJobs = newJobs.filter((j) => j.id !== job.id);
+                      // NOTE: Whenever jobs is set, apply the filters.
+                      // This is done in layout.tsx to get filteredJobs
+                      setJobs(newJobs)
+                      // NOTE: The useEffect automatically updates jobsInPage when jobs
+                      //   changes is in job/page.tsx
+                    })
+                    .catch((err) => {
+                      console.error(err)
+                    });                  
+                }
+              }
             >
               <DeleteIcon sx={{ color: '#ffffff'}} />
             </Button>          

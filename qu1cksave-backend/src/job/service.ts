@@ -388,6 +388,56 @@ export class JobService {
     return job;
   }
 
+  public async delete(id: string, memberId: string): Promise<Job | undefined> {
+    // Delete from job table
+    const del = 'DELETE FROM job WHERE id = $1 AND member_id = $2 RETURNING *';
+    const query = {
+      text: del,
+      values: [id, memberId]
+    };
+    let job: Job | undefined = undefined;
+    try {
+      const { rows } = await pool.query(query);
+      job = rows[0];
+    } catch {
+      console.log('Delete job unsuccessful');
+      return undefined;
+    }
+
+    // Delete from resume table if the job had a resume
+    let resume: Resume | undefined = undefined;
+    if (job!.resume_id) {
+      const del2 = 'DELETE FROM resume WHERE id = $1 AND member_id = $2 RETURNING *';
+      const query2 = {
+        text: del2,
+        values: [job!.resume_id, memberId]
+      };
+      try {
+        const { rows } = await pool.query(query2);
+        resume = rows[0];
+      } catch {
+        // TODO: Undo delete job
+        console.log('Delete resume unsuccessful');
+        return undefined;
+      }
+    }
+
+    // Delete from S3 if job has a resume
+    if (resume) {
+      job!.resume = resume;
+
+      try {
+        await s3.deleteObject(resume.id!);
+      } catch {
+        // TODO: Need to undo delete resume and job from database
+        console.log('Delete from S3 unsucessful.');
+        return undefined;
+      }   
+    }
+
+    return job;
+  }
+
   // public async getOne(id: string): Promise<Job | undefined> {
   //   let select = 'SELECT * FROM job WHERE id = $1';
   //   const query = {

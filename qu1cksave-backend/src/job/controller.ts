@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Path, Query, Response, SuccessResponse, Route, Security, Body, Request} from "tsoa";
+import { Controller, Get, Post, Put, Path, Query, Response, SuccessResponse, Route, Security, Body, Request, Delete} from "tsoa";
 import { Job, NewJob } from ".";
 import { JobService } from "./service";
 import * as express from 'express';
@@ -44,6 +44,17 @@ export class JobController extends Controller {
   ): Promise<Job | undefined> {
     // TODO: Need to set appropriate status code when product edit fails
     return await new JobService().edit(newJob, request.user.id, id);
+  }
+
+  @Delete('{id}')
+  @Security('jwt', ['member'])
+  @Response('401', 'Unauthorized')
+  @Response('404', 'Not Found')
+  public async delete(
+    @Path() id: string,
+    @Request() request: express.Request,
+  ): Promise<Job | undefined> {
+    return await new JobService().delete(id, request.user.id);
   }
 
   // @Get('{id}')
