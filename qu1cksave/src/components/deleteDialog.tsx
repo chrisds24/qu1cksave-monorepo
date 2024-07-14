@@ -5,10 +5,13 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { usePathname, useRouter } from 'next/navigation';
 import { useContext } from 'react';
 
 export default function DeleteDialog() {
-  const {deleteJobId, deleteJobOpen, setDeleteJobOpen, setDeleteJobId, jobs, setJobs} = useContext(JobsContext)
+  const {deleteJobId, deleteJobOpen, setDeleteJobOpen, setDeleteJobId, jobs, setJobs} = useContext(JobsContext);
+  const pathname = usePathname();
+  const router = useRouter();
 
   const handleClose = () => {
     setDeleteJobOpen(false);
@@ -36,6 +39,12 @@ export default function DeleteDialog() {
         setJobs(newJobs)
         // NOTE: The useEffect automatically updates jobsInPage when jobs
         //   changes is in job/page.tsx
+
+        // If not in jobs, go to jobs
+        //   Need to do this since the deleted job's page would be empty
+        if (pathname !== '/jobs') {
+          router.push('/jobs');
+        }
       })
       .catch((err) => {
         console.error(err)
