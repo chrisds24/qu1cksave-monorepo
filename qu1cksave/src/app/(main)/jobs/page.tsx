@@ -9,6 +9,7 @@ import AddOrEditDialog from "@/components/addOrEditDialog";
 import AddIcon from '@mui/icons-material/Add';
 import Filters from "@/components/filters";
 import SortOptions from "@/components/sortOptions";
+import DeleteDialog from "@/components/deleteDialog";
 
 export default function Page() {
   const {
@@ -178,6 +179,7 @@ export default function Page() {
       </Box>
 
       <AddOrEditDialog />
+      <DeleteDialog />
 
       <JobsList />
 

@@ -25,10 +25,14 @@ export default function JobsLayout({
   const [pageToJumpTo, setPageToJumpTo] = useState<number>();
   const [invalidEntry, setInvalidEntry] = useState<boolean>(false);
 
-  // For modal/dialog
+  // For dialog
   const [open, setOpen] = useState(false);
   const [isAdd, setIsAdd] = useState(true);
   const [dialogJob, setDialogJob] = useState<Job | undefined>(undefined);
+
+  // For delete dialog
+  const [deleteJobOpen, setDeleteJobOpen] = useState(false);
+  const [deleteJobId, setDeleteJobId] = useState<string>('');
 
   // Filters
   //   These are used for the initial load and whenever jobs changes through
@@ -188,12 +192,18 @@ export default function JobsLayout({
         setPageToJumpTo,
         invalidEntry,
         setInvalidEntry,
+        // Add or edit dialog
         open,
         setOpen,
         isAdd,
         setIsAdd,
         dialogJob,
         setDialogJob,
+        // Delete job dialog
+        deleteJobOpen,
+        setDeleteJobOpen,
+        deleteJobId,
+        setDeleteJobId,
         // Filters
         jobFilter,
         setJobFilter,

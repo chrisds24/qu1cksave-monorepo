@@ -11,6 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddOrEditDialog from "@/components/addOrEditDialog";
 import { Resume } from "@/types/resume";
 import DownloadIcon from '@mui/icons-material/Download';
+import DeleteDialog from "@/components/deleteDialog";
 
 // Applied, Not Applied, Assessment, Interview, Job Offered, Accepted Offer, Declined Offer
 // Rejected, Ghosted, Closed
@@ -37,7 +38,7 @@ const statusColor = {
 
 export default function Page({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { jobs, setIsAdd, setOpen, setDialogJob, setJobs } = useContext(JobsContext);
+  const { jobs, setIsAdd, setOpen, setDialogJob, setJobs, setDeleteJobId, setDeleteJobOpen } = useContext(JobsContext);
   // Not to be confused with the filteredJobs state (where we apply the filters to)
   const filteredJobs = (jobs as Job[]).filter((job) => job.id === params.id);
   const job = filteredJobs.length == 1 ? filteredJobs[0] : undefined;
@@ -155,6 +156,7 @@ export default function Page({ params }: { params: { id: string } }) {
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column'}}>
         <AddOrEditDialog />
+        <DeleteDialog />
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 1.5}}>
           <ArrowBackIcon sx={{color: '#ffffff', cursor: 'pointer'}} onClick={() => router.push('/jobs')}/>
           <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -184,6 +186,13 @@ export default function Page({ params }: { params: { id: string } }) {
               variant="contained"
               sx={{ color: '#ffffff' }}
               color='error'
+              onClick={
+                (event) =>  {
+                  event.stopPropagation();
+                  setDeleteJobId(job.id);
+                  setDeleteJobOpen(true);            
+                }
+              }
             >
               <DeleteIcon sx={{ color: '#ffffff'}} />
             </Button>                     
