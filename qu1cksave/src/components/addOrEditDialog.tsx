@@ -584,7 +584,11 @@ export default function AddOrEditDialog() {
             </Select>
           </FormControl>
           <Box sx={{display: 'flex', flexDirection: 'row'}}>
+            <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 2, alignSelf: 'center'}}>
+              Salary Range:
+            </Typography>
             <NumberInputBasic inputType={'Salary Min'} numInputVal={salaryMin} setNumInputVal={setSalaryMin} min={0} max={9999999} />
+            <Box sx={{marginRight: 2}}/> 
             <NumberInputBasic inputType={'Salary Max'} numInputVal={salaryMax} setNumInputVal={setSalaryMax} min={0} max={9999999} />
           </Box>       
         </Box>
