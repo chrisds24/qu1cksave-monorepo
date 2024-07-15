@@ -5,8 +5,9 @@ import * as s3 from "../resume/s3";
 
 // No id, member_id, and date_saved since those are unchangeable
 const keys = [
-  'title', 'company_name', 'job_description', 'notes', 'is_remote', 'country',
-  'us_state', 'city', 'date_applied', 'date_posted', 'job_status', 'links', 'found_from'
+  'title', 'company_name', 'job_description', 'notes', 'is_remote', 'salary_type',
+  'salary_min', 'salary_max', 'country', 'us_state', 'city', 'date_applied',
+  'date_posted', 'job_status', 'links', 'found_from'
 ];
 
 export class JobService {

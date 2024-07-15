@@ -148,6 +148,22 @@ export default function Page({ params }: { params: { id: string } }) {
 
     const jobStatus = job.job_status;
 
+    let salary;
+    const salaryMin = job.salary_min;
+    const salaryMax = job.salary_max;
+    // Checking for undefined since values could be 0
+    //   UPDATE: Using null instead since an empty job.salary_min or max is null
+    // Example: '$130000/yr - $160000/yr'
+    if (salaryMin !== null && salaryMax !== null) {
+      salary = `$${salaryMin}/yr - $${salaryMax}/yr`;
+    } else if (salaryMin !== null) {
+      salary = `$${salaryMin}/yr - N/A`;
+    } else if (salaryMax !== null) {
+      salary = `N/A - $${salaryMax}/yr`;
+    } else {
+      salary = 'No salary info available';
+    }
+
     const paragraphs = job.job_description ? job.job_description.split(/\r\n|\r|\n/) : [];
     // console.log('paragraphs', paragraphs);
     const notesParagraphs = job.notes ? job.notes.split(/\r\n|\r|\n/) : [];
@@ -257,7 +273,7 @@ export default function Page({ params }: { params: { id: string } }) {
           {/* <HorizontalRuleIcon sx={{color: '#ffffff', margin: '0vw 1vw', alignSelf: 'center'}} /> */}
           <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '20px', alignSelf: 'center'}} />
           <Typography color='#6a9955' sx={{fontSize: '20px'}}>
-            {'$130000/yr - $160000/yr'} {/* Replace this with an actual salary */}
+            {salary}
           </Typography>
         </Box>
         <Box sx={{display: 'flex', flexDirection: 'row'}}>

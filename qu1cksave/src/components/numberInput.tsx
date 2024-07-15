@@ -5,10 +5,13 @@ import {
   numberInputClasses,
 } from '@mui/base/Unstable_NumberInput';
 import { styled } from '@mui/system';
+import { forwardRef, ForwardedRef, useState } from 'react';
 
-const NumberInput = React.forwardRef(function CustomNumberInput(
+// https://react.dev/learn/manipulating-the-dom-with-refs
+// https://react.dev/reference/react/forwardRef
+const NumberInput = forwardRef(function CustomNumberInput(
   props: NumberInputProps,
-  ref: React.ForwardedRef<HTMLDivElement>,
+  ref: ForwardedRef<HTMLDivElement>,
 ) {
   // https://github.com/mui/material-ui/issues/39069
   return (
@@ -35,14 +38,18 @@ const NumberInput = React.forwardRef(function CustomNumberInput(
   );
 });
 
-export default function NumberInputBasic() {
-  const [value, setValue] = React.useState<number | null>(null);
+export default function NumberInputBasic(props: any) {
+  const { inputType, numInputVal, setNumInputVal, min, max } = props;
   return (
     <NumberInput
-      aria-label="Demo number input"
-      placeholder="Type a number…"
-      value={value}
-      onChange={(event, val) => setValue(val)}
+      id={`${inputType} Input`}
+      // name={`${inputType} Input`}
+      aria-label={`${inputType} Input`}
+      placeholder={inputType}
+      value={numInputVal}
+      onChange={(event, val) => setNumInputVal(val)}
+      min={min}
+      max={max}
     />
   );
 }

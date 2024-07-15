@@ -76,6 +76,8 @@ export default function AddOrEditDialog() {
   // const [state, setState] = useState(!isAdd && dialogJob && dialogJob.us_state ? dialogJob.us_state : '');
   // const [links, setLinks] = useState<JSX.Element[]>(!isAdd && dialogJob && dialogJob.links ? existingLinks : [link1]);
   const [remote, setRemote] = useState('Remote');
+  const [salaryMax, setSalaryMax] = useState<number | null>(null);
+  const [salaryMin, setSalaryMin] = useState<number | null>(null);
   const [status, setStatus] = useState('Not Applied');
   const [state, setState] = useState('');
   const [links, setLinks] = useState<JSX.Element[]>([link1]);
@@ -85,6 +87,8 @@ export default function AddOrEditDialog() {
     if (!isAdd && dialogJob) { // In edit mode and the job has been loaded
       setRemote(dialogJob.is_remote);
       setStatus(dialogJob.job_status);
+      if (dialogJob.salary_min !== null) setSalaryMin(dialogJob.salary_min);
+      if (dialogJob.salary_max !== null) setSalaryMax(dialogJob.salary_max);
       if (dialogJob.us_state) setState(dialogJob.us_state);
       if (dialogJob.links) setLinks(existingLinks);
       // dialogJob.resume.file_name is needed since dialog.resume could be an empty {}
@@ -96,6 +100,8 @@ export default function AddOrEditDialog() {
   const handleClose = () => {
     setOpen(false);
     setRemote('Remote');
+    setSalaryMin(null);
+    setSalaryMax(null);
     setStatus('Not Applied');
     setState('');
     setLinks([link1]);
@@ -153,6 +159,16 @@ export default function AddOrEditDialog() {
       }
     }
 
+    if (salaryMin !== null) {
+      // TODO: Check if integer?
+      newJob['salary_min'] = salaryMin;
+    }
+
+    if (salaryMax !== null) {
+      // TODO: Check if integer?
+      newJob['salary_max'] = salaryMax;
+    }
+
     const linksList = []
     for (let i = 0; i < links.length; i++) {
       const link = data.get(`link${i+1}`);
@@ -194,6 +210,7 @@ export default function AddOrEditDialog() {
     //         - Send a newJob with no newResume but has a resume_id
     //         - Also set keepResume to false (To differentiate it from case EDIT.A)
 
+    // The id for resumeInput is in fileUploadSection.tsx
     const resumeInput = document!.getElementById('resumeInput') as HTMLInputElement;
     const resumeFiles = resumeInput.files;
 
@@ -567,44 +584,8 @@ export default function AddOrEditDialog() {
             </Select>
           </FormControl>
           <Box sx={{display: 'flex', flexDirection: 'row'}}>
-            <TextField
-              id="salaryMin"
-              name="salaryMin"
-              label="Salary Min"
-              variant="outlined"
-              sx={{
-                color: '#ffffff',
-                input: {
-                  color: '#ffffff'
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: 'solid #636369',
-                },
-                "& label": {
-                  color: '#636369',
-                },
-                marginRight: 2,
-              }}
-            />  
-            {/* <TextField
-              id="salaryMax"
-              name="salaryMax"
-              label="Salary Max"
-              variant="outlined"
-              sx={{
-                color: '#ffffff',
-                input: {
-                  color: '#ffffff'
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: 'solid #636369',
-                },
-                "& label": {
-                  color: '#636369',
-                },
-              }}
-            /> */}
-            <NumberInputBasic />
+            <NumberInputBasic inputType={'Salary Min'} numInputVal={salaryMin} setNumInputVal={setSalaryMin} min={0} max={9999999} />
+            <NumberInputBasic inputType={'Salary Max'} numInputVal={salaryMax} setNumInputVal={setSalaryMax} min={0} max={9999999} />
           </Box>       
         </Box>
 
