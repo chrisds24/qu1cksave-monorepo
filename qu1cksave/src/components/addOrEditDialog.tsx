@@ -13,6 +13,7 @@ import { YearMonthDate } from "@/types/common";
 import FileUploadSection from "./fileUploadSection";
 import { NewResume } from "@/types/resume";
 import { addOrEditJob } from "@/actions/job";
+import NumberInputBasic from "./numberInput";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
@@ -585,7 +586,7 @@ export default function AddOrEditDialog() {
                 marginRight: 2,
               }}
             />  
-            <TextField
+            {/* <TextField
               id="salaryMax"
               name="salaryMax"
               label="Salary Max"
@@ -602,7 +603,8 @@ export default function AddOrEditDialog() {
                   color: '#636369',
                 },
               }}
-            />
+            /> */}
+            <NumberInputBasic />
           </Box>       
         </Box>
 
