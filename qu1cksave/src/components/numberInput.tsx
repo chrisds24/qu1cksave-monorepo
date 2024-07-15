@@ -80,10 +80,9 @@ const StyledInputRoot = styled('div')(
   font-family: 'IBM Plex Sans', sans-serif;
   font-weight: 400;
   border-radius: 8px;
-  color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-  background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-  border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
-  box-shadow: 0px 2px 2px ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
+  color: #ffffff;
+  background: #1e1e1e;
+  border: 1.5px solid #636369;
   display: grid;
   grid-template-columns: 1fr 19px;
   grid-template-rows: 1fr 1fr;
@@ -92,12 +91,11 @@ const StyledInputRoot = styled('div')(
   padding: 4px;
 
   &.${numberInputClasses.focused} {
-    border-color: ${blue[400]};
-    box-shadow: 0 0 0 3px ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
+    border-color:  #000000;
   }
 
   &:hover {
-    border-color: ${blue[400]};
+    border-color: #000000;
   }
 
   // firefox
@@ -107,15 +105,24 @@ const StyledInputRoot = styled('div')(
 `,
 );
 
+// Keeping this in case the MUI light blue color is wanted
+// &.${numberInputClasses.focused} {
+//   border-color:  #757de8;
+// }
+
+// &:hover {
+//   border-color: #757de8;
+// }
+
 const StyledInputElement = styled('input')(
   ({ theme }) => `
-  font-size: 0.875rem;
+  font-size: 16px;
   font-family: inherit;
   font-weight: 400;
   line-height: 1.5;
   grid-column: 1/2;
   grid-row: 1/3;
-  color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
+  color: #ffffff;
   background: inherit;
   border: none;
   border-radius: inherit;
@@ -160,13 +167,14 @@ const StyledButton = styled('button')(
     border-bottom: 0;
     &:hover {
       cursor: pointer;
-      background: ${blue[400]};
-      color: ${grey[50]};
+      background: #5a5a5a;
+      border-color: #5a5a5a;
+      color: #ffffff;
     }
 
-  border-color: ${theme.palette.mode === 'dark' ? grey[800] : grey[200]};
-  background: ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
-  color: ${theme.palette.mode === 'dark' ? grey[200] : grey[900]};
+  border-color: #000000;
+  background: #000000;
+  color: #ffffff;
   }
 
   &.${numberInputClasses.decrementButton} {
@@ -177,13 +185,14 @@ const StyledButton = styled('button')(
     border: 1px solid;
     &:hover {
       cursor: pointer;
-      background: ${blue[400]};
-      color: ${grey[50]};
+      background: #5a5a5a;
+      border-color: #5a5a5a;
+      color: #ffffff;
     }
 
-  border-color: ${theme.palette.mode === 'dark' ? grey[800] : grey[200]};
-  background: ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
-  color: ${theme.palette.mode === 'dark' ? grey[200] : grey[900]};
+  border-color: #000000;
+  background: #000000;
+  color: #ffffff;
   }
   & .arrow {
     transform: translateY(-1px);
