@@ -123,7 +123,6 @@ export default function AddOrEditDialog() {
     // for (const key of data.keys()) {  // Need downlevelIteration if using this
     //   ...
     // }
-    // TODO: Refactor this. I might actually just resort to downlevelIteration
     if (data.get('description')) newJob['job_description'] = data.get('description') as string;
     if (data.get('notes')) newJob['notes'] = data.get('notes') as string;
     if (data.get('country')) newJob['country'] = data.get('country') as string;
@@ -163,8 +162,6 @@ export default function AddOrEditDialog() {
     if (linksList.length > 0) newJob['links'] = linksList;
 
     // -------------------- PROCESS RESUME --------------------
-    // TODO: In the documents page (LATER), I can use an iframe to embed the file into
-
     // ----- Cases -----
     // ADD
     // A.) Name and input field both empty. (No resume was uploaded)
@@ -423,7 +420,6 @@ export default function AddOrEditDialog() {
             </Select>
           </FormControl>
           <Box sx={{display: 'flex', flexDirection: 'row'}}>
-            {/* TODO: When in edit mode, set values of date picker based on job to be edited. */}
             <DatePicker
               // Source:
               //   https://stackoverflow.com/questions/76767152/i-am-using-react-mui-mui-x-date-pickers-please-tell-me-how-to-change-color-of
@@ -570,7 +566,6 @@ export default function AddOrEditDialog() {
             </Select>
           </FormControl>
           <Box sx={{display: 'flex', flexDirection: 'row'}}>
-            {/* TODO: Change these to a numeric input once salaries are implemented */}
             <TextField
               id="salaryMin"
               name="salaryMin"
@@ -770,16 +765,14 @@ export default function AddOrEditDialog() {
           View this GitHub issue by me: https://github.com/users/chrisds24/projects/2/views/1?pane=issue&itemId=68365376
             User uploads file here
               - MUI has a nice-looking file upload example: https://mui.com/material-ui/react-button/
-              - TODO: For now, only accept docx and pdf files. Need to accept other file formats
-              - TODO: There's some options to change the behavior when uploading a file.
+              - NOTE: There's some options to change the behavior when uploading a file.
                 -- From some limited testing I did: After the user uploads a file, then starts the upload process
                     again (by clicking upload which opens the file search window), then cancels it, the file that
-                    was uploaded earlier gets removed. NEED TO CHANGE THIS
+                    was uploaded earlier gets removed. DON'T CHANGE THIS
               - Using MUI's example, the name of the uploaded file is hidden. This is what I want. However, I
                 still want a state that keeps track of the name of the currently uploaded file. Not only is this
                 helpful to the user, but this state is used to check if the original file that we got from the
                 job in the database was changed during EDIT.
-              - TODO: When the upload process is happening, the submit button should be disabled.                         
         */}
 
         <FileUploadSection

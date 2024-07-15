@@ -54,7 +54,7 @@ export async function putObject(key: string, byteArray: Uint8Array) {
 }
 
 export async function deleteObject(key: string) {
-  // TODO: Fix deleteObject AccessDenied
+  // ISSUE (SOLVED): Fix deleteObject AccessDenied
   // - https://www.reddit.com/r/aws/comments/ukm6dk/error_deleting_objects_from_s3_bucket_access/
   //   -- "Are you using access and secret keys of an iam user? Or you might be using an aws profile?
   //      Find out the role policy attached to your role and check permissions there.""
@@ -88,6 +88,7 @@ export async function deleteObject(key: string) {
   return response;
 }
 
+// NOTE: Currently unused
 export function getResumeS3Key(id: string, mimeType: string): string {
     // TODO: Need a better way of doing this instead of appending .docx, .pdf, etc.
     let extension = '';

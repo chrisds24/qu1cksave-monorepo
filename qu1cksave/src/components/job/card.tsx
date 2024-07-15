@@ -35,8 +35,6 @@ export default function JobCard(props: any) {
   const job: Job | undefined = props.job;
   const router = useRouter();
 
-  // const {setOpen, setIsAdd, setDialogJob} = useContext(JobsContext);
-  // TODO: Remove jobs and setJobs once modal is done.
   const {setOpen, setIsAdd, setDialogJob, setDeleteJobId, setDeleteJobOpen} = useContext(JobsContext);
 
   if (job) {

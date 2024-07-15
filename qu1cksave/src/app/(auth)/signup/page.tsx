@@ -190,7 +190,6 @@ export default function Page() {
         <Grid container>
           <Grid item>
             <Link href="/login" variant="body2">
-              {/* TODO: Center this */}
               {"Already have an account? Log in"}
             </Link>
           </Grid>

@@ -5,8 +5,6 @@ import * as express from 'express';
 
 @Route("job")
 export class JobController extends Controller {
-  // TODO: I need to add a check here so that people who know someone's id
-  //   can't just view other people's saved jobs.
   @Get()
   @Security('jwt', ['member'])
   @Response('401', 'Unauthorized')
@@ -28,8 +26,6 @@ export class JobController extends Controller {
     @Body() newJob: NewJob,
     @Request() request: express.Request,
   ): Promise<Job | undefined> {
-    // TODO: Need to set appropriate status code when product creation fails for
-    //   reasons other than "Unauthorized" 
     return await new JobService().create(newJob, request.user.id);
   }
 
@@ -42,7 +38,6 @@ export class JobController extends Controller {
     @Body() newJob: NewJob,
     @Request() request: express.Request,
   ): Promise<Job | undefined> {
-    // TODO: Need to set appropriate status code when product edit fails
     return await new JobService().edit(newJob, request.user.id, id);
   }
 

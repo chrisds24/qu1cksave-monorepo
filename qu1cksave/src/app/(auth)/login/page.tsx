@@ -126,7 +126,6 @@ export default function Page() {
         <Grid container>
           <Grid item>
             <Link href="/signup" variant="body2">
-              {/* TODO: Center this */}
               {"Don't have an account? Sign up"}
             </Link>
           </Grid>

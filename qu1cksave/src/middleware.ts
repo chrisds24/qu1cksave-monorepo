@@ -17,13 +17,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/jobs', request.url))
   }
 
-  // // Authenticated and not at jobs route, go to jobs
-  // // TODO: Remove this once other authenticated routes have been added, use the
-  // //   ones above instead.
-  // if(isAuthenticated && !request.nextUrl.pathname.startsWith('/jobs')) {
-  //   return NextResponse.redirect(new URL('/jobs', request.url))
-  // }
-
   // Not authenticated at at jobs route, go to login
   if(!isAuthenticated && request.nextUrl.pathname.startsWith('/jobs')) {
     return NextResponse.redirect(new URL('/login', request.url))

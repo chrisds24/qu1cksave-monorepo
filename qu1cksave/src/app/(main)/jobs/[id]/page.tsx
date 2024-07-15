@@ -256,7 +256,6 @@ export default function Page({ params }: { params: { id: string } }) {
           </Typography>
           {/* <HorizontalRuleIcon sx={{color: '#ffffff', margin: '0vw 1vw', alignSelf: 'center'}} /> */}
           <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '20px', alignSelf: 'center'}} />
-          {/* TODO: Change things so that there's a salary range. */}
           <Typography color='#6a9955' sx={{fontSize: '20px'}}>
             {'$130000/yr - $160000/yr'} {/* Replace this with an actual salary */}
           </Typography>
@@ -316,7 +315,6 @@ export default function Page({ params }: { params: { id: string } }) {
           </Typography> 
         }
         <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
-        {/* TODO: Change the links so that only the text itself is the clickable portion */}
         <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginBottom: 1}}>
           {'Links'}
         </Typography>
