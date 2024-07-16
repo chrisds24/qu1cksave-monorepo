@@ -148,20 +148,21 @@ export default function Page({ params }: { params: { id: string } }) {
 
     const jobStatus = job.job_status;
 
-    let salary;
+    let salary = 'No salary info'
     const salaryMin = job.salary_min;
     const salaryMax = job.salary_max;
     // Checking for undefined since values could be 0
-    //   UPDATE: Using null instead since an empty job.salary_min or max is null
+    //   UPDATE: Using null instead since a non-existent job.salary_min or max is null
     // Example: '$130000/yr - $160000/yr'
-    if (salaryMin !== null && salaryMax !== null) {
-      salary = `$${salaryMin}/yr - $${salaryMax}/yr`;
-    } else if (salaryMin !== null) {
-      salary = `$${salaryMin}/yr - N/A`;
-    } else if (salaryMax !== null) {
-      salary = `N/A - $${salaryMax}/yr`;
-    } else {
-      salary = 'No salary info available';
+    if (salaryMin !== null || salaryMax !== null) {
+      salary = `${salaryMin !== null ? `$${salaryMin}/yr`: 'N/A'} - ${salaryMax !== null ? `$${salaryMax}/yr`: 'N/A'}`
+    }
+
+    let cityAndState = 'No city and state'
+    const city = job.city;
+    const state = job.us_state
+    if (city || state) {
+      cityAndState = `${job.city ? job.city : 'N/A'}, ${job.us_state ? job.us_state : 'N/A'}`
     }
 
     const paragraphs = job.job_description ? job.job_description.split(/\r\n|\r|\n/) : [];
@@ -278,12 +279,12 @@ export default function Page({ params }: { params: { id: string } }) {
         </Box>
         <Box sx={{display: 'flex', flexDirection: 'row'}}>
           <Typography color='#ffffff' sx={{fontSize: '17px'}}>
-            {`${job.city ? job.city : 'N/A'}, ${job.us_state ? job.us_state : 'N/A'}`}
+            {cityAndState}
           </Typography>
           {/* <HorizontalRuleIcon sx={{color: '#ffffff', margin: '0vw 1vw'}} /> */}
           <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '17px', alignSelf: 'center'}} />
           <Typography color='#ffffff' sx={{fontSize: '17px'}}>
-            {job.country ? `${job.country}` : 'N/A'}
+            {job.country ? `${job.country}` : 'No country'}
           </Typography>
         </Box>
         <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />

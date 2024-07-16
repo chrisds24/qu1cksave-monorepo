@@ -1,7 +1,7 @@
 'use client'
 
 import { Job } from "@/types/job";
-import { Box, Button, Paper, Typography } from "@mui/material";
+import { Box, Button, Divider, Paper, Typography } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useRouter } from "next/navigation";
@@ -45,6 +45,23 @@ export default function JobCard(props: any) {
     const posted = datePosted ? new Date(datePosted.year, datePosted.month, datePosted.date) : undefined;
 
     const jobStatus = job.job_status;
+
+    let salary = 'No salary info'
+    const salaryMin = job.salary_min;
+    const salaryMax = job.salary_max;
+    // Checking for undefined since values could be 0
+    //   UPDATE: Using null instead since a non-existent job.salary_min or max is null
+    // Example: '$130000/yr - $160000/yr'
+    if (salaryMin !== null || salaryMax !== null) {
+      salary = `${salaryMin !== null ? `$${salaryMin}/yr`: 'N/A'} - ${salaryMax !== null ? `$${salaryMax}/yr`: 'N/A'}`
+    }
+
+    let cityAndState = 'No city and state'
+    const city = job.city;
+    const state = job.us_state
+    if (city || state) {
+      cityAndState = `${job.city ? job.city : 'N/A'}, ${job.us_state ? job.us_state : 'N/A'}`
+    }
 
     return (
       <Paper
@@ -96,23 +113,29 @@ export default function JobCard(props: any) {
           <Typography color='#4fc1ff' fontWeight='bold' sx={{fontSize: '19px'}}>
             {`${job.title}`}
           </Typography>
-          <Typography color='#dcdcaa' sx={{fontSize: '17px'}}>
-            {`${job.is_remote}`}
-          </Typography>
+          <Box sx={{display: 'flex', flexDirection: 'row'}}>
+            <Typography color='#6a9955' sx={{fontSize: '17px'}}>
+              {salary}
+            </Typography>
+            <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '20px', alignSelf: 'center'}} />
+            <Typography color='#dcdcaa' sx={{fontSize: '17px'}}>
+              {`${job.is_remote}`}
+            </Typography>
+          </Box>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 0.5}}>
           <Typography color='#4ec9b0' fontWeight={'bold'} sx={{fontSize: '17px', fontStyle: 'italic'}}>
             {`${job.company_name}`}
           </Typography>
           <Typography color='#ffffff' sx={{fontSize: '17px', fontStyle: 'italic'}}>
-            {job.country ? `${job.country}` : 'N/A'}
+            {job.country ? `${job.country}` : 'No country'}
           </Typography>
           <Typography color='#ffffff' sx={{fontSize: '17px', fontStyle: 'italic'}}>
-            {`${job.city ? job.city : 'N/A'}, ${job.us_state ? job.us_state : 'N/A'}`}
+            {cityAndState}
           </Typography>
         </Box>
         <Typography sx={{textOverflow: 'ellipsis', paddingBottom: 1}} noWrap>
-          {job.job_description ? job.job_description : 'No description.'}
+          {job.job_description ? job.job_description : 'No description'}
         </Typography>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
           <Box>
