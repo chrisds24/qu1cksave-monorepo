@@ -1,4 +1,5 @@
 import { YearMonthDate, YearMonthDateFilter } from "./common";
+import { CoverLetter, NewCoverLetter } from "./coverLetter";
 import { NewResume, Resume } from "./resume";
 
 export interface Job {
@@ -6,6 +7,8 @@ export interface Job {
   member_id: string;
   resume_id?: string;
   resume?: Resume;
+  cover_letter_id?: string;
+  cover_letter?: CoverLetter;
   title: string;
   company_name: string;
   job_description?: string;
@@ -28,6 +31,8 @@ export interface Job {
 export interface NewJob {
   resume_id?: string;
   resume?: NewResume;
+  cover_letter_id?: string;
+  cover_letter?: NewCoverLetter;
   title: string;
   company_name: string;
   job_description?: string;
@@ -46,6 +51,7 @@ export interface NewJob {
   found_from?: string;
   // In job EDIT mode, used to determine if resume is to be deleted or not
   keepResume?: boolean; 
+  keepCoverLetter?: boolean; 
 }
 
 export interface Filters {

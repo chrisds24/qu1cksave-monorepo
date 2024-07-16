@@ -52,6 +52,7 @@ export default function Page({ params }: { params: { id: string } }) {
   // - https://stackoverflow.com/questions/57692006/how-can-i-hide-my-access-key-in-pre-signed-url-by-aws-s3-using-python
   // - https://stackoverflow.com/questions/7678835/how-secure-are-amazon-aws-access-keys/7684662#7684662
 
+  // TODO: Edit this to also be able to download cover letters
   const downloadResume = async (resume: Resume, target: any) => {
     // IMPORTANT: One issue with the "caching" in state is that it will use a lot of RAM.
     // IMPORTANT: Also, I noticed that the blob stays in memory even without storing
@@ -407,6 +408,7 @@ export default function Page({ params }: { params: { id: string } }) {
             undefined
           }               
         </Box>
+        {/* TODO: Add section for Cover Letter */}
       </Box>
     );
   }

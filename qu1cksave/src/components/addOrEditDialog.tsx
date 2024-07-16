@@ -14,6 +14,7 @@ import FileUploadSection from "./fileUploadSection";
 import { NewResume } from "@/types/resume";
 import { addOrEditJob } from "@/actions/job";
 import NumberInputBasic from "./numberInput";
+import { NewCoverLetter } from "@/types/coverLetter";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
@@ -82,6 +83,7 @@ export default function AddOrEditDialog() {
   const [state, setState] = useState('');
   const [links, setLinks] = useState<JSX.Element[]>([link1]);
   const [resumeName, setResumeName] = useState<string>('');
+  const [coverLetterName, setCoverLetterName] = useState<string>('');
 
   useEffect(() => {
     if (!isAdd && dialogJob) { // In edit mode and the job has been loaded
@@ -94,6 +96,7 @@ export default function AddOrEditDialog() {
       // dialogJob.resume.file_name is needed since dialog.resume could be an empty {}
       //   due to how the postgresql query is constructed
       if (dialogJob.resume && dialogJob.resume.file_name) setResumeName(dialogJob.resume.file_name);
+      if (dialogJob.cover_letter && dialogJob.cover_letter.file_name) setCoverLetterName(dialogJob.cover_letter.file_name);
     }
   }, [isAdd, dialogJob]);
 
@@ -108,6 +111,7 @@ export default function AddOrEditDialog() {
     setDialogJob(undefined);
     setIsAdd(true);
     setResumeName('');
+    setCoverLetterName('');
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -179,6 +183,7 @@ export default function AddOrEditDialog() {
     if (linksList.length > 0) newJob['links'] = linksList;
 
     // -------------------- PROCESS RESUME --------------------
+
     // ----- Cases -----
     // ADD
     // A.) Name and input field both empty. (No resume was uploaded)
@@ -277,7 +282,45 @@ export default function AddOrEditDialog() {
       newJob.resume_id = dialogJob.resume_id
     }
 
-    // ------------------------------------------------------------
+    // -------------------------- PROCESS COVER LETTER ----------------------------------
+    // Cases are the same as for resume
+
+    const coverLetterInput = document!.getElementById('coverLetterInput') as HTMLInputElement;
+    const coverLetterFiles = coverLetterInput.files;
+
+    if (coverLetterFiles) {
+      if (coverLetterName && coverLetterFiles.length > 0) {
+
+        const coverLetterFile = coverLetterFiles[0];
+        const blob = new Blob([coverLetterFile],{type: coverLetterFile.type})
+        const byteArray = new Uint8Array(await blob.arrayBuffer());
+        const arr = Array.from(byteArray);
+        const newCoverLetter: NewCoverLetter = {
+          file_name: coverLetterFile.name,
+          mime_type: coverLetterFile.type,
+          bytearray_as_array: arr   
+        }
+
+        newJob.cover_letter = newCoverLetter;
+      } else {
+        if (!isAdd) {
+          // For EDIT MODE only
+          if (coverLetterName) {
+            newJob.keepCoverLetter = true;
+          } else {
+            if (dialogJob.cover_letter_id) { 
+              newJob.keepCoverLetter = false;
+            }
+          }
+        }
+      }
+    }
+
+    if (!isAdd && dialogJob && dialogJob.cover_letter_id) {
+      newJob.cover_letter_id = dialogJob.cover_letter_id
+    }
+
+    // -----------------------------------------------------------------
 
     // Using server actions
     const job: Job | undefined = await addOrEditJob(newJob, !isAdd ? dialogJob.id : undefined)
@@ -766,6 +809,12 @@ export default function AddOrEditDialog() {
           fileType={'resume'}
           fileName={resumeName}
           setFileName={setResumeName}
+        />
+
+        <FileUploadSection
+          fileType={'coverLetter'}
+          fileName={coverLetterName}
+          setFileName={setCoverLetterName}
         />
 
       </DialogContent>
