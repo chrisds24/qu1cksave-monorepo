@@ -1,7 +1,7 @@
 import { Resume } from "src/resume";
 import { Job, NewJob } from ".";
 import { pool } from "../db";
-import * as s3 from "../resume/s3";
+import * as s3 from "../s3/s3";
 import { CoverLetter } from "src/coverLetter";
 
 // No id, member_id, and date_saved since those are unchangeable

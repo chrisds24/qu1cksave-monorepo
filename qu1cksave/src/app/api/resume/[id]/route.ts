@@ -1,5 +1,4 @@
 import { Resume } from "@/types/resume";
-import { headers } from "next/headers";
 import { NextRequest } from "next/server";
 
 export async function GET(

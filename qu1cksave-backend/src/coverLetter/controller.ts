@@ -1,10 +1,10 @@
 import { Controller, Path, Route, Get, Security, Response, Request } from 'tsoa';
-import { Resume } from '.';
-import { ResumeService } from './service';
+import { CoverLetter } from '.';
+import { CoverLetterService } from './service';
 import * as express from 'express';
 
-@Route("resume")
-export class ResumeController extends Controller {
+@Route("coverLetter")
+export class CoverLetterController extends Controller {
   @Get('{id}')
   @Security('jwt', ['member'])
   @Response('401', 'Unauthorized')
@@ -12,11 +12,11 @@ export class ResumeController extends Controller {
   public async getOne(
     @Path() id: string,
     @Request() request: express.Request
-  ): Promise<Resume | undefined> {
-    return new ResumeService()
+  ): Promise<CoverLetter | undefined> {
+    return new CoverLetterService()
       .getOne(id, request.user.id)
-      .then(async (resume: Resume | undefined): Promise<Resume | undefined> => {
-        return resume;
+      .then(async (coverLetter: CoverLetter | undefined): Promise<CoverLetter | undefined> => {
+        return coverLetter;
       });
   }
 }

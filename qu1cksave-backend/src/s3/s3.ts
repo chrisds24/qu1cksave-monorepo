@@ -1,5 +1,5 @@
 import { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3"; // ES Modules import
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+// import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const bucketName = process.env.BUCKET_NAME as string;
 const region = process.env.BUCKET_REGION as string;
@@ -89,20 +89,20 @@ export async function deleteObject(key: string) {
 }
 
 // NOTE: Currently unused
-export function getResumeS3Key(id: string, mimeType: string): string {
-    // TODO: Need a better way of doing this instead of appending .docx, .pdf, etc.
-    let extension = '';
-    switch (mimeType) {
-      case 'application/pdf':
-        extension = '.pdf';
-        break;
-      case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-        extension = '.docx';
-        break;
-      default:
-        extension = '.pdf';
-    }
+// export function getResumeS3Key(id: string, mimeType: string): string {
+//     // TODO: Need a better way of doing this instead of appending .docx, .pdf, etc.
+//     let extension = '';
+//     switch (mimeType) {
+//       case 'application/pdf':
+//         extension = '.pdf';
+//         break;
+//       case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+//         extension = '.docx';
+//         break;
+//       default:
+//         extension = '.pdf';
+//     }
 
-    return id + extension;
-}
+//     return id + extension;
+// }
 
