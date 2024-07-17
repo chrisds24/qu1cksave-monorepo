@@ -2,6 +2,7 @@ import { Resume } from "src/resume";
 import { Job, NewJob } from ".";
 import { pool } from "../db";
 import * as s3 from "../resume/s3";
+import { CoverLetter } from "src/coverLetter";
 
 // No id, member_id, and date_saved since those are unchangeable
 const keys = [
@@ -51,6 +52,8 @@ export class JobService {
       job j
       LEFT JOIN resume r ON j.resume_id = r.id AND j.member_id = r.member_id`;
 
+    // NOTE: How do I do the same thing with 3 tables? (Now that there's cover letters)
+
     if (id) {
       select += ' WHERE j.member_id = $1';
     }
@@ -70,6 +73,7 @@ export class JobService {
     // 3.) Add the new job to the job table
     // 4.) Add the file to S3
     // 5.) Return the job with resume data attached
+    // NOTE: Do the same for cover letters
 
     // Add the new resume to the resume table, if there's one
     const newResume = newJob.resume;
@@ -90,6 +94,26 @@ export class JobService {
       }
     }
 
+    // Add the new coverLetter to the coverLetter table, if there's one
+    const newCoverLetter = newJob.cover_letter;
+    let coverLetter: CoverLetter | undefined = undefined;
+    if (newCoverLetter) {
+      // member_id, job_id?, file_name, mime_type
+      const insert = "INSERT INTO cover_letter(member_id, file_name, mime_type) VALUES ($1, $2, $3) RETURNING *";
+      const query = {
+        text: insert,
+        values: [memberId, newCoverLetter.file_name, newCoverLetter.mime_type],
+      };
+      try {
+        const { rows } = await pool.query(query);
+        coverLetter = rows[0];
+      } catch {
+        // TODO: Need to undo insert resume into job table
+        console.log('Insert coverLetter unsuccessful');
+        return undefined;
+      }
+    }
+
     // Add the new job to the job table
     //   id, member_id, title, company_name, job_description, notes, is_remote, country,
     //   us_state, city, date_saved, date_applied, date_posted, job_status, links, found_from
@@ -99,6 +123,7 @@ export class JobService {
     const vals: any[] = [memberId];
     for (const key in newJob) {     
       if (key === 'resume') continue // Skip resume for now
+      if (key === 'cover_letter') continue // Skip cover letter for now
       txt += `${key}, `;
       txtVals += `$${count}, `;
       count++;
@@ -117,6 +142,13 @@ export class JobService {
       txtVals += `$${count}, `;
       count++;
       vals.push(resume.id);
+    }
+    // Add cover_letter_id to the query here if there was a cover letter that was added
+    if (coverLetter) {
+      txt += 'cover_letter_id, ';
+      txtVals += `$${count}, `;
+      count++;
+      vals.push(coverLetter.id);
     }
     // txt.length-2 since we want to remove the final comma and space
     txt = txt.slice(0, txt.length-2) + ') ';
@@ -138,7 +170,7 @@ export class JobService {
       const { rows } = await pool.query(query);
       job = rows[0];
     } catch {
-      // TODO: Need to undo the resume insert into the resume table
+      // TODO: Need to undo the resume and cover letter inserts into the resume/cover letter tables
       console.log('Insert job unsuccessful.');
       return undefined;
     }
@@ -154,8 +186,23 @@ export class JobService {
         // await s3.putObject(s3Key, byteArray);
         await s3.putObject(resume.id!, byteArray);
       } catch {
-        // TODO: Need to undo add resume and job to database
-        console.log('Insert into S3 unsucessful.');
+        // TODO: Need to undo add resume, cover letter, and job to database
+        console.log('Insert resume file into S3 unsucessful.');
+        return undefined;
+      }
+    }
+
+    // If there's a cover letter, add the file to S3
+    if (coverLetter && newCoverLetter) {
+      job!.cover_letter = coverLetter // Add the cover letter to the job
+
+      // Make the S3 call to add the cover letter file
+      try {
+        const byteArray = Uint8Array.from(newCoverLetter.bytearray_as_array!);
+        await s3.putObject(coverLetter.id!, byteArray);
+      } catch {
+        // TODO: Need to undo add resume, cover letter, and job to database
+        console.log('Insert cover letter file into S3 unsucessful.');
         return undefined;
       }
     }
@@ -186,7 +233,7 @@ export class JobService {
     const newResume = newJob.resume;
     const resumeId = newJob.resume_id;
     let resume: Resume | undefined = undefined;
-    let action: string | undefined = undefined; // 'put', 'delete', or undefined
+    let resumeAction: string | undefined = undefined; // 'put', 'delete', or undefined
 
     if (!newResume) { // Cases 1, 2, and 3
       // Case 1: When newJob doesn't have a resume_id, the job doesn't have a resume in the first place
@@ -224,7 +271,7 @@ export class JobService {
           try {
             await pool.query(query);
             // resume stays undefined
-            action = 'delete';
+            resumeAction = 'delete';
           } catch {
             console.log('Delete resume unsuccessful');
             return undefined;
@@ -250,7 +297,7 @@ export class JobService {
         try {
           const { rows } = await pool.query(query);
           resume = rows[0];
-          action = 'put';
+          resumeAction = 'put';
         } catch {
           console.log('Insert resume unsuccessful');
           return undefined;
@@ -270,9 +317,106 @@ export class JobService {
         try {
           const { rows } = await pool.query(query);
           resume = rows[0];
-          action = 'put';
+          resumeAction = 'put';
         } catch {
           console.log('Update resume unsuccessful');
+          return undefined;
+        }
+      }
+    }
+
+    // ------------------- Update cover letter table --------------------
+    // TODO: If there's an error, undo change to the resume table
+    const newCoverLetter = newJob.cover_letter;
+    const coverLetterId = newJob.cover_letter_id;
+    let coverLetter: CoverLetter | undefined = undefined;
+    let coverLetterAction: string | undefined = undefined; // 'put', 'delete', or undefined
+
+    if (!newCoverLetter) { // Cases 1, 2, and 3
+      // Case 1
+      if (coverLetterId) { // Cases 2 and 3
+        console.log(`newJob has no newCoverLetter, but has a cover_letter_id.`)
+        if (newJob.keepCoverLetter) {
+          // Case 2     
+          // SELECT from cover_letter table. Attach this cover_letter later.
+          console.log(`newJob has keepCoverLetter as TRUE.`)
+          console.log(`Case 2: Didn't edit existing cover_letter.`)
+
+          let select = 'SELECT * FROM cover_letter WHERE id = $1 AND member_id = $2';
+          const query = {
+            text: select,
+            values: [coverLetterId, memberId]
+          };
+          try {
+            const { rows } = await pool.query(query);
+            coverLetter = rows[0];
+          } catch {
+            console.log('Select cover letter unsuccessful');
+            return undefined;
+          }
+        } else {
+          // Case 
+          // DELETE from cover_letter table. No cover_letter to attach.
+          console.log(`newJob has keepCoverLetter as FALSE.`)
+          console.log(`Case 3: Deleting existing cover letter.`)
+
+          const remove = "DELETE FROM cover_letter WHERE id = $1 AND member_id = $2 RETURNING *";
+          const query = {
+            text: remove,
+            values: [coverLetterId, memberId],
+          };
+          try {
+            await pool.query(query);
+            // coverLetter stays undefined
+            coverLetterAction = 'delete';
+          } catch {
+            console.log('Delete cover letter unsuccessful');
+            return undefined;
+          }
+        }
+      } else { // Just here to console log Case 1
+        console.log(`newJob has no newCoverLetter and no cover_letter_id.`)
+        console.log(`Case 1: No cover letter to edit or remove.`)
+      }
+    } else { // Cases 4 and 5
+      // For both cases, need to attach a cover letter to the job later
+      if (!coverLetterId) {
+        // Case 4
+        // INSERT into cover_letter table
+        console.log(`newJob has a newCoverLetter, but no cover_letter_id.`)
+        console.log(`Case 4: Adding newCoverLetter into cover_letter table. Attach this later`)
+
+        const insert = "INSERT INTO cover_letter(member_id, file_name, mime_type) VALUES ($1, $2, $3) RETURNING *";
+        const query = {
+          text: insert,
+          values: [memberId, newCoverLetter.file_name, newCoverLetter.mime_type],
+        };
+        try {
+          const { rows } = await pool.query(query);
+          coverLetter = rows[0];
+          coverLetterAction = 'put';
+        } catch {
+          console.log('Insert cover letter unsuccessful');
+          return undefined;
+        }
+      } else {
+        // Case 5
+        // UPDATE cover letter table
+        console.log(`newJob has a newCoverLetter and also has a cover_letter_id.`)
+        console.log(`Case 5: Updating an existing cover letter in the cover_letter table. Attach this later`)
+
+        // id, member_id, job_id, file_name, mime_type, bytearray_as_array   (cover_letter properties)
+        const update = 'UPDATE cover_letter SET file_name = $1, mime_type = $2 WHERE id = $3 AND member_id = $4 RETURNING *'
+        const query = {
+          text: update,
+          values: [newCoverLetter.file_name, newCoverLetter.mime_type, coverLetterId, memberId],
+        };
+        try {
+          const { rows } = await pool.query(query);
+          coverLetter = rows[0];
+          coverLetterAction = 'put';
+        } catch {
+          console.log('Update cover_letter unsuccessful');
           return undefined;
         }
       }
@@ -323,6 +467,22 @@ export class JobService {
       txt +=  'resume_id = NULL, ';
     }
 
+    // Update cover_letter_id
+    if (coverLetter) {
+      // Cases 2, 4, and 5 would have a cover letter.
+      // For Cases 2 and 5, we still just update cover_letter_id even though there's no
+      //   actual change to it.
+      console.log(`cover_letter_id set to ${coverLetter.id}`)
+      txt += `cover_letter_id = $${count}, `;
+      count++;
+      vals.push(coverLetter.id);
+    } else {
+      // Cases 1 and 3 won't have a cover letter
+      // For Case 1, setting cover_letter_id to NULL still works
+      console.log(`cover_letter_id set to NULL.`)
+      txt +=  'cover_letter_id = NULL, ';
+    }
+
     // Remove the final comma and space then add remaining part of the query
     txt = txt.slice(0, txt.length-2) + ` WHERE id = $${count} AND member_id = $${count + 1} RETURNING *`;
     vals.push(jobId);
@@ -337,7 +497,7 @@ export class JobService {
       const { rows } = await pool.query(query);
       job = rows[0];
     } catch {
-      // TODO: Undo the change to the resume table;
+      // TODO: Undo the change to the resume and cover letter tables;
       console.log('Update job unsuccessful');
       return undefined;
     }
@@ -352,7 +512,7 @@ export class JobService {
       job!.resume = resume; // Attach the resume to the job
 
       // Cases 4 and 5
-      if (action === 'put') { // We're either adding or replacing a file
+      if (resumeAction === 'put') { // We're either adding or replacing a file
         console.log(`S3 call attempted. In cases 4 (add) or 5 (replace)`)
         // const s3Key = s3.getResumeS3Key(resume.id!, resume.mime_type!)
         try {
@@ -368,7 +528,7 @@ export class JobService {
         console.log(`No S3 call. In Case 2 (no change in resume)`)
       }
     } else { // There is no resume for Cases 1 (no resume) and 3 (delete)
-      if (action === 'delete') { // Case 3 (delete)
+      if (resumeAction === 'delete') { // Case 3 (delete)
         console.log(`S3 call attempted. In cases 3, delete`)
         try {
           console.log(`Deleting file with id: ${resumeId}`);
@@ -381,6 +541,45 @@ export class JobService {
         }
       } else {
         console.log(`No S3 call. In Case 1 (no resume)`)
+      }
+    }
+
+    // Make the S3 call to add the cover letter file
+    //   No s3 action to take for Cases 1 and 2 (no cover letter or didn't change cover letter)
+    if (coverLetter) {
+      console.log(`Attaching cover letter`)
+      // There is a cover letter for Cases 2, 4, and 5 (no change, add new, and update)
+      job!.cover_letter = coverLetter; // Attach the cover letter to the job
+
+      // Cases 4 and 5
+      if (coverLetterAction === 'put') { // We're either adding or replacing a file
+        console.log(`S3 call attempted. In cases 4 (add) or 5 (replace)`)
+        try {
+          const byteArray = Uint8Array.from(newCoverLetter!.bytearray_as_array!);
+          // await s3.putObject(s3Key, byteArray);
+          await s3.putObject(coverLetter.id!, byteArray);
+        } catch {
+          // TODO: Need to undo add cover letter and job to database
+          console.log('Insert/replace in S3 unsucessful.');
+          return undefined;
+        }
+      } else {
+        console.log(`No S3 call. In Case 2 (no change in cover letter)`)
+      }
+    } else { // There is no cover letter for Cases 1 (no cover letter) and 3 (delete)
+      if (coverLetterAction === 'delete') { // Case 3 (delete)
+        console.log(`S3 call attempted. In cases 3, delete`)
+        try {
+          console.log(`Deleting file with id: ${coverLetterId}`);
+          await s3.deleteObject(coverLetterId!);
+        } catch (err) {
+          console.error(err);
+          // TODO: Need to undo add cover letter and job to database
+          console.log('Delete from S3 unsucessful.');
+          return undefined;
+        }
+      } else {
+        console.log(`No S3 call. In Case 1 (no cover_letter)`)
       }
     }
 
@@ -423,6 +622,24 @@ export class JobService {
       }
     }
 
+    // Delete from cover letter table if the job had a cover letter
+    let coverLetter: CoverLetter | undefined = undefined;
+    if (job!.cover_letter_id) {
+      const del2 = 'DELETE FROM cover_letter WHERE id = $1 AND member_id = $2 RETURNING *';
+      const query2 = {
+        text: del2,
+        values: [job!.cover_letter_id, memberId]
+      };
+      try {
+        const { rows } = await pool.query(query2);
+        coverLetter = rows[0];
+      } catch {
+        // TODO: Undo delete job and resume
+        console.log('Delete cover letter unsuccessful');
+        return undefined;
+      }
+    }
+
     // Delete from S3 if job has a resume
     if (resume) {
       job!.resume = resume;
@@ -431,6 +648,19 @@ export class JobService {
         await s3.deleteObject(resume.id!);
       } catch {
         // TODO: Need to undo delete resume and job from database
+        console.log('Delete from S3 unsucessful.');
+        return undefined;
+      }   
+    }
+
+    // Delete from S3 if job has a cover letter
+    if (coverLetter) {
+      job!.cover_letter = coverLetter;
+
+      try {
+        await s3.deleteObject(coverLetter.id!);
+      } catch {
+        // TODO: Need to undo delete resume, cover letter, and job from database
         console.log('Delete from S3 unsucessful.');
         return undefined;
       }   
