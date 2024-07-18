@@ -47,6 +47,7 @@ const createLink = (idx: number, val: string) => {
 
 export default function AddOrEditDialog() {
   const {open, setOpen, isAdd, setIsAdd, dialogJob, setDialogJob, jobs, setJobs} = useContext(JobsContext);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const link1 = createLink(1, '');
   const existingLinks: JSX.Element[] = [];
@@ -119,6 +120,21 @@ export default function AddOrEditDialog() {
     // 'us_state', 'city', 'date_applied', 'date_posted', 'job_status', 'links', 'found_from'
 
     event.preventDefault();
+
+    // This also doesn't fix the 2 jobs created issue when spamming submit
+    // - I think what's happening is that after setButtonDisabled becomes
+    //   false at the end, the button becomes available for a split second
+    //   before the modal closes.
+    // - UPDATE: It happens at the "beginning", "middle", and "end"
+    //   -- UPDATE: When I removed this if condition, it only happens at the end
+    //        And I was still somehow able to click Submit even though the dialog
+    //        is visually not on the screen!!!
+    //      + View this GitHub issue: https://github.com/users/chrisds24/projects/2/views/1?pane=issue&itemId=70881061
+    // if (!buttonDisabled) {
+
+    setButtonDisabled(true);
+    console.log('Submit clicked');
+
     const data = new FormData(event.currentTarget);
     // Add additional validation here to make sure that that required values are given.
     if (!(data.get('title') && data.get('company') && data.get('remote') && data.get('status'))) {
@@ -387,7 +403,14 @@ export default function AddOrEditDialog() {
     //     console.error(err)
     //   });
 
+    // When it's here, only 1 S3 call, but there could be 2 POST requests to the
+    //   database so 2 jobs are created when spamming submit
+    // setButtonDisabled(false);
+
     handleClose();
+
+    // Down here doesn't fix the 2 jobs created issue when spamming submit
+    setButtonDisabled(false);
   };
 
   const changeRemote = (event: SelectChangeEvent) => {
@@ -821,8 +844,8 @@ export default function AddOrEditDialog() {
 
       </DialogContent>
       <DialogActions>
-        <Button sx={{color: '#ffffff'}} onClick={handleClose}>Cancel</Button>
-        <Button sx={{color: '#ffffff' }} type="submit">Submit</Button>
+        <Button sx={{color: '#ffffff'}} disabled={buttonDisabled} onClick={handleClose}>Cancel</Button>
+        <Button sx={{color: '#ffffff' }} disabled={buttonDisabled} type="submit">Submit</Button>
       </DialogActions>
     </Dialog>
   );

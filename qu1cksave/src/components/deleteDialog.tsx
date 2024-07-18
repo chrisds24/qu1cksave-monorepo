@@ -6,10 +6,11 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { usePathname, useRouter } from 'next/navigation';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 export default function DeleteDialog() {
   const {deleteJobId, deleteJobOpen, setDeleteJobOpen, setDeleteJobId, jobs, setJobs} = useContext(JobsContext);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -20,6 +21,9 @@ export default function DeleteDialog() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    // if (!buttonDisabled) {
+    setButtonDisabled(true);
 
     await fetch(`/api/job/${deleteJobId}`, {
       method: 'DELETE',
@@ -51,6 +55,8 @@ export default function DeleteDialog() {
       });
 
     handleClose();
+    setButtonDisabled(false);
+    // }
   }
 
   return (
@@ -78,8 +84,8 @@ export default function DeleteDialog() {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button sx={{color: '#ffffff'}} onClick={handleClose}>Cancel</Button>
-        <Button color='error' type="submit">Delete</Button>
+        <Button disabled={buttonDisabled} sx={{color: '#ffffff'}} onClick={handleClose}>Cancel</Button>
+        <Button disabled={buttonDisabled} color='error' type="submit">Delete</Button>
       </DialogActions>
     </Dialog>
   );

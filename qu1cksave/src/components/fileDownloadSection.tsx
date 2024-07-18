@@ -2,13 +2,16 @@ import { Box, Button, Typography } from "@mui/material";
 import DownloadIcon from '@mui/icons-material/Download';
 import { Resume } from "@/types/resume";
 import { Job } from "@/types/job";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { JobsContext } from "@/app/(main)/jobs/layout";
 import { CoverLetter } from "@/types/coverLetter";
 
 export default function FileDownloadSection(props: any) {
   const { job, fileType } = props;
   const {jobs, setJobs} = useContext(JobsContext);
+  // https://stackoverflow.com/questions/65668008/disabling-submit-button-when-submitting-form-in-react-not-working-as-expected-wh
+  // https://mui.com/material-ui/react-button/
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   const file = fileType === 'resume' ? job.resume : job.cover_letter;
 
   const downloadFile = async (target: any) => {
@@ -19,7 +22,8 @@ export default function FileDownloadSection(props: any) {
     //   IndexedDB
     //   - https://stackoverflow.com/questions/55353250/what-is-considered-too-much-data-in-react-state
 
-    target.disabled = true;
+    // target.disabled = true;
+    setButtonDisabled(true);
 
     // File in "cache"
     if (file.bytearray_as_array) {
@@ -97,7 +101,8 @@ export default function FileDownloadSection(props: any) {
       }); 
     }
 
-    target.disabled = false;
+    // target.disabled = false;
+    setButtonDisabled(false);
   }
 
   return (
@@ -126,6 +131,7 @@ export default function FileDownloadSection(props: any) {
                 downloadFile(event.currentTarget);
               }
             }
+            disabled={buttonDisabled}
           >
             <DownloadIcon sx={{ color: '#ffffff', width: 30, height: 30, paddingRight: 1}} />
             {'Download'}
