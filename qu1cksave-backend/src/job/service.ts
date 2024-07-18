@@ -58,7 +58,7 @@ export class JobService {
     FROM 
       job j
       LEFT JOIN resume r ON j.resume_id = r.id AND j.member_id = r.member_id
-      LEFT JOIN cover_letter c ON j.resume_id = c.id AND j.member_id = c.member_id`;
+      LEFT JOIN cover_letter c ON j.cover_letter_id = c.id AND j.member_id = c.member_id`;
 
     // NOTE: How do I do the same thing with 3 tables? (Now that there's cover letters)
     // https://learnsql.com/blog/how-to-left-join-multiple-tables/
