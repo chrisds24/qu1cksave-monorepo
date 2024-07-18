@@ -43,14 +43,17 @@ export class UserController extends Controller {
       });
   }
 
-  @Get()
-  @Security("jwt", ["member"])
-  @Response('401', 'Unauthorized')
-  public async getMultiple(): Promise<User[]> {
-    return new UserService()
-      .getMultiple()
-      .then(async (users: User[]): Promise<User[]> => {
-        return users;
-      });
-  }
+  // TODO: Edit this to just return the count
+  //    Change route to user/count instead of just user
+  //    Change name to getUserCount
+  // @Get()
+  // @Security("jwt", ["member"])
+  // @Response('401', 'Unauthorized')
+  // public async getMultiple(): Promise<User[]> {
+  //   return new UserService()
+  //     .getMultiple()
+  //     .then(async (users: User[]): Promise<User[]> => {
+  //       return users;
+  //     });
+  // }
 }

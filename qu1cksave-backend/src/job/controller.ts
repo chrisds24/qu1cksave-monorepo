@@ -9,10 +9,19 @@ export class JobController extends Controller {
   @Security('jwt', ['member'])
   @Response('401', 'Unauthorized')
   public async getMultiple(
+    @Request() request: express.Request,
     @Query() id?: string
   ): Promise<Job[]> {
+    // NOTE: Above, I'm getting the id of the user whose jobs we want to get
+    //   from the query so that I'm adhering to REST (which says that we filter
+    //   a resource through parameters passed in the query). But below, I'm
+    //   actually using the user id from the decoded JWT
+    if (id !== request.user.id) {
+      return [];
+    }
+
     return new JobService()
-      .getMultiple(id)
+      .getMultiple(request.user.id)
       .then(async (jobs: Job[]): Promise<Job[]> => {
         return jobs;
       });

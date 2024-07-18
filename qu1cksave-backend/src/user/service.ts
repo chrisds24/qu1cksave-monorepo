@@ -97,12 +97,13 @@ export class UserService {
     });
   }
 
-  public async getMultiple(): Promise<User[]> {
-    const select = "SELECT id, name, email, roles FROM member";
-    const query = {
-      text: select,
-    };
-    const { rows } = await pool.query(query);
-    return rows as User[];
-  }
+  // TODO: Edit this to only return the user count
+  // public async getMultiple(): Promise<User[]> {
+  //   const select = "SELECT id, name, email, roles FROM member";
+  //   const query = {
+  //     text: select,
+  //   };
+  //   const { rows } = await pool.query(query);
+  //   return rows as User[];
+  // }
 }
