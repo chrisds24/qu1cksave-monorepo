@@ -47,12 +47,21 @@ export class JobService {
         'job_id', r.job_id,
         'file_name', r.file_name,
         'mime_type', r.mime_type
-      ) AS resume
+      ) AS resume,
+      json_build_object(
+        'id', c.id, 
+        'member_id', c.member_id,
+        'job_id', c.job_id,
+        'file_name', c.file_name,
+        'mime_type', c.mime_type
+      ) AS cover_letter      
     FROM 
       job j
-      LEFT JOIN resume r ON j.resume_id = r.id AND j.member_id = r.member_id`;
+      LEFT JOIN resume r ON j.resume_id = r.id AND j.member_id = r.member_id
+      LEFT JOIN cover_letter c ON j.resume_id = c.id AND j.member_id = c.member_id`;
 
     // NOTE: How do I do the same thing with 3 tables? (Now that there's cover letters)
+    // https://learnsql.com/blog/how-to-left-join-multiple-tables/
 
     if (id) {
       select += ' WHERE j.member_id = $1';

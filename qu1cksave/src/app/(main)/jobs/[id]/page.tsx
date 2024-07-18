@@ -251,7 +251,7 @@ export default function Page({ params }: { params: { id: string } }) {
           {'Links'}
         </Typography>
         {job.links && job.links.length > 0 ?
-          <List sx={{padding: '0px 0px 25px 0px'}}>
+          <List sx={{padding: '0px 0px 0px 0px'}}>
             {job.links.map((link) =>
               <ListItem
                 component='a'
@@ -275,15 +275,18 @@ export default function Page({ params }: { params: { id: string } }) {
             )}
           </List>
           :
-          <Typography color='#ffffff' sx={{fontSize: '17px', padding: '0px 0px 25px 0px'}}>
+          <Typography color='#ffffff' sx={{fontSize: '17px', padding: '0px 0px 0px 0px'}}>
             {'N/A'}
           </Typography> 
         }
+
+        <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
+
         <Box>
           <Typography display={'inline'} color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
             {'Job posting found from:'} 
           </Typography>
-          <Typography display={'inline'} color='#ffffff' sx={{fontSize: '20px', fontWeight: 'bold'}}>
+          <Typography display={'inline'} color='#ffffff' sx={{fontSize: '20px'}}>
             {job.found_from ? job.found_from : 'N/A'} 
           </Typography>                 
         </Box>
@@ -291,6 +294,9 @@ export default function Page({ params }: { params: { id: string } }) {
         <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
         
         <FileDownloadSection job={job} fileType={'resume'} />
+
+        <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
+
         <FileDownloadSection job={job} fileType={'cover_letter'} />
       </Box>
     );
