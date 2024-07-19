@@ -42,7 +42,17 @@ export default function Page() {
   //     - As a result of the page change, jobs shown in current page changes 
   useEffect(() => {
     if (filteredJobs.length) { // So this doesn't trigger when jobs are still loading initially
-      const lastPage = Math.ceil(filteredJobs.length / jobsPerPage)
+      // -------------------
+      // This "wrapped" section was originally just: lastPage = Math.ceil(filteredJobs.length / jobsPerPage)
+      // This new code ensures that we don't divide by 0 and that the last page is at least 1
+      let lastPage;
+      if (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) {
+        lastPage = 1; // Last page is at least 1
+      } else {
+        lastPage = Math.ceil(filteredJobs.length / jobsPerPage) 
+      }
+      // --------------------
+
       // If we're at a page higher than our last page, go to the last page
       // Will automatically update jobs shown in current page
       if (page > lastPage) {
@@ -64,7 +74,15 @@ export default function Page() {
 
   useEffect(() => {
     if (pageToJumpTo !== undefined) {
-      const lastPage = Math.ceil(filteredJobs.length / jobsPerPage);
+      // -------------------
+      // This "wrapped" section was originally just: lastPage = Math.ceil(filteredJobs.length / jobsPerPage)
+      let lastPage;
+      if (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) {
+        lastPage = 1; // Last page is at least 1
+      } else {
+        lastPage = Math.ceil(filteredJobs.length / jobsPerPage) 
+      }
+      // --------------------
       if (pageToJumpTo < 1 || pageToJumpTo > lastPage) {
         setInvalidEntry(true);
       } else {
@@ -113,7 +131,13 @@ export default function Page() {
 
       <Box sx={{ display: 'flex', flexDirection: 'row', marginBottom: 2.5 }}>
         <Pagination
-          count={Math.ceil(filteredJobs.length / jobsPerPage)}
+          count={
+            // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
+            // This new code ensures that we don't divide by 0 and that there is at least 1 page
+            (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
+            1 :
+            Math.ceil(filteredJobs.length / jobsPerPage)
+          }
           page={page}
           onChange={changePage}
           size={'large'}
@@ -137,7 +161,11 @@ export default function Page() {
           InputProps={{
             inputProps: {
               min: 1,
-              max: Math.ceil(filteredJobs.length / jobsPerPage),
+              max:
+                // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
+                (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
+                1 :
+                Math.ceil(filteredJobs.length / jobsPerPage),
               step: "1" 
             },
             style: {
@@ -161,7 +189,12 @@ export default function Page() {
           error={invalidEntry}
           helperText={
             invalidEntry ?
-            `Must be 1-${Math.ceil(filteredJobs.length / jobsPerPage)}` :
+            `Must be 1-${
+                // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
+                (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
+                1 :
+                Math.ceil(filteredJobs.length / jobsPerPage)
+            }` :
             ''
           }
         />
@@ -185,7 +218,12 @@ export default function Page() {
 
       <Box sx={{ display: 'flex', flexDirection: 'row', marginTop: '3vh' }}>
         <Pagination
-          count={Math.ceil(filteredJobs.length / jobsPerPage)}
+          count={
+            // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
+            (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
+            1 :
+            Math.ceil(filteredJobs.length / jobsPerPage)
+          }
           page={page}
           onChange={changePage}
           size={'large'}
@@ -209,7 +247,11 @@ export default function Page() {
           InputProps={{
             inputProps: {
               min: 1,
-              max: Math.ceil(filteredJobs.length / jobsPerPage),
+              max:
+                // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
+                (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
+                1 :
+                Math.ceil(filteredJobs.length / jobsPerPage),
               step: "1" 
             },
             style: {
@@ -233,7 +275,12 @@ export default function Page() {
           error={invalidEntry}
           helperText={
             invalidEntry ?
-            `Must be 1-${Math.ceil(filteredJobs.length / jobsPerPage)}` :
+            `Must be 1-${
+                // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
+                (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
+                1 :
+                Math.ceil(filteredJobs.length / jobsPerPage)              
+            }` :
             ''
           }
         />

@@ -10,7 +10,14 @@ export default function DiscreteSliderValues(props: any) {
   const changeJobsPerPage = props.changeJobsPerPage;
   const { filteredJobs, jobsPerPage } = useContext(JobsContext);
   // const allJobsCount = jobs.length;
-  const allJobsCount = filteredJobs.length;
+  const filteredJobsCount = filteredJobs.length;
+  let maxCount;
+  // Ensures that the job slider's max doesn't go below 10
+  if (filteredJobsCount < 10) {
+    maxCount = 10;
+  } else {
+    maxCount = filteredJobsCount
+  }
 
   const marks = [
     { value: 10, label: '10' },
@@ -19,7 +26,8 @@ export default function DiscreteSliderValues(props: any) {
     { value: 100, label: ''},
     { value: 200, label: ''},
     { value: 500, label: ''},
-    { value: allJobsCount, label: `${allJobsCount}`},
+    // { value: filteredJobsCount, label: `${filteredJobsCount}`},
+    { value: maxCount, label: `${maxCount}`},
   ];
   
   return (
@@ -32,7 +40,8 @@ export default function DiscreteSliderValues(props: any) {
         step={null}
         valueLabelDisplay="auto"
         marks={marks}
-        max={allJobsCount}
+        // max={filteredJobsCount}
+        max={maxCount}
         sx={{
           color: '#ffffff', // color of the marks
           "& .MuiSlider-thumb": {
