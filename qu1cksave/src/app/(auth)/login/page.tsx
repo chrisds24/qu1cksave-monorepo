@@ -12,6 +12,7 @@ import Avatar from '@mui/material/Avatar';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { login } from '@/actions/auth';
 import { Credentials } from '@/types/auth';
+import { useState } from 'react';
 
 // Credit to:
 // - https://mui.com/material-ui/getting-started/templates/
@@ -31,9 +32,11 @@ function Copyright(props: any) {
 
 export default function Page() {
   const router = useRouter();
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const signin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setButtonDisabled(true);
     const formdata = new FormData(event.currentTarget);
     const credentials: Credentials = {
       email: formdata.get('email') as string,
@@ -45,6 +48,7 @@ export default function Page() {
     } else {
       alert('User not found.');
     }
+    setButtonDisabled(false);
   };
 
   return (
@@ -120,6 +124,7 @@ export default function Page() {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2, color: '#ffffff', backgroundColor: '#000000' }}
+          disabled={buttonDisabled}
         >
           Sign In
         </Button>

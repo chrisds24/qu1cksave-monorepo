@@ -13,6 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { signup } from '@/actions/auth';
 import { NewUser } from '@/types/auth';
 import { User } from '@/types/user';
+import { useState } from 'react';
 
 // Credit to:
 // - https://mui.com/material-ui/getting-started/templates/
@@ -32,9 +33,11 @@ function Copyright(props: any) {
 
 export default function Page() {
   const router = useRouter();
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const createAccount = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setButtonDisabled(true);
     const data = new FormData(event.currentTarget);
     const newUser: NewUser = {
       name: data.get('name') as string,
@@ -53,6 +56,7 @@ export default function Page() {
         alert('Email already in use. Please use a different email.');
       }
     }
+    setButtonDisabled(false);
   };
 
   return (
@@ -184,6 +188,7 @@ export default function Page() {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2, color: '#ffffff', backgroundColor: '#000000' }}
+          disabled={buttonDisabled}
         >
           Sign Up
         </Button>

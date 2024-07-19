@@ -133,7 +133,6 @@ export default function AddOrEditDialog() {
     // if (!buttonDisabled) {
 
     setButtonDisabled(true);
-    console.log('Submit clicked');
 
     const data = new FormData(event.currentTarget);
     // Add additional validation here to make sure that that required values are given.
