@@ -10,6 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Filters from "@/components/filters";
 import SortOptions from "@/components/sortOptions";
 import DeleteDialog from "@/components/deleteDialog";
+import PaginationSection from "@/components/paginationSection";
 
 export default function Page() {
   const {
@@ -91,26 +92,8 @@ export default function Page() {
     }
   }, [pageToJumpTo]);
 
-  const changePage = (event: React.ChangeEvent<unknown>, pageVal: number) => {
-    setPage(pageVal);
-  };
-
   const changeJobsPerPage = (event: React.ChangeEvent<unknown>, jobsPerPageVal: number) => {
     setJobsPerPage(jobsPerPageVal);
-  };
-
-  const changePageToJumpTo = (event: React.ChangeEvent<unknown>) => {
-    const eventVal = (event.target as HTMLInputElement).value;
-    if (eventVal) { // If there's a page to jump to that has been set
-      let pageVal = Number(eventVal);
-      setPageToJumpTo(pageVal);
-    }
-  };
-
-  const jumpToPage = () => {
-    if (pageToJumpTo && !invalidEntry) { // If there's a page to jump to that has been set
-      setPage(pageToJumpTo);
-    }
   };
 
   return (
@@ -129,173 +112,17 @@ export default function Page() {
         </Box>
       </Box>
 
-      <Box sx={{ display: 'flex', flexDirection: 'row', marginBottom: 2.5 }}>
-        <Pagination
-          count={
-            // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
-            // This new code ensures that we don't divide by 0 and that there is at least 1 page
-            (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
-            1 :
-            Math.ceil(filteredJobs.length / jobsPerPage)
-          }
-          page={page}
-          onChange={changePage}
-          size={'large'}
-          sx={{
-            '& .MuiPaginationItem-root': {
-              color: '#ffffff',
-              '&.Mui-selected': {
-                background: '#2d2d30',
-              },
-            },
-            marginRight: '1vw'
-          }}
-        />
-        <TextField
-          id="jump-to-page"
-          label="Page"
-          type="number"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          InputProps={{
-            inputProps: {
-              min: 1,
-              max:
-                // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
-                (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
-                1 :
-                Math.ceil(filteredJobs.length / jobsPerPage),
-              step: "1" 
-            },
-            style: {
-              height: '40px',
-              width: '90px',
-              color: '#ffffff',
-            }
-          }}
-          onChange={changePageToJumpTo}
-          sx={{
-            marginRight: '0.5vw',
-            padding: '1px',
-            "& .MuiOutlinedInput-notchedOutline": {
-              border: 'solid #2d2d30',
-            },
-            "& label": {
-              color: '#ffffff',
-            }
-          }}
-          value={pageToJumpTo}
-          error={invalidEntry}
-          helperText={
-            invalidEntry ?
-            `Must be 1-${
-                // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
-                (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
-                1 :
-                Math.ceil(filteredJobs.length / jobsPerPage)
-            }` :
-            ''
-          }
-        />
-        <Button
-          variant="contained"
-          sx={{
-            color: '#ffffff',
-            backgroundColor: '#000000',
-            height: '40px'
-          }}
-          onClick={jumpToPage}
-        >
-          Go
-        </Button>
-      </Box>
+      <PaginationSection />
+      <Box sx={{marginBottom: 2.5 }} />
 
       <AddOrEditDialog />
       <DeleteDialog />
 
       <JobsList />
 
-      <Box sx={{ display: 'flex', flexDirection: 'row', marginTop: '3vh' }}>
-        <Pagination
-          count={
-            // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
-            (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
-            1 :
-            Math.ceil(filteredJobs.length / jobsPerPage)
-          }
-          page={page}
-          onChange={changePage}
-          size={'large'}
-          sx={{
-            '& .MuiPaginationItem-root': {
-              color: '#ffffff',
-              '&.Mui-selected': {
-                background: '#2d2d30',
-              },
-            },
-            marginRight: '1vw'
-          }}
-        />
-        <TextField
-          id="jump-to-page-bottom"
-          label="Page"
-          type="number"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          InputProps={{
-            inputProps: {
-              min: 1,
-              max:
-                // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
-                (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
-                1 :
-                Math.ceil(filteredJobs.length / jobsPerPage),
-              step: "1" 
-            },
-            style: {
-              height: '40px',
-              width: '90px',
-              color: '#ffffff',
-            }
-          }}
-          onChange={changePageToJumpTo}
-          sx={{
-            marginRight: '0.5vw',
-            padding: '1px',
-            "& .MuiOutlinedInput-notchedOutline": {
-              border: 'solid #2d2d30',
-            },
-            "& label": {
-              color: '#ffffff',
-            },
-          }}
-          value={pageToJumpTo}
-          error={invalidEntry}
-          helperText={
-            invalidEntry ?
-            `Must be 1-${
-                // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
-                (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
-                1 :
-                Math.ceil(filteredJobs.length / jobsPerPage)              
-            }` :
-            ''
-          }
-        />
-        <Button
-          variant="contained"
-          sx={{
-            color: '#ffffff',
-            backgroundColor: '#000000',
-            height: '40px'
-          }}
-          onClick={jumpToPage}
-        >
-          Go
-        </Button>
-      </Box>
+      <Box sx={{marginTop: '3vh' }} />
+      <PaginationSection />
+
       <Fab
         aria-label='add'
         sx={{
