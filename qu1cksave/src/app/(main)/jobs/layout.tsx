@@ -85,6 +85,14 @@ export default function JobsLayout({
   // Quick Stats
   const [quickStats, setQuickStats] = useState<QuickStats | null>(null);
 
+  // Jobs Loading
+  // - Used to indicate if we're showing the skeleton for the jobs
+  //   list or not.
+  // - I could have made jobs be of type undefined | Jobs[], but
+  //   a lot of things rely on jobs being an array. This achieves
+  //   the same purpose w/o needing to change a lot of code.
+  const [jobsLoading, setJobsLoading] = useState<boolean>(true); 
+
   useEffect(() => {
     const getJobs = async () => {
       if (sessionUser) {
@@ -98,6 +106,7 @@ export default function JobsLayout({
           })
           .then((jobs: Job[]) => {
             setJobs(jobs)
+            setJobsLoading(false);
           })
           .catch((err) => {
             alert(`Jobs collection for ${sessionUser.name} not found.`)
@@ -144,6 +153,13 @@ export default function JobsLayout({
     setJobsInPage(filteredJobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
     setQuickStats(getQuickStats(filteredJobs));
   }, [filteredJobs]);
+
+  // To show skeleton when jobs are loading:
+  // - Shows the skeleton list, but doesn't work well since it still shows the
+  //   "no jobs yet" message before showing the actual list
+  // useEffect(() => {
+  //   setJobsLoading(false);
+  // }, [jobsInPage])
 
   useEffect(() => {
     setCurrentFilters(
@@ -274,7 +290,10 @@ export default function JobsLayout({
         setSortIncreasing,
         // Quick Stats
         quickStats,
-        setQuickStats
+        setQuickStats,
+        // Jobs Loading
+        jobsLoading,
+        setJobsLoading
       }}
     >
       {children}
