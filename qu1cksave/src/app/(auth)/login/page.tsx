@@ -13,6 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { login } from '@/actions/auth';
 import { Credentials } from '@/types/auth';
 import { useState } from 'react';
+import { CircularProgress } from '@mui/material';
 
 // Credit to:
 // - https://mui.com/material-ui/getting-started/templates/
@@ -126,7 +127,7 @@ export default function Page() {
           sx={{ mt: 3, mb: 2, color: '#ffffff', backgroundColor: '#000000' }}
           disabled={buttonDisabled}
         >
-          Sign In
+          {buttonDisabled ? <CircularProgress size={25} sx={{color: '#ffffff'}} />: 'Sign In'}
         </Button>
         <Grid container>
           <Grid item>

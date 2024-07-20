@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { JobsContext } from "@/app/(main)/jobs/layout";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -843,8 +843,12 @@ export default function AddOrEditDialog() {
 
       </DialogContent>
       <DialogActions>
-        <Button sx={{color: '#ffffff'}} disabled={buttonDisabled} onClick={handleClose}>Cancel</Button>
-        <Button sx={{color: '#ffffff' }} disabled={buttonDisabled} type="submit">Submit</Button>
+        <Button sx={{color: '#ffffff'}} disabled={buttonDisabled} onClick={handleClose}>
+          {buttonDisabled ? <CircularProgress size={20} sx={{color: '#ffffff'}} />: 'Cancel'}
+        </Button>
+        <Button sx={{color: '#ffffff' }} disabled={buttonDisabled} type="submit">
+          {buttonDisabled ? <CircularProgress size={20} sx={{color: '#ffffff'}} />: 'Submit'}
+        </Button>
       </DialogActions>
     </Dialog>
   );

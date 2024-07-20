@@ -14,6 +14,7 @@ import { signup } from '@/actions/auth';
 import { NewUser } from '@/types/auth';
 import { User } from '@/types/user';
 import { useState } from 'react';
+import { CircularProgress } from '@mui/material';
 
 // Credit to:
 // - https://mui.com/material-ui/getting-started/templates/
@@ -190,7 +191,7 @@ export default function Page() {
           sx={{ mt: 3, mb: 2, color: '#ffffff', backgroundColor: '#000000' }}
           disabled={buttonDisabled}
         >
-          Sign Up
+          {buttonDisabled ? <CircularProgress size={25} sx={{color: '#ffffff'}} />: 'Sign In'}
         </Button>
         <Grid container>
           <Grid item>

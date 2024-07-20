@@ -1,4 +1,5 @@
 import { JobsContext } from '@/app/(main)/jobs/layout';
+import { CircularProgress } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -84,8 +85,12 @@ export default function DeleteDialog() {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button disabled={buttonDisabled} sx={{color: '#ffffff'}} onClick={handleClose}>Cancel</Button>
-        <Button disabled={buttonDisabled} color='error' type="submit">Delete</Button>
+        <Button disabled={buttonDisabled} sx={{color: '#ffffff'}} onClick={handleClose}>
+          {buttonDisabled ? <CircularProgress size={20} sx={{color: '#ffffff'}} />: 'Cancel'}
+        </Button>
+        <Button disabled={buttonDisabled} color='error' type="submit">
+          {buttonDisabled ? <CircularProgress size={20} sx={{color: '#ffffff'}} />: 'Delete'}
+        </Button>
       </DialogActions>
     </Dialog>
   );
