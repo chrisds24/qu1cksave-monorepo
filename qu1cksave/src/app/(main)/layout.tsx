@@ -20,7 +20,7 @@ import Link from 'next/link';
 import { getSessionUser, logout } from '@/actions/auth';
 import { Context, ReactNode, createContext, useEffect, useState } from 'react';
 import { User } from '@/types/user';
-import { Avatar } from '@mui/material';
+import { Avatar, Skeleton } from '@mui/material';
 import stringAvatar from '@/lib/stringAvatar';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -124,10 +124,33 @@ export default function MainLayout({
         >
           <ListItemButton>
             <ListItemIcon>
-              <Avatar {...stringAvatar(sessionUser ? sessionUser.name : 'N A')} />
+              {
+                sessionUser ?
+                <Avatar {...stringAvatar(sessionUser.name)} /> :
+                <Skeleton
+                  variant="circular"
+                  animation="wave"
+                  width={40}
+                  height={40}
+                  sx={{bgcolor: '#1a1a1a'}}
+                />
+              }
+              {/* <Avatar {...stringAvatar(sessionUser ? sessionUser.name : 'N A')} /> */}
             </ListItemIcon>
             <ListItemText
-              primary={sessionUser ? sessionUser.name : ''}
+              // primary={sessionUser ? sessionUser.name : ''}
+              primary={
+                sessionUser ?
+                sessionUser.name :
+                <Skeleton
+                  variant="text"
+                  animation="wave"
+                  sx={{
+                    bgcolor: '#1a1a1a',
+                    fontSize: '20px'
+                  }}
+                />
+              }
               sx={{ color: '#ffffff', textOverflow: 'ellipsis' }}
               primaryTypographyProps={{ 
                 style: {
