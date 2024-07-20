@@ -42,7 +42,7 @@ export default function JobsList() {
         <Box sx={{width: '100%', height: '50vh', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
           <Box sx={{display: 'flex', height: '100%', width: '60%', flexDirection: 'row', alignItems: 'center'}}>
             <Typography variant="h3" sx={{fontWeight: 'bold', color: '#ffffff'}}>
-              You haven't added any jobs yet. Click the green plus button to get started!
+              You haven't added any jobs yet.
             </Typography>
           </Box>
         </Box>
