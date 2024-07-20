@@ -6,10 +6,10 @@ export default function PaginationSectionSkeleton() {
       variant="rounded"
       sx={{
         bgcolor: '#1a1a1a',
-        // width: '590px',
-        width: '40.5vw',
-        // height: '42px'
-        height: '6.5vh'
+        width: '590px',
+        // width: '40.5vw',
+        height: '50px'
+        // height: '6.5vh'
       }}
     />
   );
