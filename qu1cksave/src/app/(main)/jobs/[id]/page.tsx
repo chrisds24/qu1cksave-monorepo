@@ -290,13 +290,9 @@ export default function Page({ params }: { params: { id: string } }) {
             {job.found_from ? job.found_from : 'N/A'} 
           </Typography>                 
         </Box>
-
-        <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
-        
+        <Box sx={{marginBottom: 2}}/>
         <FileDownloadSection job={job} fileType={'resume'} />
-
-        <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
-
+        <Box sx={{marginBottom: 2}}/>
         <FileDownloadSection job={job} fileType={'cover_letter'} />
       </Box>
     );
