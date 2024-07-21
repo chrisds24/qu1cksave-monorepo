@@ -11,6 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddOrEditDialog from "@/components/addOrEditDialog";
 import DeleteDialog from "@/components/deleteDialog";
 import FileDownloadSection from "@/components/fileDownloadSection";
+import SingleJobSkeleton from "@/components/skeleton/singleJobSkeleton";
 
 // Applied, Not Applied, Assessment, Interview, Job Offered, Accepted Offer, Declined Offer
 // Rejected, Ghosted, Closed
@@ -295,6 +296,10 @@ export default function Page({ params }: { params: { id: string } }) {
         <Box sx={{marginBottom: 2}}/>
         <FileDownloadSection job={job} fileType={'cover_letter'} />
       </Box>
+    );
+  } else {
+    return (
+      <SingleJobSkeleton />
     );
   }
 }
