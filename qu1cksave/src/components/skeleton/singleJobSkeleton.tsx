@@ -34,8 +34,8 @@ export default function SingleJobSkeleton() {
         </Box>
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-        <Box>
-          <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', width: '15vw'}}>
+          <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
             {'Applied:'} 
           </Typography>
           <Skeleton
@@ -44,12 +44,12 @@ export default function SingleJobSkeleton() {
             sx={{
               bgcolor: '#1a1a1a',
               fontSize: '17px',
-              display: 'inline'
+              width: '100%'
             }}
           />                 
         </Box>
-        <Box>
-          <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', width: '15vw'}}>
+          <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
             {'Posted:'} 
           </Typography>
           <Skeleton
@@ -58,12 +58,12 @@ export default function SingleJobSkeleton() {
             sx={{
               bgcolor: '#1a1a1a',
               fontSize: '17px',
-              display: 'inline'
+              width: '100%'
             }}
           />   
         </Box>
-        <Box>
-          <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', width: '15vw'}}>
+          <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
             {'Saved:'} 
           </Typography>
           <Skeleton
@@ -72,13 +72,13 @@ export default function SingleJobSkeleton() {
             sx={{
               bgcolor: '#1a1a1a',
               fontSize: '17px',
-              display: 'inline'
+              width: '100%'
             }}
           />              
         </Box>
       </Box>
-      <Box sx={{marginBottom: 1.5}}>
-        <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1, fontWeight: 'bold'}}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', width: '15vw', marginBottom: 1.5}}>
+        <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1, fontWeight: 'bold'}}>
           {'Status:'} 
         </Typography>
         <Skeleton
@@ -87,7 +87,7 @@ export default function SingleJobSkeleton() {
           sx={{
             bgcolor: '#1a1a1a',
             fontSize: '17px',
-            display: 'inline'
+            width: '100%'
           }}
         />
       </Box>
@@ -98,6 +98,7 @@ export default function SingleJobSkeleton() {
         sx={{
           bgcolor: '#1a1a1a',
           fontSize: '24px',
+          width: '25vw'
         }}
       />
       {/* Company Name */}
@@ -107,6 +108,7 @@ export default function SingleJobSkeleton() {
         sx={{
           bgcolor: '#1a1a1a',
           fontSize: '20px',
+          width: '20vw'
         }}
       />
       <Box sx={{display: 'flex', flexDirection: 'row'}}>
@@ -117,6 +119,7 @@ export default function SingleJobSkeleton() {
           sx={{
             bgcolor: '#1a1a1a',
             fontSize: '20px',
+            width: '10vw'
           }}
         />
         {/* <HorizontalRuleIcon sx={{color: '#ffffff', margin: '0vw 1vw', alignSelf: 'center'}} /> */}
@@ -128,6 +131,7 @@ export default function SingleJobSkeleton() {
           sx={{
             bgcolor: '#1a1a1a',
             fontSize: '20px',
+            width: '10vw'
           }}
         />
       </Box>
@@ -139,6 +143,7 @@ export default function SingleJobSkeleton() {
           sx={{
             bgcolor: '#1a1a1a',
             fontSize: '17px',
+            width: '7vw'
           }}
         />
         {/* <HorizontalRuleIcon sx={{color: '#ffffff', margin: '0vw 1vw'}} /> */}
@@ -150,6 +155,7 @@ export default function SingleJobSkeleton() {
           sx={{
             bgcolor: '#1a1a1a',
             fontSize: '17px',
+            width: '7vw'
           }}
         />
       </Box>
@@ -163,7 +169,7 @@ export default function SingleJobSkeleton() {
         sx={{
           bgcolor: '#1a1a1a',
           width: '100%',
-          height: '25vh'
+          // height: '25vh'
         }}
       />
       <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
@@ -176,7 +182,7 @@ export default function SingleJobSkeleton() {
         sx={{
           bgcolor: '#1a1a1a',
           width: '100%',
-          height: '25vh'
+          // height: '25vh'
         }}
       />
       <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
@@ -189,14 +195,14 @@ export default function SingleJobSkeleton() {
         sx={{
           bgcolor: '#1a1a1a',
           width: '100%',
-          height: '25vh'
+          // height: '25vh'
         }}
       />
 
       <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
 
-      <Box sx={{marginBottom: 2}}>
-        <Typography display={'inline'} color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', width: '50vw', marginBottom: 2}}>
+        <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
           {'Job posting found from:'} 
         </Typography>
         {/* Found From text */}
@@ -206,12 +212,12 @@ export default function SingleJobSkeleton() {
           sx={{
             bgcolor: '#1a1a1a',
             fontSize: '20px',
-            display: 'inline'
+            width: '20%'
           }}
         />              
       </Box>
-      <Box sx={{marginBottom: 2}}>
-        <Typography display={'inline'} color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', width: '50vw', marginBottom: 2}}>
+        <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
           {'Resume:'} 
         </Typography>
         {/* Resume content */}
@@ -221,12 +227,12 @@ export default function SingleJobSkeleton() {
           sx={{
             bgcolor: '#1a1a1a',
             fontSize: '20px',
-            display: 'inline'
+            width: '40%'
           }}
         />              
       </Box>
-      <Box>
-        <Typography display={'inline'} color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', width: '50vw', marginBottom: 2}}>
+        <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
           {'Cover Letter:'} 
         </Typography>
         {/* Cover letter content */}
@@ -236,7 +242,7 @@ export default function SingleJobSkeleton() {
           sx={{
             bgcolor: '#1a1a1a',
             fontSize: '20px',
-            display: 'inline'
+            width: '50%'
           }}
         />              
       </Box>
