@@ -134,9 +134,11 @@ export default function JobCard(props: any) {
             {cityAndState}
           </Typography>
         </Box>
-        <Typography sx={{textOverflow: 'ellipsis', paddingBottom: 1}} noWrap>
-          {job.job_description ? job.job_description : 'No description'}
-        </Typography>
+        <Box sx={{width: '70vw'}}>
+          <Typography sx={{textOverflow: 'ellipsis', paddingBottom: 1, width: '100%'}} noWrap>
+            {job.job_description ? job.job_description : 'No description'}
+          </Typography>
+        </Box>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
           <Box>
             <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}} alignSelf={'center'}>
