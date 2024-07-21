@@ -25,6 +25,7 @@ import stringAvatar from '@/lib/stringAvatar';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { usePathname } from 'next/navigation';
 
 const drawerWidth = 180;
 
@@ -44,6 +45,11 @@ export default function MainLayout({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [sessionUser, setSessionUser] = useState<User>();
+
+  const pathname = usePathname();
+  const noSlash = pathname.substring(1);
+  const noFirst = noSlash.substring(1);
+  const currentPage = noSlash[0].toUpperCase() + noFirst;
 
   useEffect(() => {
     const getSession = async () => {
@@ -192,9 +198,12 @@ export default function MainLayout({
         <AppBar
           position="fixed"
           sx={{
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            // width: { sm: `calc(100% - ${drawerWidth}px)` },
+            width: { md: `calc(100% - ${drawerWidth}px)` },
             ml: { sm: `${drawerWidth}px` },
-            display: { sm: 'none' },
+            // display: { sm: 'none' },
+            display: { md: 'none' },
+            backgroundColor: '#000000'
           }}
         >
           <Toolbar>
@@ -203,19 +212,21 @@ export default function MainLayout({
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: 'none' } }}
+              // sx={{ mr: 2, display: { sm: 'none' } }}
+              sx={{ mr: 2, display: { md: 'none' } }}
             >
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" noWrap component="div">
-              qu1cksave
+              {currentPage}
             </Typography>
           </Toolbar>
         </AppBar>
         <Box
           component="nav"
-          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-          aria-label="mailbox folders"
+          // sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+          sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+          aria-label="drawer options"
         >
           {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
           <Drawer
@@ -227,7 +238,8 @@ export default function MainLayout({
               keepMounted: true, // Better open performance on mobile.
             }}
             sx={{
-              display: { xs: 'block', sm: 'none' },
+              // display: { xs: 'block', sm: 'none' },
+              display: { xs: 'block', md: 'none' },
               '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
             }}
             PaperProps={{
@@ -242,7 +254,8 @@ export default function MainLayout({
           <Drawer
             variant="permanent"
             sx={{
-              display: { xs: 'none', sm: 'block' },
+              // display: { xs: 'none', sm: 'block' },
+              display: { xs: 'none', md: 'block' },
               '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
             }}
             open
@@ -260,12 +273,16 @@ export default function MainLayout({
           component="main"
           sx={{ flexGrow: 1,
             p: 3,
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            // TODO: Maybe change this to md? Doesn't seem to be necessary though
+            //   I'll just change it anyway
+            // width: { sm: `calc(100% - ${drawerWidth}px)` },
+            width: { md: `calc(100% - ${drawerWidth}px)` },
             backgroundColor: '#1e1e1e',
             // height: '100vh'
           }}
         >
-          <Toolbar sx={{display: { xs: 'block', sm: 'none' }}}/>
+          {/* <Toolbar sx={{display: { xs: 'block', sm: 'none' }}}/> */}
+          <Toolbar sx={{display: { xs: 'block', md: 'none' }}}/>
           <SessionUserContext.Provider value={{ sessionUser }}>
             {children}
           </SessionUserContext.Provider>
