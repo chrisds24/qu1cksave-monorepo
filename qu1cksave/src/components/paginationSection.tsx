@@ -35,7 +35,8 @@ export default function PaginationSection() {
 
   if (!jobsLoading) {
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'row'}}>
+      // alignItems: 'center' is important when screen width at xs
+      <Box sx={{ display: 'flex', flexDirection:  {xs: 'column', sm: 'row'}, alignItems: 'center'}}>
         <Pagination
           count={
             // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
@@ -54,67 +55,85 @@ export default function PaginationSection() {
                 background: '#2d2d30',
               },
             },
-            marginRight: '1vw'
+            '& .MuiPaginationItem-previousNext': {
+              height: {xs: '35px', md: '40px'},
+              minWidth: {xs: '35px', md: '40px'},
+              maxWidth: {xs: '35px', md: '40px'},
+            },
+            '& .MuiPaginationItem-page': {
+              height: {xs: '35px', md: '40px'},
+              minWidth: {xs: '35px', md: '40px'},
+              maxWidth: {xs: '35px', md: '40px'},
+            },
+            marginRight: 1,
+            marginBottom: {xs: 2, sm: 0},
+            marginLeft: {xs: 0, sm: -2}
           }}
         />
-        <TextField
-          id="jump-to-page"
-          label="Page"
-          type="number"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          InputProps={{
-            inputProps: {
-              min: 1,
-              max:
-                // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
-                (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
-                1 :
-                Math.ceil(filteredJobs.length / jobsPerPage),
-              step: "1" 
-            },
-            style: {
+        <Box>
+          <TextField
+            id="jump-to-page"
+            label="Page"
+            type="number"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            InputProps={{
+              inputProps: {
+                min: 1,
+                max:
+                  // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
+                  (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
+                  1 :
+                  Math.ceil(filteredJobs.length / jobsPerPage),
+                step: "1" 
+              },
+              style: {
+                height: '40px',
+                width: '90px',
+                color: '#ffffff',
+              }
+            }}
+            onChange={changePageToJumpTo}
+            sx={{
+              marginBottom: {xs: 0, sm: 1},
+              marginRight: 1,
+              padding: '1px',
+              "& .MuiOutlinedInput-notchedOutline": {
+                border: 'solid #2d2d30',
+              },
+              "& label": {
+                color: '#ffffff',
+              }
+            }}
+            value={pageToJumpTo}
+            error={invalidEntry}
+            helperText={
+              invalidEntry ?
+              `Must be 1-${
+                  // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
+                  (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
+                  1 :
+                  Math.ceil(filteredJobs.length / jobsPerPage)
+              }` :
+              ''
+            }
+          />
+          <Button
+            variant="contained"
+            sx={{
+              color: '#ffffff',
+              backgroundColor: '#000000',
+              // Need min and max width instead of just width
+              // maxWidth: '40px',
+              // minWidth: '40px',
               height: '40px',
-              width: '90px',
-              color: '#ffffff',
-            }
-          }}
-          onChange={changePageToJumpTo}
-          sx={{
-            marginRight: '0.5vw',
-            padding: '1px',
-            "& .MuiOutlinedInput-notchedOutline": {
-              border: 'solid #2d2d30',
-            },
-            "& label": {
-              color: '#ffffff',
-            }
-          }}
-          value={pageToJumpTo}
-          error={invalidEntry}
-          helperText={
-            invalidEntry ?
-            `Must be 1-${
-                // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
-                (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
-                1 :
-                Math.ceil(filteredJobs.length / jobsPerPage)
-            }` :
-            ''
-          }
-        />
-        <Button
-          variant="contained"
-          sx={{
-            color: '#ffffff',
-            backgroundColor: '#000000',
-            height: '40px'
-          }}
-          onClick={jumpToPage}
-        >
-          Go
-        </Button>
+            }}
+            onClick={jumpToPage}
+          >
+            Go
+          </Button>
+        </Box>
       </Box>    
     )
   } else {

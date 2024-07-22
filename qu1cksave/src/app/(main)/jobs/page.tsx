@@ -96,7 +96,7 @@ export default function Page() {
     <Box>
       <Filters />
 
-      <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3}}>
+      <Box sx={{ display: 'flex', flexDirection:  {xs: 'column', md: 'row'}, justifyContent: 'space-between', marginBottom: 3, alignItems: {xs: 'center', sm: 'flex-start'}}}>
         <SortOptions />
         <DiscreteSliderValues />
       </Box>
