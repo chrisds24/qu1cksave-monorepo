@@ -81,7 +81,7 @@ export default function JobCard(props: any) {
         onClick={() => router.push(`/jobs/${job.id}`)}
       >
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 1}}>
-          <Box>
+          <Box sx={{marginRight: 5}}>
             <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
               {'Applied:'} 
             </Typography>
@@ -93,7 +93,7 @@ export default function JobCard(props: any) {
               } 
             </Typography>                 
           </Box>
-          <Box>
+          <Box sx={{marginRight: 5}}>
             <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
               {'Posted:'} 
             </Typography>
@@ -109,28 +109,28 @@ export default function JobCard(props: any) {
             {`${job.job_status}`}
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Typography color='#4fc1ff' fontWeight='bold' sx={{fontSize: '19px'}}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+          <Typography color='#4fc1ff' fontWeight='bold' sx={{fontSize: '19px', width: '60%', marginRight: 5, alignSelf: 'center'}}>
             {`${job.title}`}
           </Typography>
-          <Box sx={{display: 'flex', flexDirection: 'row'}}>
-            <Typography color='#6a9955' sx={{fontSize: '17px'}}>
+          <Box sx={{display: 'flex', flexDirection: 'row', width: '40%', justifyContent: 'flex-end'}}>
+            <Typography color='#6a9955' sx={{fontSize: '17px', alignSelf: 'center'}}>
               {salary}
             </Typography>
-            <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '20px', alignSelf: 'center'}} />
-            <Typography color='#dcdcaa' sx={{fontSize: '17px'}}>
+            <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '95%', alignSelf: 'center'}} />
+            <Typography color='#dcdcaa' sx={{fontSize: '17px', alignSelf: 'center'}}>
               {`${job.is_remote}`}
             </Typography>
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 0.5}}>
-          <Typography color='#4ec9b0' fontWeight={'bold'} sx={{fontSize: '17px', fontStyle: 'italic'}}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 0.5, width: '100%'}}>
+          <Typography color='#4ec9b0' fontWeight={'bold'} sx={{fontSize: '17px', fontStyle: 'italic', marginRight: 5, alignSelf: 'center'}}>
             {`${job.company_name}`}
           </Typography>
-          <Typography color='#ffffff' sx={{fontSize: '17px', fontStyle: 'italic'}}>
+          <Typography color='#ffffff' sx={{fontSize: '17px', fontStyle: 'italic', marginRight: 5, alignSelf: 'center'}}>
             {job.country ? `${job.country}` : 'No country'}
           </Typography>
-          <Typography color='#ffffff' sx={{fontSize: '17px', fontStyle: 'italic'}}>
+          <Typography color='#ffffff' sx={{fontSize: '17px', fontStyle: 'italic', alignSelf: 'center'}}>
             {cityAndState}
           </Typography>
         </Box>
@@ -139,8 +139,8 @@ export default function JobCard(props: any) {
             {job.job_description ? job.job_description : 'No description'}
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Box>
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+          <Box sx={{marginRight: 5, alignSelf: 'center'}}>
             <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}} alignSelf={'center'}>
               {'From:'}
             </Typography>
@@ -148,7 +148,7 @@ export default function JobCard(props: any) {
               {job.found_from ? job.found_from: 'N/A'}
             </Typography>
           </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'row'}}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignSelf: 'center'}}>
             <Button
               variant="contained"
               sx={{
@@ -158,6 +158,8 @@ export default function JobCard(props: any) {
                 '&:hover': {
                   backgroundColor: '#0b0b0b',
                 },
+                width: '64px',
+                height: '36px'
               }}
               onClick={
                 (event) =>  {
@@ -174,7 +176,11 @@ export default function JobCard(props: any) {
             </Button>
             <Button
               variant="contained"
-              sx={{ color: '#ffffff' }}
+              sx={{
+                color: '#ffffff',
+                width: '64px',
+                height: '36px'
+              }}
               color='error'
               onClick={
                 (event) =>  {
