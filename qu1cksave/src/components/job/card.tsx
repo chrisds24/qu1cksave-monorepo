@@ -81,11 +81,11 @@ export default function JobCard(props: any) {
         onClick={() => router.push(`/jobs/${job.id}`)}
       >
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 1}}>
-          <Box sx={{marginRight: 5}}>
-            <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+          <Box sx={{marginRight: 5, display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
+            <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
               {'Applied:'} 
             </Typography>
-            <Typography display={'inline'} color='#ce9178' sx={{fontSize: '17px'}}>
+            <Typography color='#ce9178' sx={{fontSize: '17px'}}>
               {
                 applied ?
                 `${applied!.toLocaleString('default', { month: 'long' })} ${applied!.getDate()}, ${applied!.getFullYear()}` :
@@ -93,11 +93,11 @@ export default function JobCard(props: any) {
               } 
             </Typography>                 
           </Box>
-          <Box sx={{marginRight: 5}}>
-            <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+          <Box sx={{marginRight: 5, display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
+            <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
               {'Posted:'} 
             </Typography>
-            <Typography display={'inline'} color='#ce9178' sx={{fontSize: '17px'}}>
+            <Typography color='#ce9178' sx={{fontSize: '17px'}}>
               {
                 posted ?
                 `${posted!.toLocaleString('default', { month: 'long' })} ${posted!.getDate()}, ${posted!.getFullYear()}` :
