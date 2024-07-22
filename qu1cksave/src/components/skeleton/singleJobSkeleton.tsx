@@ -169,7 +169,7 @@ export default function SingleJobSkeleton() {
         sx={{
           bgcolor: '#1a1a1a',
           width: '100%',
-          // height: '25vh'
+          height: '25vh'
         }}
       />
       <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
@@ -182,7 +182,7 @@ export default function SingleJobSkeleton() {
         sx={{
           bgcolor: '#1a1a1a',
           width: '100%',
-          // height: '25vh'
+          height: '25vh'
         }}
       />
       <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
@@ -195,7 +195,7 @@ export default function SingleJobSkeleton() {
         sx={{
           bgcolor: '#1a1a1a',
           width: '100%',
-          // height: '25vh'
+          height: '25vh'
         }}
       />
 
