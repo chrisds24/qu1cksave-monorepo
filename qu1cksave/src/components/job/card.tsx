@@ -158,16 +158,16 @@ export default function JobCard(props: any) {
             {job.job_description ? job.job_description : 'No description'}
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-          <Box sx={{marginRight: 5, alignSelf: 'center'}}>
-            <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}} alignSelf={'center'}>
+        <Box sx={{ display: 'flex', flexDirection: {xs: 'column', sm: 'row'}, justifyContent: 'space-between', width: '100%'}}>
+          <Box sx={{marginRight: 5, alignSelf: {xs: 'flex-start', sm: 'center'}, marginBottom: {xs: 1, sm: 0}}}>
+            <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1, alignSelf: 'center'}}>
               {'From:'}
             </Typography>
-            <Typography display={'inline'} color='#ce9178' sx={{fontSize: '17px'}} alignSelf={'center'}>
+            <Typography display={'inline'} color='#ce9178' sx={{fontSize: '17px', alignSelf: 'center'}}>
               {job.found_from ? job.found_from: 'N/A'}
             </Typography>
           </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'row', alignSelf: 'center'}}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignSelf: {xs: 'flex-end', sm: 'center'}}}>
             <Button
               variant="contained"
               sx={{
