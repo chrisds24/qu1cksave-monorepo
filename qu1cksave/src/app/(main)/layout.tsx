@@ -47,9 +47,16 @@ export default function MainLayout({
   const [sessionUser, setSessionUser] = useState<User>();
 
   const pathname = usePathname();
-  const noSlash = pathname.substring(1);
-  const noFirst = noSlash.substring(1);
-  const currentPage = noSlash[0].toUpperCase() + noFirst;
+  let currentPage;
+  if (pathname.startsWith('/jobs')) {
+    currentPage = 'Jobs';
+  } else if (pathname.startsWith('/documents')) {
+    currentPage = 'Documents';
+  } else if (pathname.startsWith('/statistics')) {
+    currentPage = 'Statistics';
+  } else {
+    currentPage = '';
+  }
 
   useEffect(() => {
     const getSession = async () => {
