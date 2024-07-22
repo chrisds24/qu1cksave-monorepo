@@ -80,6 +80,9 @@ export default function JobCard(props: any) {
         elevation={3}
         onClick={() => router.push(`/jobs/${job.id}`)}
       >
+        <Typography color={(statusColor as any)[jobStatus]} fontWeight={'bold'} sx={{fontSize: '17px', display: {xs: 'flex', sm: 'none'}, marginBottom: 1}}>
+          {`${job.job_status}`}
+        </Typography>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 1}}>
           <Box sx={{marginRight: 5, display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
             <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
@@ -105,15 +108,15 @@ export default function JobCard(props: any) {
               } 
             </Typography>              
           </Box>
-          <Typography color={(statusColor as any)[jobStatus]} fontWeight={'bold'} sx={{fontSize: '17px'}}>
+          <Typography color={(statusColor as any)[jobStatus]} fontWeight={'bold'} sx={{fontSize: '17px', display: {xs: 'none', sm: 'flex'}}}>
             {`${job.job_status}`}
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-          <Typography color='#4fc1ff' fontWeight='bold' sx={{fontSize: '19px', width: '60%', marginRight: 5, alignSelf: 'center'}}>
+          <Typography color='#4fc1ff' fontWeight='bold' sx={{fontSize: '19px', width: {xs: '100%', sm: '60%'}, marginRight: 2, alignSelf: 'center'}}>
             {`${job.title}`}
           </Typography>
-          <Box sx={{display: 'flex', flexDirection: 'row', width: '40%', justifyContent: 'flex-end'}}>
+          <Box sx={{display: {xs: 'none', sm: 'flex'}, flexDirection: 'row', width: '40%', justifyContent: 'flex-end'}}>
             <Typography color='#6a9955' sx={{fontSize: '17px', alignSelf: 'center'}}>
               {salary}
             </Typography>
@@ -123,15 +126,31 @@ export default function JobCard(props: any) {
             </Typography>
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 0.5, width: '100%'}}>
-          <Typography color='#4ec9b0' fontWeight={'bold'} sx={{fontSize: '17px', fontStyle: 'italic', marginRight: 5, alignSelf: 'center'}}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: {xs: 0, sm: 0.5}, width: '100%'}}>
+          <Typography color='#4ec9b0' fontWeight={'bold'} sx={{fontSize: '17px', fontStyle: 'italic', marginRight: 2, alignSelf: 'center'}}>
             {`${job.company_name}`}
           </Typography>
-          <Typography color='#ffffff' sx={{fontSize: '17px', fontStyle: 'italic', marginRight: 5, alignSelf: 'center'}}>
+          <Typography color='#ffffff' sx={{fontSize: '17px', fontStyle: 'italic', marginRight: 2, alignSelf: 'center', display: {xs: 'none', sm: 'flex'}}}>
             {job.country ? `${job.country}` : 'No country'}
           </Typography>
-          <Typography color='#ffffff' sx={{fontSize: '17px', fontStyle: 'italic', alignSelf: 'center'}}>
+          <Typography color='#ffffff' sx={{fontSize: '17px', fontStyle: 'italic', alignSelf: 'center', display: {xs: 'none', sm: 'flex'}}}>
             {cityAndState}
+          </Typography>
+        </Box>
+        <Box sx={{ display: {xs: 'flex', sm: 'none'}, flexDirection: 'column', width: '100%'}}>
+          <Typography color='#ffffff' sx={{fontSize: '17px', fontStyle: 'italic'}}>
+            {job.country ? `${job.country}` : 'No country'}
+          </Typography>
+          <Typography color='#ffffff' sx={{fontSize: '17px', fontStyle: 'italic'}}>
+            {cityAndState}
+          </Typography>
+        </Box>
+        <Box sx={{display: {xs: 'flex', sm: 'none'}, flexDirection: 'row', width: '100%', justifyContent: 'space-between', paddingBottom: 0.5}}>
+          <Typography color='#6a9955' sx={{fontSize: '17px', marginRight: 2}}>
+            {salary}
+          </Typography>
+          <Typography color='#dcdcaa' sx={{fontSize: '17px'}}>
+            {`${job.is_remote}`}
           </Typography>
         </Box>
         <Box sx={{width: '70vw'}}>

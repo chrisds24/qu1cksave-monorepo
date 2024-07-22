@@ -56,18 +56,18 @@ export default function PaginationSection() {
               },
             },
             '& .MuiPaginationItem-previousNext': {
-              height: {xs: '35px', md: '40px'},
-              minWidth: {xs: '35px', md: '40px'},
-              maxWidth: {xs: '35px', md: '40px'},
+              height: {xs: '30px', md: '40px'},
+              minWidth: {xs: '30px', md: '40px'},
+              maxWidth: {xs: '30px', md: '40px'},
             },
             '& .MuiPaginationItem-page': {
-              height: {xs: '35px', md: '40px'},
-              minWidth: {xs: '35px', md: '40px'},
-              maxWidth: {xs: '35px', md: '40px'},
+              height: {xs: '30px', md: '40px'},
+              minWidth: {xs: '30px', md: '40px'},
+              maxWidth: {xs: '30px', md: '40px'},
             },
-            marginRight: 1,
+            marginRight: {xs: -1, sm: 1},
             marginBottom: {xs: 2, sm: 0},
-            marginLeft: {xs: 0, sm: -2}
+            marginLeft: {xs: -1, sm: -2}
           }}
         />
         <Box>

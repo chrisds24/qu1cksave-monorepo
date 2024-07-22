@@ -38,7 +38,7 @@ export default function DiscreteSliderValues() {
   if (!jobsLoading) {
     return (
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-        <Typography sx={{color: '#ffffff', paddingRight: 3, paddingTop: 0.5}}>
+        <Typography sx={{color: '#ffffff', paddingRight: 2, paddingTop: 0.5}}>
           {'Jobs Per Page: '}
         </Typography>
         <Box sx={{ width: 250, marginRight: '1vw' }}>
