@@ -96,7 +96,7 @@ export default function JobCard(props: any) {
               } 
             </Typography>                 
           </Box>
-          <Box sx={{marginRight: 5, display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
+          <Box sx={{marginRight: {xs: 0, sm: 5}, display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
             <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
               {'Posted:'} 
             </Typography>
