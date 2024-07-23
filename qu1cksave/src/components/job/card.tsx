@@ -118,9 +118,22 @@ export default function JobCard(props: any) {
           </Typography>
           <Box sx={{width: '40%', display: {xs: 'none', sm: 'flex'}, justifyContent: 'flex-end'}}>
             <Box sx={{display: 'flex', flexDirection: 'row', maxHeight: '90px', alignSelf: 'center'}}>
-              <Typography color='#6a9955' sx={{fontSize: '17px', alignSelf: 'center'}}>
-                {salary}
-              </Typography>
+              {salaryMin === null && salaryMax === null ?
+                <Typography color='#6a9955' sx={{fontSize: '17px', alignSelf: 'center'}}>
+                  {'No salary info'}
+                </Typography> :
+                <Box sx={{display: 'flex', alignSelf: 'center', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'end'}}>
+                  <Typography color='#6a9955' sx={{fontSize: '17px'}}>
+                    {`${salaryMin !== null ? `$${salaryMin}/yr`: 'N/A'}`}
+                  </Typography>
+                  <Typography color='#6a9955' sx={{fontSize: '17px', marginLeft: 0.5, marginRight: 0.5}}>
+                    {`-`}
+                  </Typography>
+                  <Typography color='#6a9955' sx={{fontSize: '17px'}}>
+                    {`${salaryMax !== null ? `$${salaryMax}/yr`: 'N/A'}`}
+                  </Typography>
+                </Box>
+              }
               <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px'}} />
               <Typography color='#dcdcaa' sx={{fontSize: '17px', alignSelf: 'center'}}>
                 {`${job.is_remote}`}
