@@ -39,7 +39,7 @@ const createLink = (idx: number, val: string) => {
           color: '#636369',
         },
         marginBottom: 2,
-        width: '50%'
+        width: {xs: '100%', md: '80%'}
       }}
     />
   );
@@ -458,8 +458,7 @@ export default function AddOrEditDialog() {
         // },
         onSubmit: handleSubmit,
         sx: {
-          // backgroundColor: '#1e1e1e',
-          backgroundColor: {xs: '#808080', sm: '#1e1e1e'},
+          backgroundColor: '#1e1e1e',
         }
       }}
       fullWidth
@@ -660,74 +659,79 @@ export default function AddOrEditDialog() {
             <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 2, alignSelf: {xs: 'flex-start', sm: 'center'}, marginBottom: 2}}>
               {'Salary Range ($):'}
             </Typography>
-            <Box sx={{marginBottom: 2, display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
-              <NumberInputBasic inputType={'Salary Min'} numInputVal={salaryMin} setNumInputVal={setSalaryMin} min={0} max={9999999} />
-              <Box sx={{marginRight: 2}}/> 
-              <NumberInputBasic inputType={'Salary Max'} numInputVal={salaryMax} setNumInputVal={setSalaryMax} min={0} max={9999999} />
+            <Box sx={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
+              <Box sx={{marginRight: 2, marginBottom: 2}}> 
+                <NumberInputBasic inputType={'Salary Min'} numInputVal={salaryMin} setNumInputVal={setSalaryMin} min={0} max={9999999} />
+              </Box>
+              <Box sx={{marginBottom: 2}}> 
+                <NumberInputBasic inputType={'Salary Max'} numInputVal={salaryMax} setNumInputVal={setSalaryMax} min={0} max={9999999} />
+              </Box>
             </Box>
           </Box>       
         </Box>
 
         {/* City, State, Country */}
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2}}>
-          <TextField
-            id="city"
-            name="city"
-            label="City"
-            variant="outlined"
-            defaultValue={!isAdd && dialogJob && dialogJob.city ? dialogJob.city : ''}
-            sx={{
-              color: '#ffffff',
-              input: {
-                color: '#ffffff'
-              },
-              "& .MuiOutlinedInput-notchedOutline": {
-                border: 'solid #636369',
-              },
-              "& label": {
-                color: '#636369',
-              },
-              marginRight: 2,
-            }}
-          />  
-          <FormControl sx={{minWidth: 90, marginRight: 2}}>
-            <InputLabel sx={{color: '#636369'}} id="state-label">State</InputLabel>
-            <Select
-              labelId="state-label"
-              id="state"
-              name="state"
-              placeholder="State"
-              value={state}
-              label="State"
-              onChange={changeState}
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap'}}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', marginBottom: 2}}>
+            <TextField
+              id="city"
+              name="city"
+              label="City"
+              variant="outlined"
+              defaultValue={!isAdd && dialogJob && dialogJob.city ? dialogJob.city : ''}
               sx={{
                 color: '#ffffff',
+                input: {
+                  color: '#ffffff'
+                },
                 "& .MuiOutlinedInput-notchedOutline": {
                   border: 'solid #636369',
                 },
+                "& label": {
+                  color: '#636369',
+                },
+                marginRight: 2,
               }}
-              inputProps={{
-                MenuProps: {
-                  MenuListProps: {
-                    sx: {
-                      // backgroundColor: '#1e1e1e',
-                      backgroundColor: '#000000',
-                      color: '#ffffff'
+            />  
+            <FormControl sx={{minWidth: 90, marginRight: 2}}>
+              <InputLabel sx={{color: '#636369'}} id="state-label">State</InputLabel>
+              <Select
+                labelId="state-label"
+                id="state"
+                name="state"
+                placeholder="State"
+                value={state}
+                label="State"
+                onChange={changeState}
+                sx={{
+                  color: '#ffffff',
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: 'solid #636369',
+                  },
+                }}
+                inputProps={{
+                  MenuProps: {
+                    MenuListProps: {
+                      sx: {
+                        // backgroundColor: '#1e1e1e',
+                        backgroundColor: '#000000',
+                        color: '#ffffff'
+                      }
                     }
                   }
-                }
-              }}
-              fullWidth
-            >
-              {Object.keys(states).map((state) => 
-                <MenuItem
-                  value={state === 'N/A' ? states[state] : state}
-                >
-                  {state}
-                </MenuItem>
-              )}
-            </Select>
-          </FormControl>
+                }}
+                fullWidth
+              >
+                {Object.keys(states).map((state) => 
+                  <MenuItem
+                    value={state === 'N/A' ? states[state] : state}
+                  >
+                    {state}
+                  </MenuItem>
+                )}
+              </Select>
+            </FormControl>
+          </Box>
           <TextField
             id="country"
             name="country"
@@ -745,6 +749,7 @@ export default function AddOrEditDialog() {
               "& label": {
                 color: '#636369',
               },
+              marginBottom: 2
             }}
           />
         </Box>
