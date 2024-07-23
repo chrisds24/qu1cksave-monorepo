@@ -847,9 +847,7 @@ export default function AddOrEditDialog() {
           fileName={resumeName}
           setFileName={setResumeName}
         />
-
-        <Box sx={{marginBottom: 2}} />
-
+        
         <FileUploadSection
           fileType={'coverLetter'}
           fileName={coverLetterName}

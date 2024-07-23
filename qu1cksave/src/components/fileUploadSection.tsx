@@ -37,48 +37,50 @@ export default function FileUploadSection(props: any) {
   };
 
   return (
-    <Box>
-      <Typography display={'inline'} color='#ffffff' sx={{fontSize: '19px', fontWeight: 'bold', marginRight: 2}}>
+    <Box sx={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
+      <Typography display={'inline'} color='#ffffff' sx={{fontSize: '19px', fontWeight: 'bold', marginRight: 2, marginBottom: 1}}>
         {props.fileType === 'resume' ? 'Resume:' : 'Cover Letter:'} 
       </Typography>
-      <Typography display={'inline'} color='#ffffff' sx={{fontSize: '19px', marginRight: 2}}>
+      <Typography display={'inline'} color='#ffffff' sx={{fontSize: '19px', marginRight: 2, marginBottom: 1}}>
         {props.fileName ? props.fileName : 'N/A'} 
-      </Typography>   
-      <Button
-        component="label"
-        role={undefined}
-        variant="contained"
-        tabIndex={-1}
-        startIcon={<CloudUploadIcon />}
-        sx={{
-          color: '#ffffff',
-          backgroundColor: '#000000',
-          marginRight: 1,
-          '&:hover': {
-            backgroundColor: '#0b0b0b',
-          },
-          alignSelf: 'center'
-        }}
-      >
-        Upload
-        <VisuallyHiddenInput
-          type="file"
-          id={`${props.fileType}Input`}
-          name={`${props.fileType}Input`}
-          accept=".pdf,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-          onChange={changeFileInput}
-        />
-      </Button>
-      <Button
-        variant="contained"
-        sx={{ color: '#ffffff' }}
-        color='error'
-        onClick={() => props.setFileName('')}
-        startIcon={<DeleteIcon sx={{ color: '#ffffff'}} />}
-        tabIndex={-1}
-      >
-        Remove
-      </Button> 
+      </Typography>
+      <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2}}>   
+        <Button
+          component="label"
+          role={undefined}
+          variant="contained"
+          tabIndex={-1}
+          startIcon={<CloudUploadIcon />}
+          sx={{
+            color: '#ffffff',
+            backgroundColor: '#000000',
+            marginRight: 1,
+            '&:hover': {
+              backgroundColor: '#0b0b0b',
+            },
+            alignSelf: 'center'
+          }}
+        >
+          Upload
+          <VisuallyHiddenInput
+            type="file"
+            id={`${props.fileType}Input`}
+            name={`${props.fileType}Input`}
+            accept=".pdf,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            onChange={changeFileInput}
+          />
+        </Button>
+        <Button
+          variant="contained"
+          sx={{ color: '#ffffff' }}
+          color='error'
+          onClick={() => props.setFileName('')}
+          startIcon={<DeleteIcon sx={{ color: '#ffffff'}} />}
+          tabIndex={-1}
+        >
+          Remove
+        </Button> 
+      </Box>
     </Box>
   );
 }
