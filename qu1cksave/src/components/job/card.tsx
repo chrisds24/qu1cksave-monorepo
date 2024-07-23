@@ -116,14 +116,16 @@ export default function JobCard(props: any) {
           <Typography color='#4fc1ff' fontWeight='bold' sx={{fontSize: '19px', width: {xs: '100%', sm: '60%'}, marginRight: 2, alignSelf: 'center'}}>
             {`${job.title}`}
           </Typography>
-          <Box sx={{display: {xs: 'none', sm: 'flex'}, flexDirection: 'row', width: '40%', justifyContent: 'flex-end'}}>
-            <Typography color='#6a9955' sx={{fontSize: '17px', alignSelf: 'center'}}>
-              {salary}
-            </Typography>
-            <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '95%', alignSelf: 'center'}} />
-            <Typography color='#dcdcaa' sx={{fontSize: '17px', alignSelf: 'center'}}>
-              {`${job.is_remote}`}
-            </Typography>
+          <Box sx={{width: '40%', display: {xs: 'none', sm: 'flex'}, justifyContent: 'flex-end'}}>
+            <Box sx={{display: 'flex', flexDirection: 'row', maxHeight: '90px', alignSelf: 'center'}}>
+              <Typography color='#6a9955' sx={{fontSize: '17px', alignSelf: 'center'}}>
+                {salary}
+              </Typography>
+              <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px'}} />
+              <Typography color='#dcdcaa' sx={{fontSize: '17px', alignSelf: 'center'}}>
+                {`${job.is_remote}`}
+              </Typography>
+            </Box>
           </Box>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: {xs: 0, sm: 0.5}, width: '100%'}}>
