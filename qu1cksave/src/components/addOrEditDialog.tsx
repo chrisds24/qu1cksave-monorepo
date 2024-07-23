@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { JobsContext } from "@/app/(main)/jobs/layout";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -48,6 +48,8 @@ const createLink = (idx: number, val: string) => {
 export default function AddOrEditDialog() {
   const {open, setOpen, isAdd, setIsAdd, dialogJob, setDialogJob, jobs, setJobs} = useContext(JobsContext);
   const [buttonDisabled, setButtonDisabled] = useState(false);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const link1 = createLink(1, '');
   const existingLinks: JSX.Element[] = [];
@@ -456,11 +458,13 @@ export default function AddOrEditDialog() {
         // },
         onSubmit: handleSubmit,
         sx: {
-          backgroundColor: '#1e1e1e',
+          // backgroundColor: '#1e1e1e',
+          backgroundColor: {xs: '#808080', sm: '#1e1e1e'},
         }
       }}
       fullWidth
       maxWidth={'lg'}
+      fullScreen={fullScreen}
     >
       <DialogTitle sx={{color: '#4fc1ff', fontWeight: 'bold', fontSize: '24px'}}>{isAdd ? 'Add Job': 'Edit Job'}</DialogTitle>
       <DialogContent>
@@ -469,8 +473,8 @@ export default function AddOrEditDialog() {
           forms don't get cut off on the top.
         */}
         <DialogContentText sx={{color: '#ffffff', marginBottom: 2}}></DialogContentText>
-        <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2, justifyContent: 'space-between'}}>
-          <FormControl>
+        <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap'}}>
+          <FormControl sx={{marginRight: 2}}>
             <InputLabel sx={{color: '#636369'}} id="status-label">Status</InputLabel>
             <Select
               required
@@ -485,6 +489,7 @@ export default function AddOrEditDialog() {
                 "& .MuiOutlinedInput-notchedOutline": {
                   border: 'solid #636369',
                 },
+                marginBottom: 2
               }}
               inputProps={{
                 MenuProps: {
@@ -502,7 +507,7 @@ export default function AddOrEditDialog() {
               )}
             </Select>
           </FormControl>
-          <Box sx={{display: 'flex', flexDirection: 'row'}}>
+          <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2}}>
             <DatePicker
               // Source:
               //   https://stackoverflow.com/questions/76767152/i-am-using-react-mui-mui-x-date-pickers-please-tell-me-how-to-change-color-of
@@ -568,7 +573,7 @@ export default function AddOrEditDialog() {
             />
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2}}>
+        <Box sx={{ display: 'flex', flexDirection: {xs: 'column', sm: 'row'}, justifyContent: 'space-between'}}>
           <TextField
             required            
             id="title"
@@ -588,7 +593,8 @@ export default function AddOrEditDialog() {
               "& label": {
                 color: '#636369',
               },
-              marginRight: 2
+              marginRight: 2,
+              marginBottom: 2
             }}
           />
           <TextField
@@ -610,11 +616,12 @@ export default function AddOrEditDialog() {
               "& label": {
                 color: '#636369',
               },
+              marginBottom: 2
             }}
           />
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2}}>
-          <FormControl>
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap'}}>
+          <FormControl sx={{marginRight: 2}}>
             <InputLabel sx={{color: '#636369'}} id="remote-label">Remote</InputLabel>
             <Select
               required
@@ -629,6 +636,7 @@ export default function AddOrEditDialog() {
                 "& .MuiOutlinedInput-notchedOutline": {
                   border: 'solid #636369',
                 },
+                marginBottom: 2
               }}
               inputProps={{
                 MenuProps: {
@@ -648,13 +656,15 @@ export default function AddOrEditDialog() {
               <MenuItem value={'On-site'}>On-site</MenuItem>
             </Select>
           </FormControl>
-          <Box sx={{display: 'flex', flexDirection: 'row'}}>
-            <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 2, alignSelf: 'center'}}>
+          <Box sx={{display: 'flex', flexDirection: {xs: 'column', sm: 'row'}, flexWrap: 'wrap'}}>
+            <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 2, alignSelf: {xs: 'flex-start', sm: 'center'}, marginBottom: 2}}>
               {'Salary Range ($):'}
             </Typography>
-            <NumberInputBasic inputType={'Salary Min'} numInputVal={salaryMin} setNumInputVal={setSalaryMin} min={0} max={9999999} />
-            <Box sx={{marginRight: 2}}/> 
-            <NumberInputBasic inputType={'Salary Max'} numInputVal={salaryMax} setNumInputVal={setSalaryMax} min={0} max={9999999} />
+            <Box sx={{marginBottom: 2, display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
+              <NumberInputBasic inputType={'Salary Min'} numInputVal={salaryMin} setNumInputVal={setSalaryMin} min={0} max={9999999} />
+              <Box sx={{marginRight: 2}}/> 
+              <NumberInputBasic inputType={'Salary Max'} numInputVal={salaryMax} setNumInputVal={setSalaryMax} min={0} max={9999999} />
+            </Box>
           </Box>       
         </Box>
 
