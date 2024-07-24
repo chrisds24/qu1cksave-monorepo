@@ -33,8 +33,8 @@ export default function SingleJobSkeleton() {
           />
         </Box>
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-        <Box sx={{ display: 'flex', flexDirection: 'row', width: '15vw'}}>
+      <Box sx={{ display: 'flex', flexDirection: {xs: 'column', sm: 'row'}, justifyContent: 'space-between', marginBottom: {xs: 1, md: 0}}}>
+        <Box sx={{marginRight: 1, display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
           <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
             {'Applied:'} 
           </Typography>
@@ -44,11 +44,11 @@ export default function SingleJobSkeleton() {
             sx={{
               bgcolor: '#1a1a1a',
               fontSize: '17px',
-              width: '100%'
+              width: '120px'
             }}
           />                 
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', width: '15vw'}}>
+        <Box sx={{marginRight: 1, display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
           <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
             {'Posted:'} 
           </Typography>
@@ -58,11 +58,11 @@ export default function SingleJobSkeleton() {
             sx={{
               bgcolor: '#1a1a1a',
               fontSize: '17px',
-              width: '100%'
+              width: '120px'
             }}
           />   
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', width: '15vw'}}>
+        <Box sx={{marginRight: 1, display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
           <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
             {'Saved:'} 
           </Typography>
@@ -72,13 +72,13 @@ export default function SingleJobSkeleton() {
             sx={{
               bgcolor: '#1a1a1a',
               fontSize: '17px',
-              width: '100%'
+              width: '120px'
             }}
           />              
         </Box>
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'row', width: '15vw', marginBottom: 1.5}}>
-        <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1, fontWeight: 'bold'}}>
+      <Box sx={{marginBottom: 1.5, display: 'flex', flexDirection: 'row',}}>
+        <Typography  color='#ffffff' sx={{fontSize: '17px', marginRight: 1, fontWeight: 'bold'}}>
           {'Status:'} 
         </Typography>
         <Skeleton
@@ -87,7 +87,7 @@ export default function SingleJobSkeleton() {
           sx={{
             bgcolor: '#1a1a1a',
             fontSize: '17px',
-            width: '100%'
+            width: '120px',
           }}
         />
       </Box>
