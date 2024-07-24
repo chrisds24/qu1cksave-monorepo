@@ -6,7 +6,7 @@ export default function PaginationSectionSkeleton() {
       <Skeleton
         variant="rounded"
         sx={{
-          bgcolor: '#1a1a1a',
+          bgcolor: '#64676a',
           width: {xs: '305px', sm: '480px', md: '585px'},
           height: {xs: '40px', sm: '50px'},
           // height: '6.5vh'
@@ -16,7 +16,7 @@ export default function PaginationSectionSkeleton() {
         variant="rounded"
         sx={{
           marginTop: 1.5,
-          bgcolor: '#1a1a1a',
+          bgcolor: '#64676a',
           width: '150px',
           // width: '40.5vw',
           height: '50px',

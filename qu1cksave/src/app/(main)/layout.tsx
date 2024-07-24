@@ -142,10 +142,9 @@ export default function MainLayout({
                 <Avatar {...stringAvatar(sessionUser.name)} /> :
                 <Skeleton
                   variant="circular"
-                  animation="wave"
                   width={40}
                   height={40}
-                  sx={{bgcolor: '#1a1a1a'}}
+                  sx={{bgcolor: '#64676a'}}
                 />
               }
               {/* <Avatar {...stringAvatar(sessionUser ? sessionUser.name : 'N A')} /> */}
@@ -156,10 +155,9 @@ export default function MainLayout({
                 sessionUser ?
                 sessionUser.name :
                 <Skeleton
-                  variant="text"
-                  animation="wave"
+                  variant="text"                 
                   sx={{
-                    bgcolor: '#1a1a1a',
+                    bgcolor: '#64676a',
                     fontSize: '20px'
                   }}
                 />

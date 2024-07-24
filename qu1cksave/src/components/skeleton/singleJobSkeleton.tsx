@@ -41,9 +41,8 @@ export default function SingleJobSkeleton() {
           </Typography>
           <Skeleton
             variant="text"
-            animation="wave"
             sx={{
-              bgcolor: '#1a1a1a',
+              bgcolor: '#64676a',
               fontSize: '17px',
               width: '120px'
             }}
@@ -55,9 +54,8 @@ export default function SingleJobSkeleton() {
           </Typography>
           <Skeleton
             variant="text"
-            animation="wave"
             sx={{
-              bgcolor: '#1a1a1a',
+              bgcolor: '#64676a',
               fontSize: '17px',
               width: '120px'
             }}
@@ -69,9 +67,8 @@ export default function SingleJobSkeleton() {
           </Typography>
           <Skeleton
             variant="text"
-            animation="wave"
             sx={{
-              bgcolor: '#1a1a1a',
+              bgcolor: '#64676a',
               fontSize: '17px',
               width: '120px'
             }}
@@ -84,9 +81,8 @@ export default function SingleJobSkeleton() {
         </Typography>
         <Skeleton
           variant="text"
-          animation="wave"
           sx={{
-            bgcolor: '#1a1a1a',
+            bgcolor: '#64676a',
             fontSize: '17px',
             width: '120px',
           }}
@@ -95,9 +91,8 @@ export default function SingleJobSkeleton() {
       {/* Title */}
       <Skeleton
         variant="text"
-        animation="wave"
         sx={{
-          bgcolor: '#1a1a1a',
+          bgcolor: '#64676a',
           fontSize: '24px',
           width: '300px'
         }}
@@ -105,9 +100,8 @@ export default function SingleJobSkeleton() {
       {/* Company Name */}
       <Skeleton
         variant="text"
-        animation="wave"
         sx={{
-          bgcolor: '#1a1a1a',
+          bgcolor: '#64676a',
           fontSize: '20px',
           width: '250px'
         }}
@@ -116,9 +110,8 @@ export default function SingleJobSkeleton() {
         {/* Remote */}
         <Skeleton
           variant="text"
-          animation="wave"
           sx={{
-            bgcolor: '#1a1a1a',
+            bgcolor: '#64676a',
             fontSize: '20px',
             width: '100px'
           }}
@@ -128,9 +121,8 @@ export default function SingleJobSkeleton() {
         {/* Salary */}
         <Skeleton
           variant="text"
-          animation="wave"
           sx={{
-            bgcolor: '#1a1a1a',
+            bgcolor: '#64676a',
             fontSize: '20px',
             width: '250px'
           }}
@@ -140,9 +132,8 @@ export default function SingleJobSkeleton() {
         {/* City and State */}
         <Skeleton
           variant="text"
-          animation="wave"
           sx={{
-            bgcolor: '#1a1a1a',
+            bgcolor: '#64676a',
             fontSize: '17px',
             width: '200px'
           }}
@@ -152,9 +143,8 @@ export default function SingleJobSkeleton() {
         {/* Country */}
         <Skeleton
           variant="text"
-          animation="wave"
           sx={{
-            bgcolor: '#1a1a1a',
+            bgcolor: '#64676a',
             fontSize: '17px',
             width: '150px'
           }}
@@ -168,7 +158,7 @@ export default function SingleJobSkeleton() {
       <Skeleton
         variant="rounded"
         sx={{
-          bgcolor: '#1a1a1a',
+          bgcolor: '#64676a',
           width: '100%',
           height: '25vh'
         }}
@@ -181,7 +171,7 @@ export default function SingleJobSkeleton() {
       <Skeleton
         variant="rounded"
         sx={{
-          bgcolor: '#1a1a1a',
+          bgcolor: '#64676a',
           width: '100%',
           height: '25vh'
         }}
@@ -195,7 +185,7 @@ export default function SingleJobSkeleton() {
         <Skeleton
           variant="rounded"
           sx={{
-            bgcolor: '#1a1a1a',
+            bgcolor: '#64676a',
             width: '100%',
             height: '25vh'
           }}
@@ -211,9 +201,8 @@ export default function SingleJobSkeleton() {
         {/* Found From text */}
         <Skeleton
           variant="text"
-          animation="wave"
           sx={{
-            bgcolor: '#1a1a1a',
+            bgcolor: '#64676a',
             fontSize: '20px',
             width: '200px'
           }}
@@ -226,9 +215,8 @@ export default function SingleJobSkeleton() {
         {/* Resume content */}
         <Skeleton
           variant="text"
-          animation="wave"
           sx={{
-            bgcolor: '#1a1a1a',
+            bgcolor: '#64676a',
             fontSize: '20px',
             width: '200px'
           }}
@@ -242,9 +230,8 @@ export default function SingleJobSkeleton() {
         {/* Cover letter content */}
         <Skeleton
           variant="text"
-          animation="wave"
           sx={{
-            bgcolor: '#1a1a1a',
+            bgcolor: '#64676a',
             fontSize: '20px',
             width: '200px'
           }}
