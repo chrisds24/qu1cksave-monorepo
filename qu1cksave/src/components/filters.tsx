@@ -204,7 +204,7 @@ export default function Filters() {
           id="filters-header"
           sx={{color: '#ffffff', fontWeight: 'bold', fontSize: '20px'}}
         >
-          Filters / Quick Stats
+          Filters / Stats
         </AccordionSummary>
         <AccordionDetails>
           {/* Filters go here. */}
