@@ -107,10 +107,10 @@ export default function FileDownloadSection(props: any) {
 
   return (
     <Box sx={{display: 'flex', flexDirection: {xs: 'column', md: 'row'}, maxWidth: '90vw', flexWrap: {xs: 'nowrap', md: 'wrap'}}}>
-      <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1, marginBottom: 1}}>
+      <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1, marginBottom: 1, alignSelf: {md: 'center'}}}>
         {`${fileType === 'resume' ? 'Resume:' : 'Cover Letter:'}`} 
       </Typography>
-      <Typography color='#ffffff' sx={{fontSize: '20px', marginRight: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginBottom: 1}}>
+      <Typography color='#ffffff' sx={{fontSize: '20px', marginRight: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginBottom: 1, alignSelf: {md: 'center'}}}>
         {file?.file_name ? file.file_name : 'N/A'} 
       </Typography>
       {file?.id ?
