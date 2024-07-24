@@ -248,52 +248,53 @@ export default function Page({ params }: { params: { id: string } }) {
           </Typography> 
         }
         <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
-        <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginBottom: 1}}>
-          {'Links'}
-        </Typography>
-        {job.links && job.links.length > 0 ?
-          <List sx={{padding: '0px 0px 0px 0px'}}>
-            {job.links.map((link) =>
-              <ListItem
-                component='a'
-                href={`${link}`}
-                rel='noopener noreferrer'
-                target='_blank'
-                sx={{padding: '0px 0px 15px 0px', margin: 0}}
-              >
-                <ListItemText
-                  primary={link}
-                  sx={{ color: '#ffffff', textOverflow: 'ellipsis', margin: 0 }}
-                  primaryTypographyProps={{ 
-                    style: {
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis'
-                    }
-                  }}
-                />   
-              </ListItem>
-            )}
-          </List>
-          :
-          <Typography color='#ffffff' sx={{fontSize: '17px', padding: '0px 0px 0px 0px'}}>
-            {'N/A'}
-          </Typography> 
-        }
+        <Box sx={{maxWidth: '80vw'}}>
+          <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginBottom: 1}}>
+            {'Links'}
+          </Typography>
+          {job.links && job.links.length > 0 ?
+            <List sx={{padding: '0px 0px 0px 0px'}}>
+              {job.links.map((link) =>
+                <ListItem
+                  component='a'
+                  href={`${link}`}
+                  rel='noopener noreferrer'
+                  target='_blank'
+                  sx={{padding: '0px 0px 15px 0px', margin: 0}}
+                >
+                  <ListItemText
+                    primary={link}
+                    sx={{ color: '#ffffff', textOverflow: 'ellipsis', margin: 0 }}
+                    primaryTypographyProps={{ 
+                      style: {
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
+                      }
+                    }}
+                  />   
+                </ListItem>
+              )}
+            </List>
+            :
+            <Typography color='#ffffff' sx={{fontSize: '17px', padding: '0px 0px 0px 0px'}}>
+              {'N/A'}
+            </Typography> 
+          }
+        </Box>
 
         <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
 
-        <Box>
-          <Typography display={'inline'} color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
+        <Box sx={{display: 'flex', flexWrap: 'wrap', flexDirection: {xs: 'column', sm: 'row'}, marginBottom: 2}}>
+          <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
             {'Job posting found from:'} 
           </Typography>
-          <Typography display={'inline'} color='#ffffff' sx={{fontSize: '20px'}}>
+          <Typography color='#ffffff' sx={{fontSize: '20px'}}>
             {job.found_from ? job.found_from : 'N/A'} 
           </Typography>                 
         </Box>
-        <Box sx={{marginBottom: 2}}/>
         <FileDownloadSection job={job} fileType={'resume'} />
-        <Box sx={{marginBottom: 2}}/>
+        <Box sx={{marginBottom: 1}}/>
         <FileDownloadSection job={job} fileType={'cover_letter'} />
       </Box>
     );

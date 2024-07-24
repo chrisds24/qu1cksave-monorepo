@@ -106,11 +106,11 @@ export default function FileDownloadSection(props: any) {
   }
 
   return (
-    <Box>
-      <Typography display={'inline'} color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
+    <Box sx={{display: 'flex', flexDirection: {xs: 'column', md: 'row'}, maxWidth: '90vw', flexWrap: {xs: 'nowrap', md: 'wrap'}}}>
+      <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1, marginBottom: 1}}>
         {`${fileType === 'resume' ? 'Resume:' : 'Cover Letter:'}`} 
       </Typography>
-      <Typography display={'inline'} color='#ffffff' sx={{fontSize: '20px', marginRight: 2}}>
+      <Typography color='#ffffff' sx={{fontSize: '20px', marginRight: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginBottom: 1}}>
         {file?.file_name ? file.file_name : 'N/A'} 
       </Typography>
       {file?.id ?
@@ -124,7 +124,8 @@ export default function FileDownloadSection(props: any) {
               '&:hover': {
                 backgroundColor: '#0b0b0b',
               },
-              alignSelf: 'center'
+              alignSelf: {xs: 'flex-start', md: 'center'},
+              marginBottom: 1
             }}
             onClick={
               (event) =>  {
