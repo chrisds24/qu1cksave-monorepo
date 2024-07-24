@@ -5,7 +5,7 @@ export default function DiscreteSliderValuesSkeleton() {
     <Skeleton
       variant="rounded"
       sx={{
-        bgcolor: '#64676a',
+        bgcolor: '#4b4e50',
         width: {xs:'320px', sm: '400px'},
         // width: '27.5vw',
         height: '52px'

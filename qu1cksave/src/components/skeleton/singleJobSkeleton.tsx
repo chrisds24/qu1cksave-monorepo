@@ -42,7 +42,7 @@ export default function SingleJobSkeleton() {
           <Skeleton
             variant="text"
             sx={{
-              bgcolor: '#64676a',
+              bgcolor: '#4b4e50',
               fontSize: '17px',
               width: '120px'
             }}
@@ -55,7 +55,7 @@ export default function SingleJobSkeleton() {
           <Skeleton
             variant="text"
             sx={{
-              bgcolor: '#64676a',
+              bgcolor: '#4b4e50',
               fontSize: '17px',
               width: '120px'
             }}
@@ -68,7 +68,7 @@ export default function SingleJobSkeleton() {
           <Skeleton
             variant="text"
             sx={{
-              bgcolor: '#64676a',
+              bgcolor: '#4b4e50',
               fontSize: '17px',
               width: '120px'
             }}
@@ -82,7 +82,7 @@ export default function SingleJobSkeleton() {
         <Skeleton
           variant="text"
           sx={{
-            bgcolor: '#64676a',
+            bgcolor: '#4b4e50',
             fontSize: '17px',
             width: '120px',
           }}
@@ -92,7 +92,7 @@ export default function SingleJobSkeleton() {
       <Skeleton
         variant="text"
         sx={{
-          bgcolor: '#64676a',
+          bgcolor: '#4b4e50',
           fontSize: '24px',
           width: '300px'
         }}
@@ -101,7 +101,7 @@ export default function SingleJobSkeleton() {
       <Skeleton
         variant="text"
         sx={{
-          bgcolor: '#64676a',
+          bgcolor: '#4b4e50',
           fontSize: '20px',
           width: '250px'
         }}
@@ -111,7 +111,7 @@ export default function SingleJobSkeleton() {
         <Skeleton
           variant="text"
           sx={{
-            bgcolor: '#64676a',
+            bgcolor: '#4b4e50',
             fontSize: '20px',
             width: '100px'
           }}
@@ -122,7 +122,7 @@ export default function SingleJobSkeleton() {
         <Skeleton
           variant="text"
           sx={{
-            bgcolor: '#64676a',
+            bgcolor: '#4b4e50',
             fontSize: '20px',
             width: '250px'
           }}
@@ -133,7 +133,7 @@ export default function SingleJobSkeleton() {
         <Skeleton
           variant="text"
           sx={{
-            bgcolor: '#64676a',
+            bgcolor: '#4b4e50',
             fontSize: '17px',
             width: '200px'
           }}
@@ -144,7 +144,7 @@ export default function SingleJobSkeleton() {
         <Skeleton
           variant="text"
           sx={{
-            bgcolor: '#64676a',
+            bgcolor: '#4b4e50',
             fontSize: '17px',
             width: '150px'
           }}
@@ -158,7 +158,7 @@ export default function SingleJobSkeleton() {
       <Skeleton
         variant="rounded"
         sx={{
-          bgcolor: '#64676a',
+          bgcolor: '#4b4e50',
           width: '100%',
           height: '25vh'
         }}
@@ -171,7 +171,7 @@ export default function SingleJobSkeleton() {
       <Skeleton
         variant="rounded"
         sx={{
-          bgcolor: '#64676a',
+          bgcolor: '#4b4e50',
           width: '100%',
           height: '25vh'
         }}
@@ -185,7 +185,7 @@ export default function SingleJobSkeleton() {
         <Skeleton
           variant="rounded"
           sx={{
-            bgcolor: '#64676a',
+            bgcolor: '#4b4e50',
             width: '100%',
             height: '25vh'
           }}
@@ -202,7 +202,7 @@ export default function SingleJobSkeleton() {
         <Skeleton
           variant="text"
           sx={{
-            bgcolor: '#64676a',
+            bgcolor: '#4b4e50',
             fontSize: '20px',
             width: '200px'
           }}
@@ -216,7 +216,7 @@ export default function SingleJobSkeleton() {
         <Skeleton
           variant="text"
           sx={{
-            bgcolor: '#64676a',
+            bgcolor: '#4b4e50',
             fontSize: '20px',
             width: '200px'
           }}
@@ -231,7 +231,7 @@ export default function SingleJobSkeleton() {
         <Skeleton
           variant="text"
           sx={{
-            bgcolor: '#64676a',
+            bgcolor: '#4b4e50',
             fontSize: '20px',
             width: '200px'
           }}

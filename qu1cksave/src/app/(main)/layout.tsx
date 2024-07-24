@@ -144,7 +144,7 @@ export default function MainLayout({
                   variant="circular"
                   width={40}
                   height={40}
-                  sx={{bgcolor: '#64676a'}}
+                  sx={{bgcolor: '#4b4e50'}}
                 />
               }
               {/* <Avatar {...stringAvatar(sessionUser ? sessionUser.name : 'N A')} /> */}
@@ -157,7 +157,7 @@ export default function MainLayout({
                 <Skeleton
                   variant="text"                 
                   sx={{
-                    bgcolor: '#64676a',
+                    bgcolor: '#4b4e50',
                     fontSize: '20px'
                   }}
                 />
