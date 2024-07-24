@@ -131,12 +131,12 @@ export default function Page({ params }: { params: { id: string } }) {
             </Button>                     
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Box>
-            <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+        <Box sx={{ display: 'flex', flexDirection: {xs: 'column', sm: 'row'}, justifyContent: 'space-between', marginBottom: {xs: 1, md: 0}}}>
+          <Box sx={{marginRight: 1, display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
+            <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
               {'Applied:'} 
             </Typography>
-            <Typography display={'inline'} color='#ce9178' sx={{fontSize: '17px'}}>
+            <Typography color='#ce9178' sx={{fontSize: '17px'}}>
               {
                 applied ?
                 `${applied!.toLocaleString('default', { month: 'long' })} ${applied!.getDate()}, ${applied!.getFullYear()}` :
@@ -144,11 +144,11 @@ export default function Page({ params }: { params: { id: string } }) {
               } 
             </Typography>                 
           </Box>
-          <Box>
-            <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+          <Box sx={{marginRight: 1, display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
+            <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
               {'Posted:'} 
             </Typography>
-            <Typography display={'inline'} color='#ce9178' sx={{fontSize: '17px'}}>
+            <Typography color='#ce9178' sx={{fontSize: '17px'}}>
               {
                 posted ?
                 `${posted!.toLocaleString('default', { month: 'long' })} ${posted!.getDate()}, ${posted!.getFullYear()}` :
@@ -156,11 +156,11 @@ export default function Page({ params }: { params: { id: string } }) {
               } 
             </Typography>              
           </Box>
-          <Box>
-            <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+          <Box sx={{marginRight: 1, display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
+            <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
               {'Saved:'} 
             </Typography>
-            <Typography display={'inline'} color='#ce9178' sx={{fontSize: '17px'}}>
+            <Typography color='#ce9178' sx={{fontSize: '17px'}}>
               {
                 saved ?
                 `${saved!.toLocaleString('default', { month: 'long' })} ${saved!.getDate()}, ${saved!.getFullYear()}` :
@@ -183,22 +183,22 @@ export default function Page({ params }: { params: { id: string } }) {
         <Typography color='#4ec9b0' fontWeight={'bold'} sx={{fontSize: '20px'}}>
           {`${job.company_name}`}
         </Typography>
-        <Box sx={{display: 'flex', flexDirection: 'row'}}>
+        <Box sx={{display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
           <Typography color='#dcdcaa' sx={{fontSize: '20px'}}>
             {`${job.is_remote}`}
           </Typography>
           {/* <HorizontalRuleIcon sx={{color: '#ffffff', margin: '0vw 1vw', alignSelf: 'center'}} /> */}
-          <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '20px', alignSelf: 'center'}} />
+          <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '20px', alignSelf: 'center', display: {xs: 'none', sm: 'flex'}}} />
           <Typography color='#6a9955' sx={{fontSize: '20px'}}>
             {salary}
           </Typography>
         </Box>
-        <Box sx={{display: 'flex', flexDirection: 'row'}}>
+        <Box sx={{display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
           <Typography color='#ffffff' sx={{fontSize: '17px'}}>
             {cityAndState}
           </Typography>
           {/* <HorizontalRuleIcon sx={{color: '#ffffff', margin: '0vw 1vw'}} /> */}
-          <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '17px', alignSelf: 'center'}} />
+          <Divider orientation="vertical" flexItem sx={{display: {xs: 'none', sm: 'flex'}, backgroundColor: '#ffffff', margin: '0px 15px', height: '17px', alignSelf: 'center'}} />
           <Typography color='#ffffff' sx={{fontSize: '17px'}}>
             {job.country ? `${job.country}` : 'No country'}
           </Typography>
