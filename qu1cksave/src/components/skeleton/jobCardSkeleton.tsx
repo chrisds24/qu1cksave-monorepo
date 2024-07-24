@@ -6,9 +6,9 @@ export default function JobCardSkeleton() {
       variant="rounded"
       sx={{
         bgcolor: '#1a1a1a',
-        width: '100%',
+        width: {xs: '87.5vw', sm: '100%'},
         // height: '200px'
-        height: '25vh'
+        height: {xs: '45vh', sm: '25vh'}
       }}
     />
   );
