@@ -1,36 +1,37 @@
-import { Box, Divider, Skeleton, Typography } from "@mui/material";
+import { Box, Button, Divider, Skeleton, Typography } from "@mui/material";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function SingleJobSkeleton() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column'}}>
       <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 1.5}}>
-      {/* Back button */}
-      <Skeleton
-        variant="rounded"
-          sx={{
-          bgcolor: '#1a1a1a',
-          width: '24px',
-          height: '24px'
-        }}
-      />
+        {/* Back button */}
+        <ArrowBackIcon sx={{color: '#ffffff', cursor: 'pointer'}}/>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Skeleton
-            variant="rounded"
+          <Button
+            variant="contained"
             sx={{
-              bgcolor: '#1a1a1a',
-              width: '64px',
-              height: '36px',
-              marginRight: 1
+              color: '#ffffff',
+              backgroundColor: '#000000',
+              marginRight: 1,
+              '&:hover': {
+                backgroundColor: '#0b0b0b',
+              },
             }}
-          />
-          <Skeleton
-            variant="rounded"
-              sx={{
-              bgcolor: '#1a1a1a',
-              width: '64px',
-              height: '36px'
-            }}
-          />
+          >
+            <EditIcon
+              sx={{ color: '#ffffff'}}
+            />
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ color: '#ffffff' }}
+            color='error'
+          >
+            <DeleteIcon sx={{ color: '#ffffff'}} />
+          </Button>    
         </Box>
       </Box>
       <Box sx={{ display: 'flex', flexDirection: {xs: 'column', sm: 'row'}, justifyContent: 'space-between', marginBottom: {xs: 1, md: 0}}}>
