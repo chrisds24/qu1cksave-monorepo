@@ -98,7 +98,7 @@ export default function SingleJobSkeleton() {
         sx={{
           bgcolor: '#1a1a1a',
           fontSize: '24px',
-          width: '25vw'
+          width: '300px'
         }}
       />
       {/* Company Name */}
@@ -108,10 +108,10 @@ export default function SingleJobSkeleton() {
         sx={{
           bgcolor: '#1a1a1a',
           fontSize: '20px',
-          width: '20vw'
+          width: '250px'
         }}
       />
-      <Box sx={{display: 'flex', flexDirection: 'row'}}>
+      <Box sx={{display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
         {/* Remote */}
         <Skeleton
           variant="text"
@@ -119,11 +119,11 @@ export default function SingleJobSkeleton() {
           sx={{
             bgcolor: '#1a1a1a',
             fontSize: '20px',
-            width: '10vw'
+            width: '100px'
           }}
         />
         {/* <HorizontalRuleIcon sx={{color: '#ffffff', margin: '0vw 1vw', alignSelf: 'center'}} /> */}
-        <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '20px', alignSelf: 'center'}} />
+        <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '20px', alignSelf: 'center', display: {xs: 'none', sm: 'flex'}}} />
         {/* Salary */}
         <Skeleton
           variant="text"
@@ -131,11 +131,11 @@ export default function SingleJobSkeleton() {
           sx={{
             bgcolor: '#1a1a1a',
             fontSize: '20px',
-            width: '10vw'
+            width: '250px'
           }}
         />
       </Box>
-      <Box sx={{display: 'flex', flexDirection: 'row'}}>
+      <Box sx={{display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
         {/* City and State */}
         <Skeleton
           variant="text"
@@ -143,11 +143,11 @@ export default function SingleJobSkeleton() {
           sx={{
             bgcolor: '#1a1a1a',
             fontSize: '17px',
-            width: '7vw'
+            width: '200px'
           }}
         />
         {/* <HorizontalRuleIcon sx={{color: '#ffffff', margin: '0vw 1vw'}} /> */}
-        <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '17px', alignSelf: 'center'}} />
+        <Divider orientation="vertical" flexItem sx={{display: {xs: 'none', sm: 'flex'}, backgroundColor: '#ffffff', margin: '0px 15px', height: '17px', alignSelf: 'center'}} />
         {/* Country */}
         <Skeleton
           variant="text"
@@ -155,7 +155,7 @@ export default function SingleJobSkeleton() {
           sx={{
             bgcolor: '#1a1a1a',
             fontSize: '17px',
-            width: '7vw'
+            width: '150px'
           }}
         />
       </Box>
@@ -186,22 +186,24 @@ export default function SingleJobSkeleton() {
         }}
       />
       <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
-      <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginBottom: 1}}>
-        {'Links'}
-      </Typography>
-      {/* Links Content */}
-      <Skeleton
-        variant="rounded"
-        sx={{
-          bgcolor: '#1a1a1a',
-          width: '100%',
-          height: '25vh'
-        }}
-      />
+      <Box sx={{maxWidth: '80vw'}}>
+        <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginBottom: 1}}>
+          {'Links'}
+        </Typography>
+        {/* Links Content */}
+        <Skeleton
+          variant="rounded"
+          sx={{
+            bgcolor: '#1a1a1a',
+            width: '100%',
+            height: '25vh'
+          }}
+        />
+      </Box>
 
       <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
 
-      <Box sx={{ display: 'flex', flexDirection: 'row', width: '50vw', marginBottom: 2}}>
+      <Box sx={{display: 'flex', flexWrap: 'wrap', flexDirection: {xs: 'column', sm: 'row'}, marginBottom: 2}}>
         <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
           {'Job posting found from:'} 
         </Typography>
@@ -212,12 +214,12 @@ export default function SingleJobSkeleton() {
           sx={{
             bgcolor: '#1a1a1a',
             fontSize: '20px',
-            width: '20%'
+            width: '200px'
           }}
         />              
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'row', width: '50vw', marginBottom: 2}}>
-        <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
+      <Box sx={{display: 'flex', flexDirection: {xs: 'column', md: 'row'}, maxWidth: '90vw', flexWrap: {xs: 'nowrap', md: 'wrap'}}}>
+        <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1, marginBottom: 1}}>
           {'Resume:'} 
         </Typography>
         {/* Resume content */}
@@ -227,12 +229,13 @@ export default function SingleJobSkeleton() {
           sx={{
             bgcolor: '#1a1a1a',
             fontSize: '20px',
-            width: '40%'
+            width: '200px'
           }}
         />              
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'row', width: '50vw', marginBottom: 2}}>
-        <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
+      <Box sx={{marginBottom: 1}}/>
+      <Box sx={{display: 'flex', flexDirection: {xs: 'column', md: 'row'}, maxWidth: '90vw', flexWrap: {xs: 'nowrap', md: 'wrap'}}}>
+        <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1, marginBottom: 1}}>
           {'Cover Letter:'} 
         </Typography>
         {/* Cover letter content */}
@@ -242,7 +245,7 @@ export default function SingleJobSkeleton() {
           sx={{
             bgcolor: '#1a1a1a',
             fontSize: '20px',
-            width: '50%'
+            width: '200px'
           }}
         />              
       </Box>
