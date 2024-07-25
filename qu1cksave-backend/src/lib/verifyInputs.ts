@@ -1,5 +1,5 @@
 import { NewJob } from "src/job";
-import { Credentials, NewUser } from "src/user";
+import { NewUser } from "src/user";
 
 export default function verifyNewJobInput(newJob: NewJob) {
   // Columns for a job in the database
@@ -37,31 +37,33 @@ export default function verifyNewJobInput(newJob: NewJob) {
   // title, company_name, salary_min, salary_max, country, city, found_from, links
   if (newJob.title.length > 255) return false
   if (newJob.company_name.length > 255) return false
-  if (newJob.salary_min && newJob.salary_min > 9999999) return false
-  if (newJob.salary_max && newJob.salary_max > 9999999) return false
+  if (newJob.salary_min !== undefined && (newJob.salary_min > 9999999 || newJob.salary_min < 0)) return false
+  if (newJob.salary_max !== undefined && (newJob.salary_max > 9999999 || newJob.salary_max < 0)) return false
   if (newJob.country && newJob.country.length > 255) return false
   if (newJob.city && newJob.city.length > 255) return false
   if (newJob.found_from && newJob.found_from.length > 255) return false
   if (newJob.links && newJob.links.length > 10) return false
 
-  // TODO: Also check the resume file name
+  // Check the newResume/newCoverLetter file name
+  // - Both NewResume and NewCoverLetter have a file_name of max length 255
+  if (newJob.resume && newJob.resume.file_name.length > 255) return false
+  if (newJob.cover_letter && newJob.cover_letter.file_name.length > 255) return false
 
   return true
 }
 
-export function verifyCredentialsInput(credentials: Credentials | NewUser, isNewUser: boolean) {
-  // ---------- Credentials / NewUser ----------
-  // email, password, name (for NewUser)
+export function verifyNewUserInput(newUser: NewUser) {
+  // ---------- NewUser ----------
+  // email, password, name
   // 
   // email      string      max: 320
   // password   string      min: 8, max: unlimited
   // - In database, type is text (unlimited length). Hashed password is stored
   // name       string      max: 255
+  if(newUser.email.length > 320) return false
+  if(newUser.password.length < 8) return false
+  if(newUser.name.length > 255) return false
 
-  // TODO
-  // ...
-
-  // Just check type to know if it's a NewUser and we need to check name
-
+  return true
 }
 

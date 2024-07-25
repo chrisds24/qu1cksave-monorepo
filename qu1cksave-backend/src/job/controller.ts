@@ -2,6 +2,7 @@ import { Controller, Get, Post, Put, Path, Query, Response, SuccessResponse, Rou
 import { Job, NewJob } from ".";
 import { JobService } from "./service";
 import * as express from 'express';
+import verifyNewJobInput from "../lib/verifyInputs";
 
 @Route("job")
 export class JobController extends Controller {
@@ -35,6 +36,9 @@ export class JobController extends Controller {
     @Body() newJob: NewJob,
     @Request() request: express.Request,
   ): Promise<Job | undefined> {
+    if (!verifyNewJobInput(newJob)) {
+      return undefined
+    }
     return await new JobService().create(newJob, request.user.id);
   }
 
@@ -47,6 +51,9 @@ export class JobController extends Controller {
     @Body() newJob: NewJob,
     @Request() request: express.Request,
   ): Promise<Job | undefined> {
+    if (!verifyNewJobInput(newJob)) {
+      return undefined
+    }
     return await new JobService().edit(newJob, request.user.id, id);
   }
 

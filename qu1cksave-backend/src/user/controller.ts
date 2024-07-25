@@ -12,6 +12,7 @@
 import { Body, Controller, Get, Path, Post, Query, Response, Route, Security, SuccessResponse } from "tsoa";
 import { User, Credentials, NewUser } from ".";
 import { UserService } from "./service";
+import { verifyNewUserInput } from "../lib/verifyInputs";
 
 @Route("user")
 export class UserController extends Controller {
@@ -33,6 +34,9 @@ export class UserController extends Controller {
   @Response("409", "Conflict")
   @SuccessResponse("200", "OK")
   public async signup(@Body() newUser: NewUser): Promise<User | undefined> {
+    if (!verifyNewUserInput(newUser)) {
+      return undefined
+    }
     return new UserService()
       .signup(newUser)
       .then(async (user: User | undefined): Promise<User | undefined> => {
