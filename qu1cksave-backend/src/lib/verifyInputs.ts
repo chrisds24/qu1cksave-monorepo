@@ -11,28 +11,36 @@ export default function verifyNewJobInput(newJob: NewJob) {
     // cover_letter?: NewCoverLetter;
     // title: string;                                     max: 255
     // company_name: string;                              max: 255
-    // job_description?: string;                            Won't enforce limit on length  
-    // notes?: string;                                      Won't enforce limit on length       
-    // is_remote: string;                                   selected                         
-    // salary_type?: string;                                selected
+    // job_description?: string;                              Won't enforce limit on length  
+    // notes?: string;                                        Won't enforce limit on length       
+    // is_remote: string;                                     selected                         
+    // salary_type?: string;                                  selected
     // salary_min?: number;                               max: 9999999
     // salary_max?: number;                               max: 9999999
     // country?: string;                                  max: 255
-    // us_state?: string;                                   selected
+    // us_state?: string;                                     selected
     // city?: string;                                     max: 255
-    // date_applied?: YearMonthDate;                        selected
-    // date_posted?: YearMonthDate;                         selected
-    // job_status: string;                                  selected
-    // links?: string[];                                   Just check list length (Won't enforce limit on length for each link)
+    // date_applied?: YearMonthDate;                          selected
+    // date_posted?: YearMonthDate;                           selected
+    // job_status: string;                                    selected
+    // links?: string[];                                      Won't enforce limit on length for each link
     // found_from?: string;                               max: 255
     // // In job EDIT mode, used to determine if resume is to be deleted or not
-    // keepResume?: boolean;                EDIT            value is automatically set
-    // keepCoverLetter?: boolean;           EDIT            value is automatically set
+    // keepResume?: boolean;                EDIT              value is automatically set
+    // keepCoverLetter?: boolean;           EDIT              value is automatically set
   // No id, member_id, and date_saved
-  // *** I'll only check inputs that can be entered by the user in the frontend.
+  // *** I'll only check inputs that can be manually entered (not selected) by the user in the frontend.
+  //     Above, those are the non-indented values saying "max: ..."
   // *** If a user decides to go on Swagger, make wrong inputs, and break the
   //     app for their account, that is on them. Also, this is the purpose of
   //     having an API key. It's so that people won't be able to do that.
+  // *** The only main concerns here are title, company_name, salary_min/max,
+  //     country, city, and found from (in the case that the frontend input
+  //     validation for those fail).
+  //     They won't really be able to have links > 10.
+  //     There is no frontend validation for the resume/cover letter name
+  //     since docx/pdf files aren't allowed to have a name > 255 in the first
+  //     place. But I'll just add one here for backup
 
   // title, company_name, salary_min, salary_max, country, city, found_from, links
   if (newJob.title.length > 255) return false
@@ -42,7 +50,6 @@ export default function verifyNewJobInput(newJob: NewJob) {
   if (newJob.country && newJob.country.length > 255) return false
   if (newJob.city && newJob.city.length > 255) return false
   if (newJob.found_from && newJob.found_from.length > 255) return false
-  if (newJob.links && newJob.links.length > 10) return false
 
   // Check the newResume/newCoverLetter file name
   // - Both NewResume and NewCoverLetter have a file_name of max length 255
