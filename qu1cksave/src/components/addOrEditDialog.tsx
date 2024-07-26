@@ -75,10 +75,16 @@ export default function AddOrEditDialog() {
   }
 
   // If editing, fill in fields and set states based on selected job
-  // const [remote, setRemote] = useState(!isAdd && dialogJob ? dialogJob.is_remote : 'Remote');
-  // const [status, setStatus] = useState(!isAdd && dialogJob ? dialogJob.job_status : 'Not Applied');
-  // const [state, setState] = useState(!isAdd && dialogJob && dialogJob.us_state ? dialogJob.us_state : '');
-  // const [links, setLinks] = useState<JSX.Element[]>(!isAdd && dialogJob && dialogJob.links ? existingLinks : [link1]);
+  const [title , setTitle] = useState('');
+  const [titleErr, setTitleErr] = useState(false);
+  const [company , setCompany] = useState('');
+  const [companyErr, setCompanyErr] = useState(false);
+  const [city , setCity] = useState('');
+  const [cityErr, setCityErr] = useState(false);
+  const [country , setCountry] = useState('');
+  const [countryErr, setCountryErr] = useState(false);
+  const [from , setFrom] = useState('');
+  const [fromErr, setFromErr] = useState(false);
   const [remote, setRemote] = useState('Remote');
   const [salaryMax, setSalaryMax] = useState<number | null>(null);
   const [salaryMin, setSalaryMin] = useState<number | null>(null);
@@ -90,6 +96,13 @@ export default function AddOrEditDialog() {
 
   useEffect(() => {
     if (!isAdd && dialogJob) { // In edit mode and the job has been loaded
+      setTitle(dialogJob.title);
+      setTitleErr(!dialogJob.title ? true : false)
+      setCompany(dialogJob.company_name);
+      setCompanyErr(!dialogJob.company_name ? true : false)
+      if (dialogJob.city) setCity(dialogJob.city);
+      if (dialogJob.country) setCountry(dialogJob.country);
+      if (dialogJob.found_from) setFrom(dialogJob.found_from);
       setRemote(dialogJob.is_remote);
       setStatus(dialogJob.job_status);
       if (dialogJob.salary_min !== null) setSalaryMin(dialogJob.salary_min);
@@ -103,8 +116,80 @@ export default function AddOrEditDialog() {
     }
   }, [isAdd, dialogJob]);
 
+  const changeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const val = event.target.value as string;
+    if (!val || val.length > 255) {
+      setTitleErr(true)
+    } else {
+      setTitleErr(false)
+    }
+    setTitle(val);
+  };
+
+  const changeCompany = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const val = event.target.value as string;
+    if (!val || val.length > 255) {
+      setCompanyErr(true)
+    } else {
+      setCompanyErr(false)
+    }
+    setCompany(val);
+  };
+
+  const changeCity = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const val = event.target.value as string;
+    if (val && val.length > 255) {
+      setCityErr(true)
+    } else {
+      setCityErr(false)
+    }
+    setCity(val);
+  };
+
+  const changeCountry = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const val = event.target.value as string;
+    if (val && val.length > 255) {
+      setCountryErr(true)
+    } else {
+      setCountryErr(false)
+    }
+    setCountry(val);
+  };
+
+  const changeFrom = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const val = event.target.value as string;
+    if (val && val.length > 255) {
+      setFromErr(true)
+    } else {
+      setFromErr(false)
+    }
+    setFrom(val);
+  };
+
+  const changeRemote = (event: SelectChangeEvent) => {
+    setRemote(event.target.value as string);
+  };
+
+  const changeStatus = (event: SelectChangeEvent) => {
+    setStatus(event.target.value as string);
+  };
+
+  const changeState = (event: SelectChangeEvent) => {
+    setState(event.target.value as string);
+  };
+
   const handleClose = () => {
     setOpen(false);
+    setTitle('');
+    setTitleErr(false);
+    setCompany('');
+    setCompanyErr(false);
+    setCity('');
+    setCityErr(false);
+    setCountry('');
+    setCountryErr(false);
+    setFrom('');
+    setFromErr(false);
     setRemote('Remote');
     setSalaryMin(null);
     setSalaryMax(null);
@@ -122,19 +207,13 @@ export default function AddOrEditDialog() {
     // 'us_state', 'city', 'date_applied', 'date_posted', 'job_status', 'links', 'found_from'
 
     event.preventDefault();
-
-    // This also doesn't fix the 2 jobs created issue when spamming submit
-    // - I think what's happening is that after setButtonDisabled becomes
-    //   false at the end, the button becomes available for a split second
-    //   before the modal closes.
-    // - UPDATE: It happens at the "beginning", "middle", and "end"
-    //   -- UPDATE: When I removed this if condition, it only happens at the end
-    //        And I was still somehow able to click Submit even though the dialog
-    //        is visually not on the screen!!!
-    //      + View this GitHub issue: https://github.com/users/chrisds24/projects/2/views/1?pane=issue&itemId=70881061
-    // if (!buttonDisabled) {
-
     setButtonDisabled(true);
+
+    // if (newJob.found_from && newJob.found_from.length > 255) return false
+
+    // No need to validate resume and cover letter file name since docs
+    //   and pdfs don't allow names with > 255 characters (including
+    //   the extension)
 
     const data = new FormData(event.currentTarget);
     // Add additional validation here to make sure that that required values are given.
@@ -362,68 +441,8 @@ export default function AddOrEditDialog() {
       //   (Turns out this is the case for anything that isn't a link)
     }
 
-    // Using route handlers
-    // let fetchString = '/api/job';
-    // if (!isAdd) {
-    //   fetchString += `/${dialogJob.id}`;
-    // }
-    // await fetch(fetchString, {
-    //   method: isAdd ? "POST" : "PUT",
-    //   body: JSON.stringify(newJob),
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // })
-    //   .then((res) => {
-    //     if (!res.ok) {
-    //       throw res;
-    //     }
-    //     return res.json();
-    //   })
-    //   .then((job) => {
-    //     // Add this job to jobs, then set jobs
-    //     let newJobs = [...jobs];
-    //     if (!isAdd) {
-    //       // When editing, remove the outdated job from the jobs list.
-    //       newJobs = newJobs.filter((j) => j.id !== job.id);
-    //     }
-
-    //     newJobs.push(job)
-    //     // NOTE: Whenever jobs is set, apply the filters.
-    //     // This is done in layout.tsx to get filteredJobs
-    //     setJobs(newJobs)
-    //     // NOTE: The useEffect to automatically update jobsInPage when jobs
-    //     //   changes is in job/page.tsx
-    //     // NOTE: For some reason, the links are weird in the single job view.
-    //     //   If I create link fields in the modal and set it to for example,
-    //     //   a bunch of spaces. It creates a link to the single job page for
-    //     //   the current job.
-    //     //   (Turns out this is the case for anything that isn't a link)
-    //   })
-    //   .catch((err) => {
-    //     console.error(err)
-    //   });
-
-    // When it's here, only 1 S3 call, but there could be 2 POST requests to the
-    //   database so 2 jobs are created when spamming submit
-    // setButtonDisabled(false);
-
     handleClose();
-
-    // Down here doesn't fix the 2 jobs created issue when spamming submit
     setButtonDisabled(false);
-  };
-
-  const changeRemote = (event: SelectChangeEvent) => {
-    setRemote(event.target.value as string);
-  };
-
-  const changeStatus = (event: SelectChangeEvent) => {
-    setStatus(event.target.value as string);
-  };
-
-  const changeState = (event: SelectChangeEvent) => {
-    setState(event.target.value as string);
   };
 
   const addLink = () => {
@@ -580,7 +599,12 @@ export default function AddOrEditDialog() {
             label="Job Title"
             fullWidth
             variant="outlined"
-            defaultValue={!isAdd && dialogJob ? dialogJob.title : ''}
+            value={title}
+            onChange={changeTitle}
+            error={titleErr}
+            helperText={
+              titleErr ? 'Required. Maximum: 255 characters' : ''
+            }
             sx={{
               color: '#ffffff',
               input: {
@@ -603,7 +627,12 @@ export default function AddOrEditDialog() {
             label="Company"
             fullWidth
             variant="outlined"
-            defaultValue={!isAdd && dialogJob ? dialogJob.company_name : ''}
+            value={company}
+            onChange={changeCompany}
+            error={companyErr}
+            helperText={
+              companyErr ? 'Required. Maximum: 255 characters' : ''
+            }
             sx={{
               // color: '#ffffff',
               input: {
@@ -678,7 +707,12 @@ export default function AddOrEditDialog() {
               name="city"
               label="City"
               variant="outlined"
-              defaultValue={!isAdd && dialogJob && dialogJob.city ? dialogJob.city : ''}
+              value={city}
+              onChange={changeCity}
+              error={cityErr}
+              helperText={
+                cityErr ? 'Maximum: 255 characters' : ''
+              }
               sx={{
                 color: '#ffffff',
                 input: {
@@ -737,7 +771,12 @@ export default function AddOrEditDialog() {
             name="country"
             label="Country"
             variant="outlined"
-            defaultValue={!isAdd && dialogJob && dialogJob.country ? dialogJob.country : ''}
+            value={country}
+            onChange={changeCountry}
+            error={countryErr}
+            helperText={
+              countryErr ? 'Maximum: 255 characters' : ''
+            }
             sx={{
               color: '#ffffff',
               input: {
@@ -811,7 +850,12 @@ export default function AddOrEditDialog() {
           label="Posting Found From"
           placeholder="LinkedIn, Indeed, etc."
           variant="outlined"
-          defaultValue={!isAdd && dialogJob && dialogJob.found_from ? dialogJob.found_from : ''}
+          value={from}
+          onChange={changeFrom}
+          error={fromErr}
+          helperText={
+            fromErr ? 'Maximum: 255 characters' : ''
+          }
           sx={{
             color: '#ffffff',
             input: {
