@@ -34,10 +34,46 @@ function Copyright(props: any) {
 export default function Page() {
   const router = useRouter();
   const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailErr, setEmailErr] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordErr, setPasswordErr] = useState(false);
+
+  const changeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const val = event.target.value as string;
+    // https://regexr.com/3e48o
+    if (!val || val.length > 254 || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val)) {
+      setEmailErr(true)
+    } else {
+      setEmailErr(false)
+    }
+    setEmail(val);
+  };
+
+  const changePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const val = event.target.value as string;
+    if (!val || val.length < 8) {
+      setPasswordErr(true)
+    } else {
+      setPasswordErr(false)
+    }
+    setPassword(val);
+  };
 
   const signin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setButtonDisabled(true);
+
+    const emailError = !email || email.length > 254;
+    const passwordError = !password || password.length < 8;
+    if (emailError || passwordError) {
+      setEmailErr(emailError);
+      setPasswordErr(passwordError);
+      alert('Please ensure that all fields are valid.');
+      setButtonDisabled(false);
+      return;
+    }
+
     const formdata = new FormData(event.currentTarget);
     const credentials: Credentials = {
       email: formdata.get('email') as string,
@@ -72,6 +108,12 @@ export default function Page() {
           name="email"
           autoComplete="email"
           autoFocus
+          value={email}
+          onChange={changeEmail}
+          error={emailErr}
+          helperText={
+            emailErr ? 'Required. Maximum: 254 characters. Must be a valid email address.' : ''
+          }
           sx={{
             input: {
               color: '#ffffff'
@@ -101,6 +143,12 @@ export default function Page() {
           type="password"
           id="password"
           autoComplete="current-password"
+          value={password}
+          onChange={changePassword}
+          error={passwordErr}
+          helperText={
+            passwordErr ? 'Required. Minimum: 8 characters' : ''
+          }
           sx={{
             input: {
               color: '#ffffff'
