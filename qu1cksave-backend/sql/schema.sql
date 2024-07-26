@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS member;
 DROP TABLE IF EXISTS resume;
 
 -- Columns are: id, email, password, roles, name
-CREATE TABLE member(id UUID UNIQUE PRIMARY KEY DEFAULT gen_random_uuid(), email VARCHAR(320) UNIQUE, password TEXT, roles jsonb, name VARCHAR(255));
+CREATE TABLE member(id UUID UNIQUE PRIMARY KEY DEFAULT gen_random_uuid(), email VARCHAR(254) UNIQUE, password TEXT, roles jsonb, name VARCHAR(255));
 -- Add cover letter later
 -- Columns are: id, member_id, resume_id, cover_letter_id, title, company_name, job_description, notes, is_remote, salary_type, salary_min, salary_max, country, us_state, city, date_saved, date_applied, date_posted, job_status, links, found_from
 -- description and notes used to be VARCHAR(12000)

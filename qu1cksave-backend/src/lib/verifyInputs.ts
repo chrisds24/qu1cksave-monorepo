@@ -63,14 +63,32 @@ export function verifyNewUserInput(newUser: NewUser) {
   // ---------- NewUser ----------
   // email, password, name
   // 
-  // email      string      max: 320
+  // email      string      max: 254
   // password   string      min: 8, max: unlimited
   // - In database, type is text (unlimited length). Hashed password is stored
   // name       string      max: 255
-  if(newUser.email.length > 320) return false
+  if(newUser.email.length > 254) return false
   if(newUser.password.length < 8) return false
   if(newUser.name.length > 255) return false
 
   return true
 }
+
+// Some useful info:
+// ---------- Emails -------------
+// https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address
+// - Some say 320. Some say 254. I'll just use 254
+// https://www.directedignorance.com/blog/maximum-length-of-email-address
+// - Also talks about the maximum of 254
+//
+// ---------- Passwords ----------
+// https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html
+// - Minimum 8 chars, maximum of at least 64 chars
+// https://stackoverflow.com/questions/98768/should-i-impose-a-maximum-length-on-passwords
+// - Don't impose a limit. It's less secure
+// - ME: I could probably just limit the amount of memory that can be used
+//   in a request (Ex. I had a 2000 mb limit for the API), and just say
+//   something about the request size being too big (or just say "Error
+//   Processing Request", since most users wouldn't even reach this size
+//   unless they're purposely trying to test the limits of the app)
 
