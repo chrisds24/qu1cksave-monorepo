@@ -209,16 +209,16 @@ export default function AddOrEditDialog() {
     event.preventDefault();
     setButtonDisabled(true);
 
-    // if (newJob.found_from && newJob.found_from.length > 255) return false
-
-    // No need to validate resume and cover letter file name since docs
-    //   and pdfs don't allow names with > 255 characters (including
-    //   the extension)
-
     const data = new FormData(event.currentTarget);
-    // Add additional validation here to make sure that that required values are given.
-    if (!(data.get('title') && data.get('company') && data.get('remote') && data.get('status'))) {
-      alert('Please fill all required values.')
+    if (titleErr || companyErr || cityErr || countryErr || fromErr) {
+      // Useful for MUI validation:
+      //   https://muhimasri.com/blogs/mui-validation/
+      // No need to validate resume and cover letter file name since docs
+      //   and pdfs don't allow names with > 255 characters (including
+      //   the extension)
+      alert('Please ensure that all fields are valid.')
+      setButtonDisabled(false);
+      return;
     }
 
     const newJob: Partial<NewJob> = {
