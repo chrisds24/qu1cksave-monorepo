@@ -43,8 +43,8 @@ export default function verifyNewJobInput(newJob: NewJob) {
   //     place. But I'll just add one here for backup
 
   // title, company_name, salary_min, salary_max, country, city, found_from, links
-  if (newJob.title.length > 255) return false
-  if (newJob.company_name.length > 255) return false
+  if (!newJob.title || newJob.title.length > 255) return false
+  if (!newJob.company_name || newJob.company_name.length > 255) return false
   if (newJob.salary_min !== undefined && (newJob.salary_min > 9999999 || newJob.salary_min < 0)) return false
   if (newJob.salary_max !== undefined && (newJob.salary_max > 9999999 || newJob.salary_max < 0)) return false
   if (newJob.country && newJob.country.length > 255) return false
@@ -67,9 +67,9 @@ export function verifyNewUserInput(newUser: NewUser) {
   // password   string      min: 8, max: unlimited
   // - In database, type is text (unlimited length). Hashed password is stored
   // name       string      max: 255
-  if(newUser.email.length > 254) return false
-  if(newUser.password.length < 8) return false
-  if(newUser.name.length > 255) return false
+  if(!newUser.email || newUser.email.length > 254) return false
+  if(!newUser.password || newUser.password.length < 8) return false
+  if(!newUser.name || newUser.name.length > 255) return false
 
   return true
 }

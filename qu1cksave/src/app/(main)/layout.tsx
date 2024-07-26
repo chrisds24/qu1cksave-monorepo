@@ -138,7 +138,7 @@ export default function MainLayout({
           <ListItemButton>
             <ListItemIcon>
               {
-                sessionUser ?
+                sessionUser && sessionUser.name ?
                 <Avatar {...stringAvatar(sessionUser.name)} /> :
                 <Skeleton
                   variant="circular"
@@ -152,7 +152,7 @@ export default function MainLayout({
             <ListItemText
               // primary={sessionUser ? sessionUser.name : ''}
               primary={
-                sessionUser ?
+                sessionUser && sessionUser.name ?
                 sessionUser.name :
                 <Skeleton
                   variant="text"                 

@@ -35,10 +35,85 @@ function Copyright(props: any) {
 export default function Page() {
   const router = useRouter();
   const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [name, setName] = useState('');
+  const [nameErr, setNameErr] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailErr, setEmailErr] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordErr, setPasswordErr] = useState(false);
+  const [repeatPw, setRepeatPw] = useState('');
+  const [repeatPwErr, setRepeatPwErr] = useState(false);
+
+  const changeName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const val = event.target.value as string;
+    if (!val || val.length > 255) {
+      setNameErr(true)
+    } else {
+      setNameErr(false)
+    }
+    setName(val);
+  };
+
+  const changeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const val = event.target.value as string;
+    // https://regexr.com/3e48o
+    if (!val || val.length > 254 || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val)) {
+      setEmailErr(true)
+    } else {
+      setEmailErr(false)
+    }
+    setEmail(val);
+  };
+
+  const changePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const val = event.target.value as string;
+    if (!val || val.length < 8) {
+      setPasswordErr(true)
+    } else {
+      setPasswordErr(false)
+    }
+    if (val && val !== repeatPw) {
+      setRepeatPwErr(true)
+    } else {
+      setRepeatPwErr(false)
+    }
+    setPassword(val);
+  };
+
+  const changeRepeatPw = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const val = event.target.value as string;
+    if (!val || val !== password) {
+      setRepeatPwErr(true)
+    } else {
+      setRepeatPwErr(false)
+    }
+    setRepeatPw(val);
+  };
 
   const createAccount = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setButtonDisabled(true);
+
+    // If user doesn't enter a name, this code won't catch it since the
+    //   onChange won't trigger
+    // if (nameErr || emailErr || passwordErr || repeatPwErr) {
+    //  ...
+    // }
+    
+    const nameError = !name || name.length > 255;
+    const emailError = !email || email.length > 254;
+    const passwordError = !password || password.length < 8;
+    const repeatPwError = !repeatPw || password !== repeatPw;
+    if (nameError || emailError || passwordError || repeatPwError) {
+      setNameErr(nameError);
+      setEmailErr(emailError);
+      setPasswordErr(passwordError);
+      setRepeatPwErr(repeatPwError);
+      alert('Please ensure that all fields are valid.');
+      setButtonDisabled(false);
+      return;
+    }
+
     const data = new FormData(event.currentTarget);
     const newUser: NewUser = {
       name: data.get('name') as string,
@@ -54,7 +129,7 @@ export default function Page() {
         alert('Successfully created account!');
         router.push('/login')
       } else {
-        alert('Email already in use. Please use a different email.');
+        alert('Error processing request. Please try again or use a different email address.');
       }
     }
     setButtonDisabled(false);
@@ -69,6 +144,7 @@ export default function Page() {
         Sign Up
       </Typography>
       <Box component="form" noValidate onSubmit={createAccount} sx={{ mt: 1 }}>
+      {/* <Box component="form" onSubmit={createAccount} sx={{ mt: 1 }}> */}
         {/* https://stackoverflow.com/questions/70989890/how-to-change-textfield-inputs-focus-border-using-material-ui-theme */}
         <TextField
           margin="normal"
@@ -77,6 +153,12 @@ export default function Page() {
           name="name"
           label="Name"
           id="name"
+          value={name}
+          onChange={changeName}
+          error={nameErr}
+          helperText={
+            nameErr ? 'Required. Maximum: 255 characters' : ''
+          }
           sx={{
             input: {
               color: '#ffffff'
@@ -102,10 +184,17 @@ export default function Page() {
           required
           fullWidth
           id="email"
+          type="email"
           label="Email Address"
           name="email"
           autoComplete="email"
           autoFocus
+          value={email}
+          onChange={changeEmail}
+          error={emailErr}
+          helperText={
+            emailErr ? 'Required. Maximum: 254 characters. Must be a valid email address.' : ''
+          }
           sx={{
             input: {
               color: '#ffffff'
@@ -135,6 +224,12 @@ export default function Page() {
           type="password"
           id="password"
           autoComplete="current-password"
+          value={password}
+          onChange={changePassword}
+          error={passwordErr}
+          helperText={
+            passwordErr ? 'Required. Minimum: 8 characters' : ''
+          }
           sx={{
             input: {
               color: '#ffffff'
@@ -164,6 +259,12 @@ export default function Page() {
           type="password"
           id="repeatpw"
           autoComplete="current-password"
+          value={repeatPw}
+          onChange={changeRepeatPw}
+          error={repeatPwErr}
+          helperText={
+            repeatPwErr ? 'Passwords do not match.' : ''
+          }
           sx={{
             input: {
               color: '#ffffff'

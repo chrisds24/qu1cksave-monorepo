@@ -67,6 +67,7 @@ export default function Page() {
           required
           fullWidth
           id="email"
+          type="email"
           label="Email Address"
           name="email"
           autoComplete="email"
