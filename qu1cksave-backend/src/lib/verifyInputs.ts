@@ -23,7 +23,7 @@ export default function verifyNewJobInput(newJob: NewJob) {
     // date_applied?: YearMonthDate;                          selected
     // date_posted?: YearMonthDate;                           selected
     // job_status: string;                                    selected
-    // links?: string[];                                      Won't enforce limit on length for each link
+    // links?: string[];                                      Also check the list length. Won't enforce limit on length for each link
     // found_from?: string;                               max: 255
     // // In job EDIT mode, used to determine if resume is to be deleted or not
     // keepResume?: boolean;                EDIT              value is automatically set
@@ -34,6 +34,9 @@ export default function verifyNewJobInput(newJob: NewJob) {
   // *** If a user decides to go on Swagger, make wrong inputs, and break the
   //     app for their account, that is on them. Also, this is the purpose of
   //     having an API key. It's so that people won't be able to do that.
+  //     ********** WARNING **********
+  //     https://stackoverflow.com/questions/25447188/stopping-user-to-change-values-in-html-source-before-submitting-form
+  //     - They can stil edit the HTML form using Inspect in Console !!!
   // *** The only main concerns here are title, company_name, salary_min/max,
   //     country, city, and found from (in the case that the frontend input
   //     validation for those fail).

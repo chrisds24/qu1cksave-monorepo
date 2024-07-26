@@ -210,12 +210,22 @@ export default function AddOrEditDialog() {
     setButtonDisabled(true);
 
     const data = new FormData(event.currentTarget);
-    if (titleErr || companyErr || cityErr || countryErr || fromErr) {
+    // Note: If user doesn't change the job title or the company name, the
+    //   onChange won't trigger and titleErr and companyErr won't correctly
+    //   indicate if those two required fields are empty. So the code
+    //   below doesn't work perfectly.
+    // if (titleErr || companyErr || cityErr || countryErr || fromErr) { ... }  // HAS A BUG
+
+    const titleError = !title || title.length > 255;
+    const companyError = !company || company.length > 255;
+    if (titleError || companyError || cityErr || countryErr || fromErr) {
       // Useful for MUI validation:
       //   https://muhimasri.com/blogs/mui-validation/
       // No need to validate resume and cover letter file name since docs
       //   and pdfs don't allow names with > 255 characters (including
       //   the extension)
+      setTitleErr(titleError);
+      setCompanyErr(companyError);
       alert('Please ensure that all fields are valid.')
       setButtonDisabled(false);
       return;
@@ -478,7 +488,8 @@ export default function AddOrEditDialog() {
         onSubmit: handleSubmit,
         sx: {
           backgroundColor: '#1e1e1e',
-        }
+        },
+        noValidate: true
       }}
       fullWidth
       maxWidth={'lg'}

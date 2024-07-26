@@ -96,9 +96,7 @@ export default function Page() {
 
     // If user doesn't enter a name, this code won't catch it since the
     //   onChange won't trigger
-    // if (nameErr || emailErr || passwordErr || repeatPwErr) {
-    //  ...
-    // }
+    // if (nameErr || emailErr || passwordErr || repeatPwErr) { ... }  // HAS A BUG
     
     const nameError = !name || name.length > 255;
     const emailError = !email || email.length > 254;
