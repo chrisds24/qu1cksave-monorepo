@@ -6,7 +6,7 @@ import { CoverLetter } from "src/coverLetter";
 
 // No id, member_id, and date_saved since those are unchangeable
 const keys = [
-  'title', 'company_name', 'job_description', 'notes', 'is_remote', 'salary_type',
+  'title', 'company_name', 'job_description', 'notes', 'is_remote',
   'salary_min', 'salary_max', 'country', 'us_state', 'city', 'date_applied',
   'date_posted', 'job_status', 'links', 'found_from'
 ];
@@ -17,7 +17,7 @@ export class JobService {
     //   id, member_id, resume_id, title, company_name, job_description, notes, is_remote, country,
     //   us_state, city, date_saved, date_applied, date_posted, job_status, links, found_from
     // Resume columns
-    //   id, member_id, job_id, file_name, mime_type
+    //   id, member_id, file_name, mime_type
 
     // Get jobs and include resume data when available
     //
@@ -44,14 +44,12 @@ export class JobService {
       json_build_object(
         'id', r.id, 
         'member_id', r.member_id,
-        'job_id', r.job_id,
         'file_name', r.file_name,
         'mime_type', r.mime_type
       ) AS resume,
       json_build_object(
         'id', c.id, 
         'member_id', c.member_id,
-        'job_id', c.job_id,
         'file_name', c.file_name,
         'mime_type', c.mime_type
       ) AS cover_letter      
@@ -88,7 +86,7 @@ export class JobService {
     const newResume = newJob.resume;
     let resume: Resume | undefined = undefined;
     if (newResume) {
-      // member_id, job_id?, file_name, mime_type
+      // member_id, file_name, mime_type
       const insert = "INSERT INTO resume(member_id, file_name, mime_type) VALUES ($1, $2, $3) RETURNING *";
       const query = {
         text: insert,
@@ -107,7 +105,7 @@ export class JobService {
     const newCoverLetter = newJob.cover_letter;
     let coverLetter: CoverLetter | undefined = undefined;
     if (newCoverLetter) {
-      // member_id, job_id?, file_name, mime_type
+      // member_id, file_name, mime_type
       const insert = "INSERT INTO cover_letter(member_id, file_name, mime_type) VALUES ($1, $2, $3) RETURNING *";
       const query = {
         text: insert,
@@ -317,7 +315,7 @@ export class JobService {
         console.log(`newJob has a newResume and also has a resume_id.`)
         console.log(`Case 5: Updating an existing resume in the resume table. Attach this later`)
 
-        // id, member_id, job_id, file_name, mime_type, bytearray_as_array   (Resume properties)
+        // id, member_id file_name, mime_type, bytearray_as_array   (Resume properties)
         const update = 'UPDATE resume SET file_name = $1, mime_type = $2 WHERE id = $3 AND member_id = $4 RETURNING *'
         const query = {
           text: update,
@@ -414,7 +412,7 @@ export class JobService {
         console.log(`newJob has a newCoverLetter and also has a cover_letter_id.`)
         console.log(`Case 5: Updating an existing cover letter in the cover_letter table. Attach this later`)
 
-        // id, member_id, job_id, file_name, mime_type, bytearray_as_array   (cover_letter properties)
+        // id, member_id, file_name, mime_type, bytearray_as_array   (cover_letter properties)
         const update = 'UPDATE cover_letter SET file_name = $1, mime_type = $2 WHERE id = $3 AND member_id = $4 RETURNING *'
         const query = {
           text: update,

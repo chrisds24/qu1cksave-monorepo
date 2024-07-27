@@ -20,8 +20,8 @@ INSERT INTO job(id, member_id, title, company_name, is_remote, job_status) VALUE
 INSERT INTO job(id, member_id, title, company_name, is_remote, job_status) VALUES ('018eae28-8323-7918-b93a-6cdb9d189686', '269a3d55-4eee-4a2e-8c64-e1fe386b76f8', 'Software Engineer', 'Fake Company', 'Hybrid', 'Not Applied');
 
 DELETE FROM resume;
--- INSERT INTO resume(id, member_id, job_id, file_name, mime_type) VALUES ('132a76f8-2bbb-e2a4-46c8-386be1fe3d55', '269a3d55-4eee-4a2e-8c64-e1fe386b76f8', '017eae28-8323-7918-a39b-6cdb9d189686', 'ChristianDelosSantos_Resume.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
--- INSERT INTO resume(id, member_id, job_id, file_name, mime_type) VALUES ('2bbb76f8-46c8-e2a4-2bbb-3d55e1fe386b', '269a3d55-4eee-4a2e-8c64-e1fe386b76f8', '018eae28-8323-7918-b93a-6cdb9d189686', 'ChristianDelosSantos_Resume.pdf', 'application/pdf');
+-- INSERT INTO resume(id, member_id, file_name, mime_type) VALUES ('132a76f8-2bbb-e2a4-46c8-386be1fe3d55', '269a3d55-4eee-4a2e-8c64-e1fe386b76f8', 'ChristianDelosSantos_Resume.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+-- INSERT INTO resume(id, member_id, file_name, mime_type) VALUES ('2bbb76f8-46c8-e2a4-2bbb-3d55e1fe386b', '269a3d55-4eee-4a2e-8c64-e1fe386b76f8', 'ChristianDelosSantos_Resume.pdf', 'application/pdf');
 
 
 

@@ -31,7 +31,6 @@ export interface Job {
   job_description?: string;
   notes?: string;
   is_remote: string;
-  salary_type?: string;
   salary_min?: number;
   salary_max?: number;
   country?: string;
@@ -56,7 +55,6 @@ export interface NewJob {
   job_description?: string;
   notes?: string;
   is_remote: string;
-  salary_type?: string;
   salary_min?: number;
   salary_max?: number;
   country?: string;

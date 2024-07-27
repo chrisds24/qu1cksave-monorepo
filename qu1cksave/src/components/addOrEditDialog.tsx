@@ -348,8 +348,10 @@ export default function AddOrEditDialog() {
         const byteArray = new Uint8Array(await blob.arrayBuffer());
         const arr = Array.from(byteArray);
         const newResume: NewResume = {
-          // For member_id, job_id, and resume_id, I can just attach it to newJob and get
+          // For resume_id, I can just attach it to newJob and get
           //   it from there when we need it
+          // job_id will be a path parameter in the API call
+          // member_id will be in the request header during the API call
           file_name: resumeFile.name, // Or resumeName, since they're the same in this case
           mime_type: resumeFile.type,
           bytearray_as_array: arr   
