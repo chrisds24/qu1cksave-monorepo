@@ -205,6 +205,10 @@ export default function AddOrEditDialog() {
     setSalaryMin(null);
     setSalaryMax(null);
     setStatus('Not Applied');
+    setApplied(null);
+    setAppliedErr(null);
+    setPosted(null);
+    setPostedErr(null);
     setState('');
     setLinks([link1]);
     setDialogJob(undefined);
@@ -605,7 +609,7 @@ export default function AddOrEditDialog() {
                 textField: {
                   id: 'posted',
                   name: 'posted',
-                  helperText: postedErr ? 'Please completely fill in day, month, and year.' : ''
+                  helperText: postedErr ? 'Please fill in day, month, and year.' : ''
                 },
               }}  
               sx={{
