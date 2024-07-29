@@ -15,6 +15,7 @@ import { NewResume } from "@/types/resume";
 import { addOrEditJob } from "@/actions/job";
 import NumberInputBasic from "./numberInput";
 import { NewCoverLetter } from "@/types/coverLetter";
+import { DateValidationError } from "@mui/x-date-pickers/models";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
@@ -53,8 +54,6 @@ export default function AddOrEditDialog() {
 
   const link1 = createLink(1, '');
   const existingLinks: JSX.Element[] = [];
-  let applied: Date | undefined = undefined;
-  let posted: Date | undefined = undefined;
   // !isAdd && dialogJob means we're in edit mode and the selected job is set
   if (!isAdd && dialogJob) {
     if (dialogJob.links) {
@@ -63,14 +62,6 @@ export default function AddOrEditDialog() {
         // i-1 since we count starting from 1
         existingLinks.push(createLink(i, dialogJob.links[i-1]))
       }
-    }
-    if (dialogJob.date_applied) {
-      const dateApplied = dialogJob.date_applied;
-      applied = dateApplied ? new Date(dateApplied.year, dateApplied.month, dateApplied.date) : undefined;
-    }
-    if (dialogJob.date_posted) {
-      const datePosted = dialogJob.date_posted;
-      posted = datePosted ? new Date(datePosted.year, datePosted.month, datePosted.date) : undefined;
     }
   }
 
@@ -89,6 +80,10 @@ export default function AddOrEditDialog() {
   const [salaryMax, setSalaryMax] = useState<number | null>(null);
   const [salaryMin, setSalaryMin] = useState<number | null>(null);
   const [status, setStatus] = useState('Not Applied');
+  const [applied, setApplied] = useState<Dayjs | null>(null);
+  const [appliedErr, setAppliedErr] = useState<DateValidationError | null>(null);
+  const [posted, setPosted] = useState<Dayjs | null>(null);
+  const [postedErr, setPostedErr] = useState<DateValidationError | null>(null);
   const [state, setState] = useState('');
   const [links, setLinks] = useState<JSX.Element[]>([link1]);
   const [resumeName, setResumeName] = useState<string>('');
@@ -105,6 +100,14 @@ export default function AddOrEditDialog() {
       if (dialogJob.found_from) setFrom(dialogJob.found_from);
       setRemote(dialogJob.is_remote);
       setStatus(dialogJob.job_status);
+      const dateApplied = dialogJob.date_applied;
+      if (dateApplied) {
+        setApplied(dayjs(new Date(dateApplied.year, dateApplied.month, dateApplied.date)))
+      }
+      const datePosted = dialogJob.date_posted;
+      if (datePosted) {
+        setPosted(dayjs(new Date(datePosted.year, datePosted.month, datePosted.date)))
+      }
       if (dialogJob.salary_min !== null) setSalaryMin(dialogJob.salary_min);
       if (dialogJob.salary_max !== null) setSalaryMax(dialogJob.salary_max);
       if (dialogJob.us_state) setState(dialogJob.us_state);
@@ -166,6 +169,14 @@ export default function AddOrEditDialog() {
     setFrom(val);
   };
 
+  const changeApplied = (val: Dayjs | null) => {
+    setApplied(val);
+  };
+
+  const changePosted = (val: Dayjs | null) => {
+    setPosted(val);
+  };
+
   const changeRemote = (event: SelectChangeEvent) => {
     setRemote(event.target.value as string);
   };
@@ -218,7 +229,15 @@ export default function AddOrEditDialog() {
 
     const titleError = !title || title.length > 255;
     const companyError = !company || company.length > 255;
-    if (titleError || companyError || cityErr || countryErr || fromErr) {
+    if (
+      titleError ||
+      companyError ||
+      cityErr ||
+      countryErr ||
+      fromErr ||
+      appliedErr ||
+      postedErr
+    ) {
       // Useful for MUI validation:
       //   https://muhimasri.com/blogs/mui-validation/
       // No need to validate resume and cover letter file name since docs
@@ -557,6 +576,7 @@ export default function AddOrEditDialog() {
                 textField: {
                   id: 'applied',
                   name: 'applied',
+                  helperText: appliedErr ? 'Please fill in day, month, and year.' : ''
                 },
               }}     
               sx={{
@@ -576,13 +596,16 @@ export default function AddOrEditDialog() {
               }}
               label="Date Applied"
               // https://stackoverflow.com/questions/75334255/how-to-convert-the-input-date-value-of-mui-datepicker
-              defaultValue={!isAdd && applied ? dayjs(applied): null}
+              value={applied}
+              onChange={changeApplied}
+              onError={(newError) => setAppliedErr(newError)}
             />
             <DatePicker
               slotProps={{
                 textField: {
                   id: 'posted',
                   name: 'posted',
+                  helperText: postedErr ? 'Please completely fill in day, month, and year.' : ''
                 },
               }}  
               sx={{
@@ -600,7 +623,9 @@ export default function AddOrEditDialog() {
                 }
               }}          
               label="Date Posted"
-              defaultValue={!isAdd && posted ? dayjs(posted): null}
+              value={posted}
+              onChange={changePosted}
+              onError={(newError) => setPostedErr(newError)}
             />
           </Box>
         </Box>
