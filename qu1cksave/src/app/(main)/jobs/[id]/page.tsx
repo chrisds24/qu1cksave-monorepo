@@ -38,266 +38,290 @@ const statusColor = {
 
 export default function Page({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { jobs, setIsAdd, setOpen, setDialogJob, setDeleteJobId, setDeleteJobOpen } = useContext(JobsContext);
-  // Not to be confused with the filteredJobs state (where we apply the filters to)
-  const filteredJobs = (jobs as Job[]).filter((job) => job.id === params.id);
-  const job = filteredJobs.length == 1 ? filteredJobs[0] : undefined;
-
-  // WARNING !!! Reason why I didn't use getSignedUrl:
-  //   Putting the signedUrl returned by getSignedUrl into the download button
-  //   shows the credentials on hover.
-  // UPDATE: It only shows the access key, which is not a security risk as long
-  //   as the secret key isn't exposed.
-  // - https://stackoverflow.com/questions/57539514/presigned-url-for-private-s3-bucket-displays-aws-access-key-id-and-bucket-name
-  // - https://stackoverflow.com/questions/57692006/how-can-i-hide-my-access-key-in-pre-signed-url-by-aws-s3-using-python
-  // - https://stackoverflow.com/questions/7678835/how-secure-are-amazon-aws-access-keys/7684662#7684662
-
-  if (job) {
-    const dateApplied = job.date_applied;
-    const applied = dateApplied ? new Date(dateApplied.year, dateApplied.month, dateApplied.date) : undefined;
-
-    const datePosted = job.date_posted;
-    const posted = datePosted ? new Date(datePosted.year, datePosted.month, datePosted.date) : undefined;
-
-    const dateSaved = job.date_saved;
-    const saved = dateSaved ? new Date(dateSaved) : undefined;
-
-    const jobStatus = job.job_status;
-
-    let salary = 'No salary info'
-    const salaryMin = job.salary_min;
-    const salaryMax = job.salary_max;
-    // Checking for undefined since values could be 0
-    //   UPDATE: Using null instead since a non-existent job.salary_min or max is null
-    // Example: '$130000/yr - $160000/yr'
-    if (salaryMin !== null || salaryMax !== null) {
-      salary = `${salaryMin !== null ? `$${salaryMin}/yr`: 'N/A'} - ${salaryMax !== null ? `$${salaryMax}/yr`: 'N/A'}`
-    }
-
-    let cityAndState = 'No city and state'
-    const city = job.city;
-    const state = job.us_state
-    if (city || state) {
-      cityAndState = `${job.city ? job.city : 'N/A'}, ${job.us_state ? job.us_state : 'N/A'}`
-    }
-
-    const paragraphs = job.job_description ? job.job_description.split(/\r\n|\r|\n/) : [];
-    // console.log('paragraphs', paragraphs);
-    const notesParagraphs = job.notes ? job.notes.split(/\r\n|\r|\n/) : [];
-    // console.log('notesParagraphs', notesParagraphs);
-
-    return (
-      <Box sx={{ display: 'flex', flexDirection: 'column'}}>
-        <AddOrEditDialog />
-        <DeleteDialog />
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 1.5}}>
-          <ArrowBackIcon sx={{color: '#ffffff', cursor: 'pointer'}} onClick={() => router.push('/jobs')}/>
-          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Button
-              variant="contained"
-              sx={{
-                color: '#ffffff',
-                backgroundColor: '#000000',
-                marginRight: 1,
-                '&:hover': {
-                  backgroundColor: '#0b0b0b',
-                },
-              }}
-              onClick={
-                () =>  {
-                  setIsAdd(false);
-                  setDialogJob(job);
-                  setOpen(true);
-                }
-              }
-            >
-              <EditIcon
-                sx={{ color: '#ffffff'}}
-              />
-            </Button> 
-            <Button
-              variant="contained"
-              sx={{ color: '#ffffff' }}
-              color='error'
-              onClick={
-                (event) =>  {
-                  event.stopPropagation();
-                  setDeleteJobId(job.id);
-                  setDeleteJobOpen(true);            
-                }
-              }
-            >
-              <DeleteIcon sx={{ color: '#ffffff'}} />
-            </Button>                     
-          </Box>
-        </Box>
-        <Box sx={{ display: 'flex', flexDirection: {xs: 'column', sm: 'row'}, justifyContent: 'space-between', marginBottom: {xs: 1, md: 0}}}>
-          <Box sx={{marginRight: 1, display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
-            <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
-              {'Applied:'} 
-            </Typography>
-            <Typography color='#ce9178' sx={{fontSize: '17px'}}>
-              {
-                applied ?
-                `${applied!.toLocaleString('default', { month: 'long' })} ${applied!.getDate()}, ${applied!.getFullYear()}` :
-                'N/A'
-              } 
-            </Typography>                 
-          </Box>
-          <Box sx={{marginRight: 1, display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
-            <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
-              {'Posted:'} 
-            </Typography>
-            <Typography color='#ce9178' sx={{fontSize: '17px'}}>
-              {
-                posted ?
-                `${posted!.toLocaleString('default', { month: 'long' })} ${posted!.getDate()}, ${posted!.getFullYear()}` :
-                'N/A'
-              } 
-            </Typography>              
-          </Box>
-          <Box sx={{marginRight: 1, display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
-            <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
-              {'Saved:'} 
-            </Typography>
-            <Typography color='#ce9178' sx={{fontSize: '17px'}}>
-              {
-                saved ?
-                `${saved!.toLocaleString('default', { month: 'long' })} ${saved!.getDate()}, ${saved!.getFullYear()}` :
-                'N/A'
-              } 
-            </Typography>              
-          </Box>
-        </Box>
-        <Box sx={{marginBottom: 1.5}}>
-          <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1, fontWeight: 'bold'}}>
-            {'Status:'} 
-          </Typography>
-          <Typography display={'inline'} color={(statusColor as any)[jobStatus]} fontWeight={'bold'} sx={{fontSize: '17px'}}>
-            {`${job.job_status}`}
-          </Typography>
-        </Box>
-        <Typography color='#4fc1ff' fontWeight='bold' sx={{fontSize: '24px'}}>
-          {`${job.title}`}
-        </Typography>
-        <Typography color='#4ec9b0' fontWeight={'bold'} sx={{fontSize: '20px'}}>
-          {`${job.company_name}`}
-        </Typography>
-        <Box sx={{display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
-          <Typography color='#dcdcaa' sx={{fontSize: '20px'}}>
-            {`${job.is_remote}`}
-          </Typography>
-          {/* <HorizontalRuleIcon sx={{color: '#ffffff', margin: '0vw 1vw', alignSelf: 'center'}} /> */}
-          <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '20px', alignSelf: 'center', display: {xs: 'none', sm: 'flex'}}} />
-          <Typography color='#6a9955' sx={{fontSize: '20px'}}>
-            {salary}
-          </Typography>
-        </Box>
-        <Box sx={{display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
-          <Typography color='#ffffff' sx={{fontSize: '17px'}}>
-            {cityAndState}
-          </Typography>
-          {/* <HorizontalRuleIcon sx={{color: '#ffffff', margin: '0vw 1vw'}} /> */}
-          <Divider orientation="vertical" flexItem sx={{display: {xs: 'none', sm: 'flex'}, backgroundColor: '#ffffff', margin: '0px 15px', height: '17px', alignSelf: 'center'}} />
-          <Typography color='#ffffff' sx={{fontSize: '17px'}}>
-            {job.country ? `${job.country}` : 'No country'}
-          </Typography>
-        </Box>
-        <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
-        <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginBottom: 1}}>
-          {'Description'}
-        </Typography>
-        { paragraphs.length > 0 ?
-          paragraphs.map((paragraph) => 
-            paragraph ?
-            <Typography color='#ffffff' sx={{fontSize: '17px'}}>
-              {paragraph}
-            </Typography>
-            :
-            // To deal with double line breaks \n\n in strings. Example:
-            // Lorem ipsum\n\nBlah blah    is actually:
-            // 'Lorem ipsum
-            //
-            //  Blah blah'
-            // When we split, we get ['Lorem ipsum', '', 'Blah blah']
-            // So we want the '', to be a line break just as originally intended
-            // 
-            <br />
-          )
-          :
-          <Typography color='#ffffff' sx={{fontSize: '17px'}}>
-            {'N/A'}
-          </Typography>       
+  const { jobs, setIsAdd, setOpen, setDialogJob, setDeleteJobId, setDeleteJobOpen, jobsLoading } = useContext(JobsContext);
+  if (!jobsLoading) {
+    if (jobs !== undefined) {
+      // Not to be confused with the filteredJobs state (where we apply the filters to)
+      const filteredJobs = (jobs as Job[]).filter((job) => job.id === params.id);
+      const job = filteredJobs.length === 1 ? filteredJobs[0] : undefined;
+  
+      // WARNING !!! Reason why I didn't use getSignedUrl:
+      //   Putting the signedUrl returned by getSignedUrl into the download button
+      //   shows the credentials on hover.
+      // UPDATE: It only shows the access key, which is not a security risk as long
+      //   as the secret key isn't exposed.
+      // - https://stackoverflow.com/questions/57539514/presigned-url-for-private-s3-bucket-displays-aws-access-key-id-and-bucket-name
+      // - https://stackoverflow.com/questions/57692006/how-can-i-hide-my-access-key-in-pre-signed-url-by-aws-s3-using-python
+      // - https://stackoverflow.com/questions/7678835/how-secure-are-amazon-aws-access-keys/7684662#7684662
+  
+      if (job) {
+        const dateApplied = job.date_applied;
+        const applied = dateApplied ? new Date(dateApplied.year, dateApplied.month, dateApplied.date) : undefined;
+  
+        const datePosted = job.date_posted;
+        const posted = datePosted ? new Date(datePosted.year, datePosted.month, datePosted.date) : undefined;
+  
+        const dateSaved = job.date_saved;
+        const saved = dateSaved ? new Date(dateSaved) : undefined;
+  
+        const jobStatus = job.job_status;
+  
+        let salary = 'No salary info'
+        const salaryMin = job.salary_min;
+        const salaryMax = job.salary_max;
+        // Checking for undefined since values could be 0
+        //   UPDATE: Using null instead since a non-existent job.salary_min or max is null
+        // Example: '$130000/yr - $160000/yr'
+        if (salaryMin !== null || salaryMax !== null) {
+          salary = `${salaryMin !== null ? `$${salaryMin}/yr`: 'N/A'} - ${salaryMax !== null ? `$${salaryMax}/yr`: 'N/A'}`
         }
-        <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
-        <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginBottom: 1}}>
-          {'Notes'}
-        </Typography>
-        { notesParagraphs.length > 0 ?
-          notesParagraphs.map((paragraph) => 
-            paragraph ?
-            <Typography color='#ffffff' sx={{fontSize: '17px'}}>
-              {paragraph}
-            </Typography>
-            :
-            <br />
-          )
-          :
-          <Typography color='#ffffff' sx={{fontSize: '17px'}}>
-            {'N/A'}
-          </Typography> 
+  
+        let cityAndState = 'No city and state'
+        const city = job.city;
+        const state = job.us_state
+        if (city || state) {
+          cityAndState = `${job.city ? job.city : 'N/A'}, ${job.us_state ? job.us_state : 'N/A'}`
         }
-        <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
-        <Box sx={{maxWidth: '80vw'}}>
-          <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginBottom: 1}}>
-            {'Links'}
-          </Typography>
-          {job.links && job.links.length > 0 ?
-            <List sx={{padding: '0px 0px 0px 0px'}}>
-              {job.links.map((link) =>
-                <ListItem
-                  component='a'
-                  href={`${link}`}
-                  rel='noopener noreferrer'
-                  target='_blank'
-                  sx={{padding: '0px 0px 15px 0px', margin: 0}}
+  
+        const paragraphs = job.job_description ? job.job_description.split(/\r\n|\r|\n/) : [];
+        // console.log('paragraphs', paragraphs);
+        const notesParagraphs = job.notes ? job.notes.split(/\r\n|\r|\n/) : [];
+        // console.log('notesParagraphs', notesParagraphs);
+  
+        return (
+          <Box sx={{ display: 'flex', flexDirection: 'column'}}>
+            <AddOrEditDialog />
+            <DeleteDialog />
+            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 1.5}}>
+              <ArrowBackIcon sx={{color: '#ffffff', cursor: 'pointer'}} onClick={() => router.push('/jobs')}/>
+              <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    color: '#ffffff',
+                    backgroundColor: '#000000',
+                    marginRight: 1,
+                    '&:hover': {
+                      backgroundColor: '#0b0b0b',
+                    },
+                  }}
+                  onClick={
+                    () =>  {
+                      setIsAdd(false);
+                      setDialogJob(job);
+                      setOpen(true);
+                    }
+                  }
                 >
-                  <ListItemText
-                    primary={link}
-                    sx={{ color: '#ffffff', textOverflow: 'ellipsis', margin: 0 }}
-                    primaryTypographyProps={{ 
-                      style: {
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis'
-                      }
-                    }}
-                  />   
-                </ListItem>
-              )}
-            </List>
-            :
-            <Typography color='#ffffff' sx={{fontSize: '17px', padding: '0px 0px 0px 0px'}}>
-              {'N/A'}
-            </Typography> 
-          }
+                  <EditIcon
+                    sx={{ color: '#ffffff'}}
+                  />
+                </Button> 
+                <Button
+                  variant="contained"
+                  sx={{ color: '#ffffff' }}
+                  color='error'
+                  onClick={
+                    (event) =>  {
+                      event.stopPropagation();
+                      setDeleteJobId(job.id);
+                      setDeleteJobOpen(true);            
+                    }
+                  }
+                >
+                  <DeleteIcon sx={{ color: '#ffffff'}} />
+                </Button>                     
+              </Box>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: {xs: 'column', sm: 'row'}, justifyContent: 'space-between', marginBottom: {xs: 1, md: 0}}}>
+              <Box sx={{marginRight: 1, display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
+                <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+                  {'Applied:'} 
+                </Typography>
+                <Typography color='#ce9178' sx={{fontSize: '17px'}}>
+                  {
+                    applied ?
+                    `${applied!.toLocaleString('default', { month: 'long' })} ${applied!.getDate()}, ${applied!.getFullYear()}` :
+                    'N/A'
+                  } 
+                </Typography>                 
+              </Box>
+              <Box sx={{marginRight: 1, display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
+                <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+                  {'Posted:'} 
+                </Typography>
+                <Typography color='#ce9178' sx={{fontSize: '17px'}}>
+                  {
+                    posted ?
+                    `${posted!.toLocaleString('default', { month: 'long' })} ${posted!.getDate()}, ${posted!.getFullYear()}` :
+                    'N/A'
+                  } 
+                </Typography>              
+              </Box>
+              <Box sx={{marginRight: 1, display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
+                <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+                  {'Saved:'} 
+                </Typography>
+                <Typography color='#ce9178' sx={{fontSize: '17px'}}>
+                  {
+                    saved ?
+                    `${saved!.toLocaleString('default', { month: 'long' })} ${saved!.getDate()}, ${saved!.getFullYear()}` :
+                    'N/A'
+                  } 
+                </Typography>              
+              </Box>
+            </Box>
+            <Box sx={{marginBottom: 1.5}}>
+              <Typography display={'inline'} color='#ffffff' sx={{fontSize: '17px', marginRight: 1, fontWeight: 'bold'}}>
+                {'Status:'} 
+              </Typography>
+              <Typography display={'inline'} color={(statusColor as any)[jobStatus]} fontWeight={'bold'} sx={{fontSize: '17px'}}>
+                {`${job.job_status}`}
+              </Typography>
+            </Box>
+            <Typography color='#4fc1ff' fontWeight='bold' sx={{fontSize: '24px'}}>
+              {`${job.title}`}
+            </Typography>
+            <Typography color='#4ec9b0' fontWeight={'bold'} sx={{fontSize: '20px'}}>
+              {`${job.company_name}`}
+            </Typography>
+            <Box sx={{display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
+              <Typography color='#dcdcaa' sx={{fontSize: '20px'}}>
+                {`${job.is_remote}`}
+              </Typography>
+              {/* <HorizontalRuleIcon sx={{color: '#ffffff', margin: '0vw 1vw', alignSelf: 'center'}} /> */}
+              <Divider orientation="vertical" flexItem sx={{backgroundColor: '#ffffff', margin: '0px 15px', height: '20px', alignSelf: 'center', display: {xs: 'none', sm: 'flex'}}} />
+              <Typography color='#6a9955' sx={{fontSize: '20px'}}>
+                {salary}
+              </Typography>
+            </Box>
+            <Box sx={{display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
+              <Typography color='#ffffff' sx={{fontSize: '17px'}}>
+                {cityAndState}
+              </Typography>
+              {/* <HorizontalRuleIcon sx={{color: '#ffffff', margin: '0vw 1vw'}} /> */}
+              <Divider orientation="vertical" flexItem sx={{display: {xs: 'none', sm: 'flex'}, backgroundColor: '#ffffff', margin: '0px 15px', height: '17px', alignSelf: 'center'}} />
+              <Typography color='#ffffff' sx={{fontSize: '17px'}}>
+                {job.country ? `${job.country}` : 'No country'}
+              </Typography>
+            </Box>
+            <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
+            <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginBottom: 1}}>
+              {'Description'}
+            </Typography>
+            { paragraphs.length > 0 ?
+              paragraphs.map((paragraph) => 
+                paragraph ?
+                <Typography color='#ffffff' sx={{fontSize: '17px'}}>
+                  {paragraph}
+                </Typography>
+                :
+                // To deal with double line breaks \n\n in strings. Example:
+                // Lorem ipsum\n\nBlah blah    is actually:
+                // 'Lorem ipsum
+                //
+                //  Blah blah'
+                // When we split, we get ['Lorem ipsum', '', 'Blah blah']
+                // So we want the '', to be a line break just as originally intended
+                // 
+                <br />
+              )
+              :
+              <Typography color='#ffffff' sx={{fontSize: '17px'}}>
+                {'N/A'}
+              </Typography>       
+            }
+            <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
+            <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginBottom: 1}}>
+              {'Notes'}
+            </Typography>
+            { notesParagraphs.length > 0 ?
+              notesParagraphs.map((paragraph) => 
+                paragraph ?
+                <Typography color='#ffffff' sx={{fontSize: '17px'}}>
+                  {paragraph}
+                </Typography>
+                :
+                <br />
+              )
+              :
+              <Typography color='#ffffff' sx={{fontSize: '17px'}}>
+                {'N/A'}
+              </Typography> 
+            }
+            <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
+            <Box sx={{maxWidth: '80vw'}}>
+              <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginBottom: 1}}>
+                {'Links'}
+              </Typography>
+              {job.links && job.links.length > 0 ?
+                <List sx={{padding: '0px 0px 0px 0px'}}>
+                  {job.links.map((link) =>
+                    <ListItem
+                      component='a'
+                      href={`${link}`}
+                      rel='noopener noreferrer'
+                      target='_blank'
+                      sx={{padding: '0px 0px 15px 0px', margin: 0}}
+                    >
+                      <ListItemText
+                        primary={link}
+                        sx={{ color: '#ffffff', textOverflow: 'ellipsis', margin: 0 }}
+                        primaryTypographyProps={{ 
+                          style: {
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis'
+                          }
+                        }}
+                      />   
+                    </ListItem>
+                  )}
+                </List>
+                :
+                <Typography color='#ffffff' sx={{fontSize: '17px', padding: '0px 0px 0px 0px'}}>
+                  {'N/A'}
+                </Typography> 
+              }
+            </Box>
+  
+            <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
+  
+            <Box sx={{display: 'flex', flexWrap: 'wrap', flexDirection: {xs: 'column', sm: 'row'}, marginBottom: 2}}>
+              <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
+                {'Job posting found from:'} 
+              </Typography>
+              <Typography color='#ffffff' sx={{fontSize: '20px'}}>
+                {job.found_from ? job.found_from : 'N/A'} 
+              </Typography>                 
+            </Box>
+            <FileDownloadSection job={job} fileType={'resume'} />
+            <Box sx={{marginBottom: 1}}/>
+            <FileDownloadSection job={job} fileType={'cover_letter'} />
+          </Box>
+        );
+      } else {
+        return (
+          <Box sx={{width: '100%', height: '50vh', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <Box sx={{display: 'flex', height: '100%', width: '60%', flexDirection: 'row', alignItems: 'center'}}>
+              <Typography variant="h3" sx={{fontWeight: 'bold', color: '#ffffff'}}>
+                Oops. The selected job cannot be found.
+              </Typography>
+            </Box>
+          </Box>
+        );
+      }
+    } else {
+      return (
+        <Box sx={{width: '100%', height: '50vh', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+          <Box sx={{display: 'flex', height: '100%', width: '60%', flexDirection: 'row', alignItems: 'center'}}>
+            <Typography variant="h3" sx={{fontWeight: 'bold', color: '#ffffff'}}>
+              An error occured. Please try again later.
+            </Typography>
+          </Box>
         </Box>
-
-        <Divider sx={{ backgroundColor: '#808080', marginTop: 2, marginBottom: 2}} />
-
-        <Box sx={{display: 'flex', flexWrap: 'wrap', flexDirection: {xs: 'column', sm: 'row'}, marginBottom: 2}}>
-          <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginRight: 1}}>
-            {'Job posting found from:'} 
-          </Typography>
-          <Typography color='#ffffff' sx={{fontSize: '20px'}}>
-            {job.found_from ? job.found_from : 'N/A'} 
-          </Typography>                 
-        </Box>
-        <FileDownloadSection job={job} fileType={'resume'} />
-        <Box sx={{marginBottom: 1}}/>
-        <FileDownloadSection job={job} fileType={'cover_letter'} />
-      </Box>
-    );
+      );          
+    }
   } else {
     return (
       <SingleJobSkeleton />

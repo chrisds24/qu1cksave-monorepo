@@ -63,6 +63,7 @@ export class JobService {
 
     if (id) {
       select += ' WHERE j.member_id = $1';
+      // select += ' WHERE j.nonexistentcolumn = $1'; // TESTING
     }
     const values = id ? [id] : [];
     const query = {
