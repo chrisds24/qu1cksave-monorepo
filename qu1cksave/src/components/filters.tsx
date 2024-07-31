@@ -10,7 +10,7 @@ import { YearMonthDateFilter } from "@/types/common";
 import dayjs from "dayjs";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
-const monthsList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const monthsList = {0: 'January', 1: 'February', 2: 'March', 3: 'April', 4: 'May', 5: 'June', 6: 'July', 7: 'August', 8: 'September', 9: 'October', 10: 'November', 11: 'December'} as any;
 
 export default function Filters() {
   const {
@@ -630,21 +630,17 @@ export default function Filters() {
                     if (filter.name === 'Saved' || filter.name === 'Applied' || filter.name === 'Posted') {
                       const year = filter.val.year;
                       const month = filter.val.month;
-                      const date = new Date(
-                        year ? year : 0,
-                        month ? month : 0
-                      );
                       return (
                         <Grid item key={idx}>
                           <Chip
-                            label={`${filter.name}: ${month ? monthsList[date.getMonth()] : ''} ${year ? date.getFullYear() : ''}`}
+                            label={`${filter.name}: ${month !== undefined ? monthsList[month as keyof any] : ''} ${year ? year : ''}`}
                             sx={{backgroundColor: '#1e1e1e', color: '#ffffff', fontSize: '16px'}}
                           />
                         </Grid>
                       );
                     } else {
                       return (
-                        <Grid item key={idx}>
+                        <Grid item key={idx} sx={{maxWidth: {xs: '70vw', md: '90%'}}}>
                           <Chip label={`${filter.name}: ${filter.val}`} sx={{backgroundColor: '#1e1e1e', color: '#ffffff', fontSize: '16px'}} />
                         </Grid>
                       );
