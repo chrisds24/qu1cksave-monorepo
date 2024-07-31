@@ -17,7 +17,7 @@ export default function JobsLayout({
   children: ReactNode
 }) {
   const { sessionUser } = useContext(SessionUserContext);
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobs, setJobs] = useState<Job[] | undefined>([]);
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
   const [page, setPage] = useState<number>(1);
   const [jobsPerPage, setJobsPerPage] = useState<number>(10);
@@ -109,7 +109,9 @@ export default function JobsLayout({
             setJobsLoading(false);
           })
           .catch((err) => {
-            alert(`Jobs collection for ${sessionUser.name} not found.`)
+            setJobs(undefined)
+            setJobsLoading(false);
+            alert(`Error processing request.`)
           }) 
       }
     }
@@ -120,26 +122,28 @@ export default function JobsLayout({
   //   (Not when going to a single job view then going back.)
   // Filters and sorting should also automatically apply once jobs changes
   useEffect(() => {
-    setFilteredJobs(
-      sortJobs(
-        applyFilters(
-          jobs,
-          jobFilter,
-          companyFilter,
-          statusFilter,
-          remoteFilter,
-          cityFilter,
-          stateFilter,
-          countryFilter,
-          fromFilter,
-          savedFilter,
-          appliedFilter,
-          postedFilter
-        ),
-        sortBy,
-        sortIncreasing
-      )
-    );
+    if (jobs !== undefined) {
+      setFilteredJobs(
+        sortJobs(
+          applyFilters(
+            jobs,
+            jobFilter,
+            companyFilter,
+            statusFilter,
+            remoteFilter,
+            cityFilter,
+            stateFilter,
+            countryFilter,
+            fromFilter,
+            savedFilter,
+            appliedFilter,
+            postedFilter
+          ),
+          sortBy,
+          sortIncreasing
+        )
+      );
+    }
   }, [jobs]);
 
   useEffect(() => {

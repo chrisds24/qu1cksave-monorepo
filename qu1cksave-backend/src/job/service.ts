@@ -12,7 +12,7 @@ const keys = [
 ];
 
 export class JobService {
-  public async getMultiple(id?: string): Promise<Job[]> {
+  public async getMultiple(id?: string): Promise<Job[] | undefined> {
     // Job columns
     //   id, member_id, resume_id, title, company_name, job_description, notes, is_remote, country,
     //   us_state, city, date_saved, date_applied, date_posted, job_status, links, found_from
@@ -69,9 +69,12 @@ export class JobService {
       text: select,
       values: values
     };
-    const { rows } = await pool.query(query);
-
-    return rows as Job[];
+    try {
+      const { rows } = await pool.query(query);
+      return rows as Job[];
+    } catch {
+      return undefined; // TODO: Instead of undefined, return a proper error json
+    }
   }
 
   public async create(newJob: NewJob, memberId: string): Promise<Job | undefined> {

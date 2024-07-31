@@ -12,20 +12,23 @@ export class JobController extends Controller {
   public async getMultiple(
     @Request() request: express.Request,
     @Query() id?: string
-  ): Promise<Job[]> {
+  ): Promise<Job[] | undefined> {
     // NOTE: Above, I'm getting the id of the user whose jobs we want to get
     //   from the query so that I'm adhering to REST (which says that we filter
     //   a resource through parameters passed in the query). But below, I'm
     //   actually using the user id from the decoded JWT
     if (id !== request.user.id) {
-      return [];
+      return undefined;
     }
 
     return new JobService()
       .getMultiple(request.user.id)
-      .then(async (jobs: Job[]): Promise<Job[]> => {
+      .then(async (jobs: Job[] | undefined): Promise<Job[] | undefined> => {
         return jobs;
       });
+
+    // If there's an error of some kind, the response won't be a 200
+    // If there's no error, will return a list (could be empty).
   }
 
   @Post()

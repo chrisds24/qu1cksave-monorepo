@@ -23,6 +23,9 @@ export async function GET(
     },
   })
     .then((res) => {
+      // When the Express API returns undefined, it causes an error since
+      //   undefined is not JSON serializable. Though, the
+      //   return Response.json(jobs) also causes an error for the same reason.
       if (!res.ok) {
         throw res;
       }
