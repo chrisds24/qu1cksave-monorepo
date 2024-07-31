@@ -57,13 +57,11 @@ export class JobService {
       job j
       LEFT JOIN resume r ON j.resume_id = r.id AND j.member_id = r.member_id
       LEFT JOIN cover_letter c ON j.cover_letter_id = c.id AND j.member_id = c.member_id`;
-
-    // NOTE: How do I do the same thing with 3 tables? (Now that there's cover letters)
-    // https://learnsql.com/blog/how-to-left-join-multiple-tables/
+      
+    // let select = 'Bad query'; // TESTING
 
     if (id) {
       select += ' WHERE j.member_id = $1';
-      // select += ' WHERE j.nonexistentcolumn = $1'; // TESTING
     }
     const values = id ? [id] : [];
     const query = {
@@ -174,6 +172,7 @@ export class JobService {
     const insert = txt + txtVals;
     const query = {
       text: insert,
+      // text: 'Bad query', // TESTING
       values: vals,
     };
     let job: Job | undefined = undefined;
@@ -502,6 +501,7 @@ export class JobService {
     let job: Job | undefined = undefined;
     const query = {
       text: txt,
+      // text: 'Bad query', // TESTING
       values: vals,
     };
     try {
@@ -604,6 +604,7 @@ export class JobService {
     const del = 'DELETE FROM job WHERE id = $1 AND member_id = $2 RETURNING *';
     const query = {
       text: del,
+      // text: 'Bad query', // TESTING
       values: [id, memberId]
     };
     let job: Job | undefined = undefined;

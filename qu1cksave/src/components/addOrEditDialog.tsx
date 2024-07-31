@@ -294,12 +294,10 @@ export default function AddOrEditDialog() {
     }
 
     if (salaryMin !== null) {
-      // TODO: Check if integer?
       newJob['salary_min'] = salaryMin;
     }
 
     if (salaryMax !== null) {
-      // TODO: Check if integer?
       newJob['salary_max'] = salaryMax;
     }
 
@@ -475,6 +473,9 @@ export default function AddOrEditDialog() {
       //   a bunch of spaces. It creates a link to the single job page for
       //   the current job.
       //   (Turns out this is the case for anything that isn't a link)
+    } else {
+      setJobs(undefined)
+      alert(`Error processing request.`)
     }
 
     handleClose();

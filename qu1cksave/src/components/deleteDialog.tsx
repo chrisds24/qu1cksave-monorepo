@@ -52,7 +52,8 @@ export default function DeleteDialog() {
         }
       })
       .catch((err) => {
-        console.error(err)
+        setJobs(undefined)
+        alert(`Error processing request.`)
       });
 
     handleClose();
