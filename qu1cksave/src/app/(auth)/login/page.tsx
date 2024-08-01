@@ -83,7 +83,7 @@ export default function Page() {
     if (user) {
       router.push('/jobs');
     } else {
-      alert('User not found.');
+      alert('Error processing request. Please try again or check your credentials.');
     }
     setButtonDisabled(false);
   };

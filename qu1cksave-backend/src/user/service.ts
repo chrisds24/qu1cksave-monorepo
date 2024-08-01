@@ -11,29 +11,36 @@ export class UserService {
     const select = "SELECT * FROM member WHERE email = $1";
     const query = {
       text: select,
+      // text: 'Bad query', // TESTING
       values: [credentials.email],
     };
-    const { rows } = await pool.query(query);
-    const user = rows.length == 1 ? rows[0] : undefined;
 
-    if (user && bcrypt.compareSync(credentials.password, user.password)) {
-      const accessToken = jwt.sign(
-        { id: user.id, name: user.name, email: user.email, roles: user.roles },
-        process.env.ACCESS_TOKEN as string,
-        {
-          expiresIn: "120m",
-          algorithm: "HS256",
-        }
-      );
+    try {
+      const { rows } = await pool.query(query);
+      const user = rows.length == 1 ? rows[0] : undefined;
 
-      return {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        roles: user.roles,
-        accessToken: accessToken
-      };
-    } else {
+      // If the user exists and the passwords match
+      if (user && bcrypt.compareSync(credentials.password, user.password)) {
+        const accessToken = jwt.sign(
+          { id: user.id, name: user.name, email: user.email, roles: user.roles },
+          process.env.ACCESS_TOKEN as string,
+          {
+            expiresIn: "120m",
+            algorithm: "HS256",
+          }
+        );
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          roles: user.roles,
+          accessToken: accessToken
+        };
+      } else {
+        return undefined;
+      }
+    } catch {
       return undefined;
     }
   }
@@ -42,21 +49,25 @@ export class UserService {
     const select = "SELECT * FROM member WHERE email = $1";
     const query = {
       text: select,
+      // text: 'Bad query', // TESTING
       values: [newUser.email],
     };
-    const { rows } = await pool.query(query);
-    const existingUser = rows.length == 1 ? rows[0] : undefined;
 
-    if (existingUser) { // Given email is already associated with an existing user
-      return undefined;
-    } else {
-      const hashedPassword = bcrypt.hashSync(newUser.password, 10);
-      const insert = "INSERT INTO member (name, email, roles, password) VALUES ($1, $2, $3, $4) RETURNING *";
-      const query = {
-        text: insert,
-        values: [newUser.name, newUser.email, JSON.stringify(["member"]), hashedPassword],
-      };
-      try {
+    try {
+      const { rows } = await pool.query(query);
+      const existingUser = rows.length == 1 ? rows[0] : undefined;
+  
+      if (existingUser) { // Given email is already associated with an existing user
+        return undefined;
+      } else {
+        const hashedPassword = bcrypt.hashSync(newUser.password, 10);
+        const insert = "INSERT INTO member (name, email, roles, password) VALUES ($1, $2, $3, $4) RETURNING *";
+        const query = {
+          text: insert,
+          // text: 'Bad query', // TESTING
+          values: [newUser.name, newUser.email, JSON.stringify(["member"]), hashedPassword],
+        };
+        // try {
         const { rows } = await pool.query(query);
         const user = rows[0];
         return {
@@ -65,10 +76,12 @@ export class UserService {
           email: user.email,
           roles: user.roles,
         };
-      } catch(err) {
-        // console.error(err);
-        return undefined;
-      }     
+        // } catch(err) {
+        //   return undefined;
+        // }     
+      }
+    } catch {
+      return undefined;
     }
   }
 
@@ -83,6 +96,9 @@ export class UserService {
             reject(err);
             return;
           } else if (scopes) {
+            // This branch checks the scopes of the endpoint. If the endpoint
+            //   doesn't have scopes, then we still resolve the user.
+            // So the "else if (scopes)" condition is correct
             const user = decoded as User;
             for (const scope of scopes) {
               if (!user.roles.includes(scope)) {
