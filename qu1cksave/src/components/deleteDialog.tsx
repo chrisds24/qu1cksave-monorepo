@@ -52,7 +52,7 @@ export default function DeleteDialog() {
         }
       })
       .catch((err) => {
-        setJobs(undefined)
+        // setJobs(undefined) // Not needed
         alert(`Error processing request.`)
       });
 

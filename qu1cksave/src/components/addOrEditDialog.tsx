@@ -474,7 +474,7 @@ export default function AddOrEditDialog() {
       //   the current job.
       //   (Turns out this is the case for anything that isn't a link)
     } else {
-      setJobs(undefined)
+      // setJobs(undefined) // No need to go to error page.
       alert(`Error processing request.`)
     }
 
