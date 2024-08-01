@@ -7,17 +7,19 @@ export class ResumeService {
     let select = 'SELECT * FROM resume WHERE id = $1 AND member_id = $2';
     const query = {
       text: select,
+      // text: 'Bad query',
       values: [id, memberId]
     };
-    const { rows } = await pool.query(query);
 
-    if (rows.length == 1) {
-      try {
+    try {
+      const { rows } = await pool.query(query);
+
+      if (rows.length == 1) { // If resume exists
         const resume = rows[0];
         // const s3Key = s3.getResumeS3Key(resume.id, resume.mime_type);
         // const data = await s3.getObject(s3Key);
         const data = await s3.getObject(resume.id);
-
+  
         if (data && data.Body) {
           const bodyAsByteArray = await data.Body.transformToByteArray();
           // https://stackoverflow.com/questions/49259231/sending-uint8array-bson-in-a-json-object
@@ -30,10 +32,11 @@ export class ResumeService {
         } else {
           return undefined;
         }
-      } catch {
+      } else {
         return undefined;
-      } 
+      }
+    } catch {
+      return undefined;
     }
-    return undefined;
   }
 }

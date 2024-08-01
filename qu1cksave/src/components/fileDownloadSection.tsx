@@ -48,57 +48,57 @@ export default function FileDownloadSection(props: any) {
         link.click(); // Start download
         link.parentNode!.removeChild(link); // Clean up and remove the link
     } else { // Fetch the file
-      await fetch(`/api/${fileType === 'resume' ? 'resume' : 'coverLetter'}/${file.id}`) // TODO
-      .then((res) => { 
-        if (!res.ok) {
-          throw res;
-        }
-        return res.json()
-      })
-      .then((fileVal: Resume | CoverLetter | undefined) => {
-        if (fileVal) {
-          // Convert the array into a byte array
-          const byteArray = Uint8Array.from(fileVal.bytearray_as_array!);
-          // https://stackoverflow.com/questions/74401312/javascript-convert-binary-string-to-blob
-          const blob = new Blob([byteArray], {type: fileVal.mime_type!});
-          const url = URL.createObjectURL(blob);
-
-          // Just replace the job's resume/cover letter data with fileVal
-          // - But this one will have the actual file instead of just file info
-          // Then replace the job in jobs
-          // - This function can only be called when there's a job with a resume/cover letter
-          if (fileType === 'resume') {
-            job!.resume! = fileVal;
-          } else {
-            job!.cover_letter! = fileVal;
+      await fetch(`/api/${fileType === 'resume' ? 'resume' : 'coverLetter'}/${file.id}`)
+        .then((res) => { 
+          if (!res.ok) {
+            throw res;
           }
-          const newJobs = jobs.filter((j: Job) => j.id !== job!.id);
-          newJobs.push(job);
-          setJobs(newJobs);
+          return res.json()
+        })
+        .then((fileVal: Resume | CoverLetter | undefined) => {
+          if (fileVal) {
+            // Convert the array into a byte array
+            const byteArray = Uint8Array.from(fileVal.bytearray_as_array!);
+            // https://stackoverflow.com/questions/74401312/javascript-convert-binary-string-to-blob
+            const blob = new Blob([byteArray], {type: fileVal.mime_type!});
+            const url = URL.createObjectURL(blob);
 
-          // Create an <a href=... then programatically click
-          // - https://stackoverflow.com/questions/50694881/how-to-download-file-in-react-js
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute(
-            'download',
-            fileVal.file_name!,
-          );
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
-          link.style['display'] = 'none';
-          document.body.appendChild(link); // Append to html link element page
-          link.click(); // Start download
-          link.parentNode!.removeChild(link); // Clean up and remove the link
+            // Just replace the job's resume/cover letter data with fileVal
+            // - But this one will have the actual file instead of just file info
+            // Then replace the job in jobs
+            // - This function can only be called when there's a job with a resume/cover letter
+            if (fileType === 'resume') {
+              job!.resume! = fileVal;
+            } else {
+              job!.cover_letter! = fileVal;
+            }
+            const newJobs = jobs.filter((j: Job) => j.id !== job!.id);
+            newJobs.push(job);
+            setJobs(newJobs);
 
-          // Alternative:
-          // https://stackoverflow.com/questions/69555158/http-response-with-content-disposition-doesnt-trigger-download
-          // window.open(url);
-        }
-      })
-      .catch((err) => {
-        console.log('Error getting file!')
-      }); 
+            // Create an <a href=... then programatically click
+            // - https://stackoverflow.com/questions/50694881/how-to-download-file-in-react-js
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute(
+              'download',
+              fileVal.file_name!,
+            );
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.style['display'] = 'none';
+            document.body.appendChild(link); // Append to html link element page
+            link.click(); // Start download
+            link.parentNode!.removeChild(link); // Clean up and remove the link
+
+            // Alternative:
+            // https://stackoverflow.com/questions/69555158/http-response-with-content-disposition-doesnt-trigger-download
+            // window.open(url);
+          }
+        })
+        .catch((err) => {
+          alert('Error getting file.')
+        }); 
     }
 
     // target.disabled = false;
