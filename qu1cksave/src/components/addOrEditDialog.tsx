@@ -475,7 +475,7 @@ export default function AddOrEditDialog() {
       //   (Turns out this is the case for anything that isn't a link)
     } else {
       // setJobs(undefined) // No need to go to error page.
-      alert(`Error processing request.`)
+      alert(`Error processing request. Please reload the page and try again.`)
     }
 
     handleClose();

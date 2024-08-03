@@ -97,7 +97,7 @@ export default function FileDownloadSection(props: any) {
           }
         })
         .catch((err) => {
-          alert('Error getting file.')
+          alert('Error getting file. Please refresh the page and try again.')
         }); 
     }
 

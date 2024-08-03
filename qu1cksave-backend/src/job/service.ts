@@ -221,10 +221,48 @@ export class JobService {
   }
 
   public async edit(newJob: NewJob, memberId: string, jobId: string): Promise<Job | undefined> {
-    // 1.) Select, insert, update, or delete from resume table
-    // 2.) Update job, including the resume_id, in job table
-    // 3.) Make call to S3 add, replace, or delete a resume file
-    // 4.) Return the job, attaching the resume when appropriate
+    // 1.) Get the job to ensure that we're using the updated resume_id from
+    //     the database.
+    //     - Need to do this, since stale resume data could cause
+    //       inconsistencies in data.
+    // 2.) Select, insert, update, or delete from resume table
+    // 3.) Update job, including the resume_id, in job table
+    // 4.) Make call to S3 add, replace, or delete a resume file
+    // 5.) Return the job, attaching the resume when appropriate
+    // *** Do the same for cover letters
+
+    // ------------------- Get the job from the database -------------------------
+    let resumeId;
+    let coverLetterId;
+
+    let select = 'SELECT * FROM job WHERE id = $1 AND member_id = $2';
+    const q = {
+      text: select,
+      values: [jobId, memberId]
+    };
+    try {
+      const { rows } = await pool.query(q);
+      resumeId = rows[0].resume_id;
+      coverLetterId = rows[0].cover_letter_id
+    } catch {
+      console.log('Select job unsuccessful');
+      // If job can't be found, we should return an error since we can't edit
+      //   a job that doesn't exist.
+      return undefined;
+    }
+
+    // NOTE: We're using the resume_id of the job from the database instead of
+    //   the job passed from the frontend since the frontend job could have
+    //   stale resume data. (Same idea applies to cover letters)
+    
+    // If a request to edit this job contains a resume_id but the actual job
+    //   in the database does not (because of stale frontend data), we need to
+    //   terminate the request since we could be attempting to edit a resume
+    //   that doesn't exist. (Same idea applies to cover letters)
+    if ((newJob.resume_id && !resumeId) || (newJob.cover_letter_id && !coverLetterId)) {
+      console.log('Error. Attempting to edit resume/cover letter that does not exist.')
+      return undefined;
+    }
 
     // ------------------- Update resume table -------------------------
 
@@ -241,7 +279,7 @@ export class JobService {
     // 5.) Has NewResume and a resume_id (Case B.b):
     // -- We're editing the resume specified by resume_id
     const newResume = newJob.resume;
-    const resumeId = newJob.resume_id;
+    // const resumeId = newJob.resume_id;
     let resume: Resume | undefined = undefined;
     let resumeAction: string | undefined = undefined; // 'put', 'delete', or undefined
 
@@ -338,7 +376,7 @@ export class JobService {
     // ------------------- Update cover letter table --------------------
     // TODO: If there's an error, undo change to the resume table
     const newCoverLetter = newJob.cover_letter;
-    const coverLetterId = newJob.cover_letter_id;
+    // const coverLetterId = newJob.cover_letter_id;
     let coverLetter: CoverLetter | undefined = undefined;
     let coverLetterAction: string | undefined = undefined; // 'put', 'delete', or undefined
 
@@ -438,6 +476,7 @@ export class JobService {
 
     // 'title', 'company_name', 'job_description', 'notes', 'is_remote', 'country',
     // 'us_state', 'city', 'date_applied', 'date_posted', 'job_status', 'links', 'found_from'
+    // NOTE: resume and cover_letter are not in keys, so they are done separately
     let txt = 'UPDATE job SET ';
     let count = 1;
     const vals: any[] = [];
