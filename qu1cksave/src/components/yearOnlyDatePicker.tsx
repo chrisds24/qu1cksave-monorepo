@@ -13,6 +13,27 @@ export default function YearOnlyDatePicker(props: any) {
           id: id,
           name: name,
         },
+        layout: {
+          sx: {
+            backgroundColor: '#000000',
+            // "&.MuiPickersYear-root.Mui-selected": {
+            //   backgroundColor: "#4b4e50",
+            //   borderColor: "#4b4e50",
+            // },
+            "& .MuiPickersYear-yearButton": {
+              color: '#ffffff',
+              ":hover": {
+                backgroundColor: "#262829",
+                borderColor: "#262829",
+              },
+            },
+            "& .MuiPickersYear-yearButton.Mui-selected": {
+              color: "#ffffff",
+              backgroundColor: "#4b4e50",
+              borderColor: "#4b4e50",
+            },
+          }
+        }
       }}  
       sx={{
         input: {
