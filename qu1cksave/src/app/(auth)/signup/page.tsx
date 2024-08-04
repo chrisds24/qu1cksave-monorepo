@@ -23,8 +23,7 @@ function Copyright(props: any) {
   return (
     <Typography variant="body2" color="#ffffff" align="center" {...props}>
       {'Copyright © '}
-    {/* <Link color="inherit" href="https://github.com/chrisds24"> */}
-    <Link href="https://github.com/chrisds24">
+    <Link href="/">
       qu1cksave
     </Link>
     {' 2024.'}

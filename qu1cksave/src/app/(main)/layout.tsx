@@ -97,13 +97,15 @@ export default function MainLayout({
         backgroundColor: '#000000',
         height: 64 // The Toolbar that MUI uses to add the space has height 64
       }}>
-        <img
-          height={56}
-          width={'auto'}
-          src="/qu1cksave_black_bg.png"
-          alt="qu1cksave logo"
-          style={{marginTop: 4}}
-        />
+        <Link href="/">
+          <img
+            height={56}
+            width={'auto'}
+            src="/qu1cksave_black_bg.png"
+            alt="qu1cksave logo"
+            style={{marginTop: 4}}
+          />
+        </Link>
       </Box>   
       {/* <Divider /> */}
       <List>
