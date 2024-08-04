@@ -11,18 +11,21 @@ export default function Home() {
           position="fixed"
           sx={{
             backgroundColor: '#000000',
-            borderRadius: '15px',
-            maxWidth: '80vw',
-            alignSelf: 'center'
+            borderRadius: '40px',
+            maxWidth: {xs: '95vw', lg: '90vw'},
+            marginRight: {xs: '2.5vw', lg: '5vw'},
+            marginTop: 2
           }}
         >
-          <Toolbar sx={{height: 70}}>
+          <Toolbar sx={{height: 75, flexDirection: 'row', justifyContent: 'space-between'}}> 
+            {/* This Box is for the image */}
             <Box sx={{
               display: 'flex',
               alignItems: 'center',
               flexDirection: 'column',
               backgroundColor: '#000000',
-              height: 64 // The Toolbar that MUI uses to add the space has height 64
+              height: 64, // The Toolbar that MUI uses to add the space has height 64
+              marginLeft: 1
             }}>
               <Link href="/">
                 <img
@@ -34,7 +37,36 @@ export default function Home() {
                 />
               </Link>
             </Box>   
-            <Button color="inherit">Login</Button>
+            <Box>
+              <Button
+                sx={{
+                  backgroundColor: '#4b4e50',
+                  color: '#ffffff',
+                  borderRadius: '40px',
+                  padding: '7px 10px',
+                  marginRight: 1,
+                  '&:hover': {
+                    backgroundColor: '#323436',
+                  }
+                }}
+              >
+                Sign Up
+              </Button>
+              <Button
+                variant='outlined'
+                sx={{
+                  color: '#ffffff',
+                  borderRadius: '40px',
+                  borderColor: '#4b4e50',
+                  padding: '7px 10px',
+                  '&:hover': {
+                    borderColor: '#323436',
+                  }
+                }}
+              >
+                Login
+              </Button>
+            </Box>
           </Toolbar>
         </AppBar>
       </Box>
