@@ -8,6 +8,8 @@ import sortJobs from "@/lib/sortJobs";
 import { DatePicker } from "@mui/x-date-pickers";
 import { YearMonthDateFilter } from "@/types/common";
 import dayjs from "dayjs";
+import YearOnlyDatePicker from "./yearOnlyDatePicker";
+import MonthOnlyDatePicker from "./monthOnlyDatePicker";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 const monthsList = {0: 'January', 1: 'February', 2: 'March', 3: 'April', 4: 'May', 5: 'June', 6: 'July', 7: 'August', 8: 'September', 9: 'October', 10: 'November', 11: 'December'} as any;
@@ -50,21 +52,18 @@ export default function Filters() {
     setSavedYearField,
     savedMonthField,
     setSavedMonthField,
-    savedDateField,
     setSavedDateField,
     // Applied Filter Field
     appliedYearField,
     setAppliedYearField,
     appliedMonthField,
     setAppliedMonthField,
-    appliedDateField,
     setAppliedDateField,
     // Posted Filter Field
     postedYearField,
     setPostedYearField,
     postedMonthField,
     setPostedMonthField,
-    postedDateField,
     setPostedDateField,
     // Sort
     sortBy,
@@ -429,198 +428,22 @@ export default function Filters() {
             <Typography sx={{color: '#ffffff', paddingRight: 3, alignSelf: 'center'}}>
               {'Saved: '}
             </Typography>
-            {/* https://stackoverflow.com/questions/50556433/material-ui-datepicker-enable-only-year */}
-            <DatePicker
-              slotProps={{
-                textField: {
-                  id: 'savedYearField',
-                  name: 'savedYearField',
-                },
-              }}  
-              sx={{
-                input: {
-                  color: '#ffffff'
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: 'solid #636369',
-                },
-                "& label": {
-                  color: '#636369',
-                },
-                "& .MuiButtonBase-root": {
-                  color: '#636369',
-                },
-                marginRight: 2
-              }}          
-              label="Year"
-              value={savedYearField}
-              onChange={(val) => setSavedYearField(val)}
-              views={["year"]}
-            />
-            <DatePicker
-              slotProps={{
-                textField: {
-                  id: 'savedMonthField',
-                  name: 'savedMonthField',
-                },
-                // https://stackoverflow.com/questions/74515452/mui-change-date-picker-header-elements-order
-                calendarHeader: {
-                  sx: {
-                    "& .MuiPickersCalendarHeader-label": {
-                      display: 'none'
-                    }
-                  }
-                }
-              }}  
-              sx={{
-                input: {
-                  color: '#ffffff'
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: 'solid #636369',
-                },
-                "& label": {
-                  color: '#636369',
-                },
-                "& .MuiButtonBase-root": {
-                  color: '#636369',
-                }
-              }}          
-              label="Month"
-              value={savedMonthField}
-              onChange={(val) => setSavedMonthField(val)}
-              views={["month"]}
-            />
+            <YearOnlyDatePicker id={'savedYearField'} name={'savedYearField'} val={savedYearField} setVal={setSavedYearField}/>
+            <MonthOnlyDatePicker id={'savedMonthField'} name={'savedMonthField'} val={savedMonthField} setVal={setSavedMonthField}/>
           </Box>
           <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2}}>
             <Typography sx={{color: '#ffffff', paddingRight: 3, alignSelf: 'center'}}>
               {'Applied: '}
             </Typography>
-            <DatePicker
-              slotProps={{
-                textField: {
-                  id: 'appliedYearField',
-                  name: 'appliedYearField',
-                },
-              }}  
-              sx={{
-                input: {
-                  color: '#ffffff'
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: 'solid #636369',
-                },
-                "& label": {
-                  color: '#636369',
-                },
-                "& .MuiButtonBase-root": {
-                  color: '#636369',
-                },
-                marginRight: 2
-              }}          
-              label="Year"
-              value={appliedYearField}
-              onChange={(val) => setAppliedYearField(val)}
-              views={["year"]}
-            />
-            <DatePicker
-              slotProps={{
-                textField: {
-                  id: 'appliedMonthField',
-                  name: 'appliedMonthField',
-                },
-                calendarHeader: {
-                  sx: {
-                    "& .MuiPickersCalendarHeader-label": {
-                      display: 'none'
-                    }
-                  }
-                }
-              }}  
-              sx={{
-                input: {
-                  color: '#ffffff'
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: 'solid #636369',
-                },
-                "& label": {
-                  color: '#636369',
-                },
-                "& .MuiButtonBase-root": {
-                  color: '#636369',
-                }
-              }}          
-              label="Month"
-              value={appliedMonthField}
-              onChange={(val) => setAppliedMonthField(val)}
-              views={["month"]}
-            />
+            <YearOnlyDatePicker id={'appliedYearField'} name={'appliedYearField'} val={appliedYearField} setVal={setAppliedYearField}/>    
+            <MonthOnlyDatePicker id={'appliedMonthField'} name={'appliedMonthField'} val={appliedMonthField} setVal={setAppliedMonthField}/>
           </Box>
           <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 3}}>
             <Typography sx={{color: '#ffffff', paddingRight: 3, alignSelf: 'center'}}>
               {'Posted: '}
             </Typography>
-            <DatePicker
-              slotProps={{
-                textField: {
-                  id: 'postedYearField',
-                  name: 'postedYearField',
-                },
-              }}  
-              sx={{
-                input: {
-                  color: '#ffffff'
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: 'solid #636369',
-                },
-                "& label": {
-                  color: '#636369',
-                },
-                "& .MuiButtonBase-root": {
-                  color: '#636369',
-                },
-                marginRight: 2
-              }}          
-              label="Year"
-              value={postedYearField}
-              onChange={(val) => setPostedYearField(val)}
-              views={["year"]}
-            />
-            <DatePicker
-              slotProps={{
-                textField: {
-                  id: 'postedMonthField',
-                  name: 'postedMonthField',
-                },
-                calendarHeader: {
-                  sx: {
-                    "& .MuiPickersCalendarHeader-label": {
-                      display: 'none'
-                    }
-                  }
-                }
-              }}  
-              sx={{
-                input: {
-                  color: '#ffffff'
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: 'solid #636369',
-                },
-                "& label": {
-                  color: '#636369',
-                },
-                "& .MuiButtonBase-root": {
-                  color: '#636369',
-                }
-              }}          
-              label="Month"
-              value={postedMonthField}
-              onChange={(val) => setPostedMonthField(val)}
-              views={["month"]}
-            />
+            <YearOnlyDatePicker id={'postedYearField'} name={'postedYearField'} val={postedYearField} setVal={setPostedYearField}/>    
+            <MonthOnlyDatePicker id={'postedMonthField'} name={'postedMonthField'} val={postedMonthField} setVal={setPostedMonthField}/>      
           </Box>
           {
             currentFilters && currentFilters.length > 0 ?
