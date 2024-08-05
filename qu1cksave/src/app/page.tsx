@@ -4,6 +4,7 @@ import Link from 'next/link'
 import styles from "./page.module.css";
 import Intro from "@/components/landing/intro";
 import Features from "@/components/landing/features";
+import Footer from "@/components/landing/footer";
 
 export default function Home() {
   return (
@@ -77,6 +78,7 @@ export default function Home() {
         </AppBar>
         <Intro />
         <Features />
+        <Footer />
       </Box>
     </main>
   );
