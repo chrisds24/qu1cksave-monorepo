@@ -49,6 +49,7 @@ export default function Intro() {
               color: '#ffffff'
             },
             marginTop: '25px',
+            borderRadius: '40px'
           }}
         >
           Get Started&nbsp;

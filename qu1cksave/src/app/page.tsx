@@ -13,13 +13,13 @@ export default function Home() {
           position="fixed"
           sx={{
             backgroundColor: '#000000',
-            borderRadius: '40px',
-            maxWidth: {xs: '95vw', lg: '90vw'},
-            marginRight: {xs: '2.5vw', lg: '5vw'},
-            marginTop: 2,
+            // borderRadius: '40px',
+            // maxWidth: {xs: '95vw', lg: '90vw'},
+            // marginRight: {xs: '2.5vw', lg: '5vw'},
+            // marginTop: 2,
           }}
         >
-          <Toolbar sx={{height: 75, flexDirection: 'row', justifyContent: 'space-between'}}> 
+          <Toolbar sx={{height: 75, flexDirection: 'row', justifyContent: 'space-between', paddingLeft: {xs: '2.5vw', lg: '5vw'}, maxWidth: {xs: '95vw', lg: '90vw'},}}> 
             {/* This Box is for the image */}
             <Box sx={{
               display: 'flex',
