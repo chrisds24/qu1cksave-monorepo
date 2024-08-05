@@ -3,6 +3,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Link from 'next/link'
 import styles from "./page.module.css";
 import Intro from "@/components/landing/intro";
+import Features from "@/components/landing/features";
 
 export default function Home() {
   return (
@@ -75,6 +76,7 @@ export default function Home() {
           </Toolbar>
         </AppBar>
         <Intro />
+        <Features />
       </Box>
     </main>
   );
