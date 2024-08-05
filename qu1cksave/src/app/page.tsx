@@ -2,6 +2,7 @@ import { AppBar, Box, Button, IconButton, Toolbar, Typography } from "@mui/mater
 import MenuIcon from '@mui/icons-material/Menu';
 import Link from 'next/link'
 import styles from "./page.module.css";
+import Intro from "@/components/landing/intro";
 
 export default function Home() {
   return (
@@ -14,7 +15,7 @@ export default function Home() {
             borderRadius: '40px',
             maxWidth: {xs: '95vw', lg: '90vw'},
             marginRight: {xs: '2.5vw', lg: '5vw'},
-            marginTop: 2
+            marginTop: 2,
           }}
         >
           <Toolbar sx={{height: 75, flexDirection: 'row', justifyContent: 'space-between'}}> 
@@ -38,37 +39,42 @@ export default function Home() {
               </Link>
             </Box>   
             <Box>
-              <Button
-                sx={{
-                  backgroundColor: '#4b4e50',
-                  color: '#ffffff',
-                  borderRadius: '40px',
-                  padding: '7px 10px',
-                  marginRight: 1,
-                  '&:hover': {
-                    backgroundColor: '#323436',
-                  }
-                }}
-              >
-                Sign Up
-              </Button>
-              <Button
-                variant='outlined'
-                sx={{
-                  color: '#ffffff',
-                  borderRadius: '40px',
-                  borderColor: '#4b4e50',
-                  padding: '7px 10px',
-                  '&:hover': {
-                    borderColor: '#323436',
-                  }
-                }}
-              >
-                Login
-              </Button>
+              <Link href="/signup">
+                <Button
+                  sx={{
+                    backgroundColor: '#4b4e50',
+                    color: '#ffffff',
+                    borderRadius: '40px',
+                    padding: '7px 10px',
+                    marginRight: 1,
+                    '&:hover': {
+                      backgroundColor: '#323436',
+                    }
+                  }}
+                >
+                  Sign Up
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button
+                  variant='outlined'
+                  sx={{
+                    color: '#ffffff',
+                    borderRadius: '40px',
+                    borderColor: '#4b4e50',
+                    padding: '7px 10px',
+                    '&:hover': {
+                      borderColor: '#323436',
+                    }
+                  }}
+                >
+                  Login
+                </Button>
+              </Link>
             </Box>
           </Toolbar>
         </AppBar>
+        <Intro />
       </Box>
     </main>
   );
