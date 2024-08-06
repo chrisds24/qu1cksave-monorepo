@@ -32,6 +32,8 @@ export default function FeaturesList() {
         maxWidth: {xs: '95vw', lg: '90vw'},
       }}
       cols={col}
+      gap={40}
+      rowHeight={410}
     >
       {itemData.map((item) => (
         <ImageListItem key={item.img}>
@@ -46,7 +48,7 @@ export default function FeaturesList() {
               component="img"
               image={item.img}
               alt={item.title}
-              height="300px"
+              // height="300px"
             />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div" sx={{color: '#ffffff'}}>
