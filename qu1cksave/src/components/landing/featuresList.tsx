@@ -65,32 +65,32 @@ export default function FeaturesList() {
 
 const itemData = [
   {
-    img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
+    img: '/track_jobsearch.png',
     title: 'Track your job search in one place',
     details: 'Store all your job applications and documents securely in one place. Save every opportunity, regardless of when and where you found it.'
   },
   {
-    img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
+    img: '/comprehensive_tracker.png',
     title: 'Comprehensive tracker',
     details: 'Never worry about job postings being taken down or changing before an interview. Store job descriptions, salaries, dates, locations, and many more.'
   },
   {
-    img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
+    img: '/manage_resumes_coverletters.png',
     title: 'Manage multiple resumes and cover letters',
     details: 'Save tailored resumes and cover letters for each job, allowing for quick and easy access to everything you need for all your jobs.'
   },
   {
-    img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
+    img: '/advanced_filtering.png',
     title: 'Advanced filtering',
     details: 'Quickly search through your saved applications using a comprehensive filter that allows you to filter by status, location, dates, where you found the job from, and many others.'
   },
   {
-    img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
+    img: '/beautiful_ui.png',
     title: 'Beautiful and easy to use',
     details: "Tired of looking at monotonous text all day reading through job descriptions? Utilize qu1cksave's simple but beautiful UI to enhance your job search productivity."
   },
   {
-    img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
+    img: '/efficiency_simplicity.png',
     title: 'Efficiency through simplicity',
     details: "qu1cksave's sole purpose is to help you securely track and search through your saved jobs, without all the other unnecessary details that add more distractions to an already grueling job search."
   }
