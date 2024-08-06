@@ -152,6 +152,7 @@ export default function Page() {
           id="name"
           value={name}
           onChange={changeName}
+          autoFocus
           error={nameErr}
           helperText={
             nameErr ? 'Required. Maximum: 255 characters' : ''
@@ -185,7 +186,6 @@ export default function Page() {
           label="Email Address"
           name="email"
           autoComplete="email"
-          autoFocus
           value={email}
           onChange={changeEmail}
           error={emailErr}
@@ -289,7 +289,7 @@ export default function Page() {
           sx={{ mt: 3, mb: 2, color: '#ffffff', backgroundColor: '#000000' }}
           disabled={buttonDisabled}
         >
-          {buttonDisabled ? <CircularProgress size={25} sx={{color: '#ffffff'}} />: 'Sign In'}
+          {buttonDisabled ? <CircularProgress size={25} sx={{color: '#ffffff'}} />: 'Sign Up'}
         </Button>
         <Grid container>
           <Grid item>

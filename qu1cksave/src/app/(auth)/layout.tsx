@@ -22,7 +22,7 @@ export default function AuthLayout({
         sm={4}
         md={7}
         sx={{
-          backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+          backgroundImage: 'url(/antarctica_ice_large.jpg)',
           backgroundRepeat: 'no-repeat',
           backgroundColor: '#1e1e1e',
           backgroundSize: 'cover',
