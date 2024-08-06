@@ -220,7 +220,7 @@ export default function Page() {
           label="Password"
           type="password"
           id="password"
-          autoComplete="current-password"
+          autoComplete="new-password"
           value={password}
           onChange={changePassword}
           error={passwordErr}
@@ -255,7 +255,6 @@ export default function Page() {
           label="Repeat password"
           type="password"
           id="repeatpw"
-          autoComplete="current-password"
           value={repeatPw}
           onChange={changeRepeatPw}
           error={repeatPwErr}
