@@ -84,9 +84,7 @@ export default function Page({ params }: { params: { id: string } }) {
         }
   
         const paragraphs = job.job_description ? job.job_description.split(/\r\n|\r|\n/) : [];
-        // console.log('paragraphs', paragraphs);
         const notesParagraphs = job.notes ? job.notes.split(/\r\n|\r|\n/) : [];
-        // console.log('notesParagraphs', notesParagraphs);
   
         return (
           <Box sx={{ display: 'flex', flexDirection: 'column'}}>
