@@ -13,7 +13,8 @@ export async function PUT(
   // https://github.com/vercel/next.js/discussions/46483
   const newJob = await request.json();
 
-  const job: Job | undefined = await fetch(`http://localhost:3010/api/v0/job/${params.id}`, {
+  // const job: Job | undefined = await fetch(`http://localhost:3010/api/v0/job/${params.id}`, {
+  const job: Job | undefined = await fetch(`https://qu1cksave-backend.onrender.com/api/v0/job/${params.id}`, {
     method: "PUT",
     body: JSON.stringify(newJob),
     headers: {
@@ -42,7 +43,8 @@ export async function DELETE(
     return Response.json(undefined);
   }
 
-  const job: Job | undefined = await fetch(`http://localhost:3010/api/v0/job/${params.id}`, {
+  // const job: Job | undefined = await fetch(`http://localhost:3010/api/v0/job/${params.id}`, {
+  const job: Job | undefined = await fetch(`https://qu1cksave-backend.onrender.com/api/v0/job/${params.id}`, {
     method: "DELETE",
     headers: {
       Authorization: 'Bearer ' + token,

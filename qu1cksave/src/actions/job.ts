@@ -9,7 +9,8 @@ export async function addOrEditJob(newJob: Partial<NewJob>, jobId: string | unde
     return undefined;
   }
 
-  let fetchString = 'http://localhost:3010/api/v0/job';
+  // let fetchString = 'http://localhost:3010/api/v0/job';
+  let fetchString = 'https://qu1cksave-backend.onrender.com/api/v0/job';
   if (jobId) { // In EDIT mode
     fetchString += `/${jobId}`;
   }

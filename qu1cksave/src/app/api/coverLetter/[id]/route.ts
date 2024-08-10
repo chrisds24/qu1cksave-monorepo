@@ -10,7 +10,8 @@ export async function GET(
     return Response.json(undefined);
   }
 
-  const coverLetter: CoverLetter | undefined = await fetch(`http://localhost:3010/api/v0/coverLetter/${params.id}`, {
+  // const coverLetter: CoverLetter | undefined = await fetch(`http://localhost:3010/api/v0/coverLetter/${params.id}`, {
+    const coverLetter: CoverLetter | undefined = await fetch(`https://qu1cksave-backend.onrender.com/api/v0/coverLetter/${params.id}`, {
     // method: "GET",
     headers: {
       Authorization: "Bearer " + token,

@@ -10,7 +10,8 @@ export async function GET(
     return Response.json(undefined);
   }
 
-  const resume: Resume | undefined = await fetch(`http://localhost:3010/api/v0/resume/${params.id}`, {
+  // const resume: Resume | undefined = await fetch(`http://localhost:3010/api/v0/resume/${params.id}`, {
+  const resume: Resume | undefined = await fetch(`https://qu1cksave-backend.onrender.com/api/v0/resume/${params.id}`, {
     // method: "GET",
     headers: {
       Authorization: "Bearer " + token,
