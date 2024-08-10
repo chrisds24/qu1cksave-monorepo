@@ -24,6 +24,13 @@
     "typeRoots": ["./src/types", "./node_modules/@types"],
 
     // https://github.com/microsoft/TypeScript/issues/45063
-    "lib": ["ES2022"]
+    "lib": ["ES2022"],
+
+    // To get rid of:
+    //   node_modules/@hapi/hapi/lib/types/route.d.ts(2,68): error TS2307: Cannot find module 'joi' or its corresponding type declarations.
+    //   node_modules/@hapi/hapi/lib/types/server/server.d.ts(4,22): error TS2307: Cannot find module 'joi' or its corresponding type declarations.
+    // - https://github.com/lukeautry/tsoa/issues/1590
+    // - skipLibCheck: https://stackoverflow.com/questions/52311779/usage-of-the-typescript-compiler-argument-skiplibcheck
+    "skipLibCheck": true,
   }
 }
