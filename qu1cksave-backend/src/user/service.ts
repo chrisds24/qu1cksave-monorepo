@@ -20,6 +20,9 @@ export class UserService {
       const user = rows.length == 1 ? rows[0] : undefined;
 
       // If the user exists and the passwords match
+      // - For generating the secret key:
+      //   -- https://stackoverflow.com/questions/31309759/what-is-secret-key-for-jwt-based-authentication-and-how-to-generate-it
+      //   -- https://dev.to/tkirwa/generate-a-random-jwt-secret-key-39j4
       if (user && bcrypt.compareSync(credentials.password, user.password)) {
         const accessToken = jwt.sign(
           { id: user.id, name: user.name, email: user.email, roles: user.roles },
