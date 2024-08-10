@@ -15,7 +15,7 @@ export default function Footer() {
       id={'footer'}
       sx={{
         width: '100vw',
-        padding: '2vh 7vw 2vh 7vw',
+        padding: {xs: '2vh 3.5vw 2vh 2.5vw', lg: '2vh 5vw 2vh 5vw'},
         backgroundColor: '#000000',
         display: 'flex',
         flexDirection: {xs: 'column', md: 'row'},

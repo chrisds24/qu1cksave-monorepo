@@ -20,7 +20,8 @@ export default function Home() {
             // marginTop: 2,
           }}
         >
-          <Toolbar sx={{height: 75, flexDirection: 'row', justifyContent: 'space-between', paddingLeft: {xs: '2.5vw', lg: '5vw'}, maxWidth: {xs: '95vw', lg: '90vw'},}}> 
+          {/* https://stackoverflow.com/questions/78299645/unable-to-override-left-and-right-padding-on-mui-toolbar-other-than-with-import */}
+          <Toolbar sx={{height: 75, flexDirection: 'row', justifyContent: 'space-between', "@media (min-width: 0px)": { paddingRight: {xs: '2.5vw', lg: '5vw'}, paddingLeft: {xs: '2.5vw', lg: '5vw'} }}}> 
             {/* This Box is for the image */}
             <Box sx={{
               display: 'flex',
