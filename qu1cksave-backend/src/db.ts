@@ -19,7 +19,7 @@ const pool = new Pool({
     // require: true, // Does not exist
     rejectUnauthorized: true,
     // ca: fs.readFileSync('src/ca_cert/us-west-1-bundle.pem').toString(), 
-    ca: fs.readFileSync('/us-west-1-bundle.pem').toString(), 
+    ca: fs.readFileSync('us-west-1-bundle.pem').toString(), 
   }
 });
 
