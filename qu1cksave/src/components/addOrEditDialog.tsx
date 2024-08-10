@@ -23,6 +23,7 @@ const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Of
 const createLink = (idx: number, val: string) => {
   return (
     <TextField
+      key={`link${idx}`}
       id={`link${idx}`}
       name={`link${idx}`}
       label={`Link ${idx}`}
@@ -559,7 +560,7 @@ export default function AddOrEditDialog() {
               }}
             >
               {statusList.map((status) => 
-                <MenuItem value={status}>{status}</MenuItem>
+                <MenuItem key={`${status} Status`} value={status}>{status}</MenuItem>
               )}
             </Select>
           </FormControl>
@@ -656,9 +657,9 @@ export default function AddOrEditDialog() {
               }}
               // fullWidth
             >
-              <MenuItem value={'Remote'}>Remote</MenuItem>
-              <MenuItem value={'Hybrid'}>Hybrid</MenuItem>
-              <MenuItem value={'On-site'}>On-site</MenuItem>
+              <MenuItem key={'Remote Job'} value={'Remote'}>Remote</MenuItem>
+              <MenuItem key={'Hybrid Job'} value={'Hybrid'}>Hybrid</MenuItem>
+              <MenuItem key={'On-site Job'} value={'On-site'}>On-site</MenuItem>
             </Select>
           </FormControl>
           <Box sx={{display: 'flex', flexDirection: {xs: 'column', sm: 'row'}, flexWrap: 'wrap'}}>
@@ -735,6 +736,7 @@ export default function AddOrEditDialog() {
               >
                 {Object.keys(states).map((state) => 
                   <MenuItem
+                    key={`${state} State`}
                     value={state === 'N/A' ? states[state] : state}
                   >
                     {state}

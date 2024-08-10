@@ -9,7 +9,7 @@ export default function JobsListSkeleton() {
         const jobCardSkeletonList = [];
         for (let i = 0; i < 10; i++) {
           jobCardSkeletonList.push(
-            <JobCardSkeleton />
+            <JobCardSkeleton key={`Job Card Skeleton ${i}`} />
           );
         }
         return jobCardSkeletonList;

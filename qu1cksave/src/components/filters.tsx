@@ -281,7 +281,7 @@ export default function Filters() {
               >
                 <MenuItem value={''}>{'N/A'}</MenuItem>
                 {statusList.map((status) => 
-                  <MenuItem value={status}>{status}</MenuItem>
+                  <MenuItem key={`${status} Status Filter`} value={status}>{status}</MenuItem>
                 )}
               </Select>
             </FormControl>
@@ -313,10 +313,10 @@ export default function Filters() {
                 }}
                 // fullWidth
               >
-                <MenuItem value={''}>{'N/A'}</MenuItem>
-                <MenuItem value={'Remote'}>Remote</MenuItem>
-                <MenuItem value={'Hybrid'}>Hybrid</MenuItem>
-                <MenuItem value={'On-site'}>On-site</MenuItem>
+                <MenuItem key={'No Job Type Filter'} value={''}>{'N/A'}</MenuItem>
+                <MenuItem key={'Remote Job Type Filter'} value={'Remote'}>Remote</MenuItem>
+                <MenuItem key={'Hybrid Job Type Filter'} value={'Hybrid'}>Hybrid</MenuItem>
+                <MenuItem key={'On-site Job Type Filter'} value={'On-site'}>On-site</MenuItem>
               </Select>
             </FormControl>            
           </Box>
@@ -373,6 +373,7 @@ export default function Filters() {
               >
                 {Object.keys(states).map((state) => 
                   <MenuItem
+                    key={`${state} State Filter`}
                     value={state === 'N/A' ? states[state] : state}
                   >
                     {state}
@@ -454,7 +455,7 @@ export default function Filters() {
                       const year = filter.val.year;
                       const month = filter.val.month;
                       return (
-                        <Grid item key={idx}>
+                        <Grid item key={`Current Filter ${idx}`}>
                           <Chip
                             label={`${filter.name}: ${month !== undefined ? monthsList[month as keyof any] : ''} ${year ? year : ''}`}
                             sx={{backgroundColor: '#1e1e1e', color: '#ffffff', fontSize: '16px'}}
@@ -463,7 +464,7 @@ export default function Filters() {
                       );
                     } else {
                       return (
-                        <Grid item key={idx} sx={{maxWidth: {xs: '70vw', md: '90%'}}}>
+                        <Grid item key={`Current Filter ${idx}`} sx={{maxWidth: {xs: '70vw', md: '90%'}}}>
                           <Chip label={`${filter.name}: ${filter.val}`} sx={{backgroundColor: '#1e1e1e', color: '#ffffff', fontSize: '16px'}} />
                         </Grid>
                       );
@@ -480,7 +481,7 @@ export default function Filters() {
               <Grid rowSpacing={1} columnSpacing={4} container direction='row'>
                 {Object.keys(quickStats).map((stat: string, idx: number) => {
                   return (
-                    <Grid item key={idx}>
+                    <Grid item key={`${stat} Stat`}>
                       <Typography sx={{fontSize: '17px', color: '#ffffff'}} display={'inline'}>
                         {`${stat}: `}
                       </Typography>
@@ -490,7 +491,7 @@ export default function Filters() {
                     </Grid>
                   );                   
                 })}
-                <Grid item key={'totalkey'}>
+                <Grid item key={'Total Stat'}>
                   <Typography sx={{fontSize: '17px', color: '#ffffff'}} display={'inline'}>
                     {`Total: `}
                   </Typography>

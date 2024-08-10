@@ -208,9 +208,9 @@ export default function Page({ params }: { params: { id: string } }) {
               {'Description'}
             </Typography>
             { paragraphs.length > 0 ?
-              paragraphs.map((paragraph) => 
+              paragraphs.map((paragraph, idx) => 
                 paragraph ?
-                <Typography color='#ffffff' sx={{fontSize: '17px'}}>
+                <Typography key={`Description Paragraph ${idx}`} color='#ffffff' sx={{fontSize: '17px'}}>
                   {paragraph}
                 </Typography>
                 :
@@ -222,7 +222,7 @@ export default function Page({ params }: { params: { id: string } }) {
                 // When we split, we get ['Lorem ipsum', '', 'Blah blah']
                 // So we want the '', to be a line break just as originally intended
                 // 
-                <br />
+                <br key={`Description Paragraph Line Break ${idx}`} />
               )
               :
               <Typography color='#ffffff' sx={{fontSize: '17px'}}>
@@ -234,13 +234,13 @@ export default function Page({ params }: { params: { id: string } }) {
               {'Notes'}
             </Typography>
             { notesParagraphs.length > 0 ?
-              notesParagraphs.map((paragraph) => 
+              notesParagraphs.map((paragraph, idx) => 
                 paragraph ?
-                <Typography color='#ffffff' sx={{fontSize: '17px'}}>
+                <Typography key={`Notes Paragraph ${idx}`} color='#ffffff' sx={{fontSize: '17px'}}>
                   {paragraph}
                 </Typography>
                 :
-                <br />
+                <br key={`Notes Paragraph Line Break ${idx}`}/>
               )
               :
               <Typography color='#ffffff' sx={{fontSize: '17px'}}>
@@ -254,8 +254,9 @@ export default function Page({ params }: { params: { id: string } }) {
               </Typography>
               {job.links && job.links.length > 0 ?
                 <List sx={{padding: '0px 0px 0px 0px'}}>
-                  {job.links.map((link) =>
+                  {job.links.map((link, idx) =>
                     <ListItem
+                      key={`Link ${idx}`}
                       component='a'
                       href={`${link}`}
                       rel='noopener noreferrer'

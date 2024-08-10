@@ -59,7 +59,7 @@ export default function SortOptions() {
           }}
         >
           {sortByList.map((sortBy) => 
-            <MenuItem value={sortBy}>{sortBy}</MenuItem>
+            <MenuItem key={`Sort By ${sortBy}`} value={sortBy}>{sortBy}</MenuItem>
           )}
         </Select>
       </FormControl>
