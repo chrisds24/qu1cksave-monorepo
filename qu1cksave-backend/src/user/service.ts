@@ -90,6 +90,8 @@ export class UserService {
   }
 
   public async check(authHeader?: string, scopes?: string[]): Promise<User> {
+    console.log('I GOT HERE') // TESTING (REMOVE THIS LATER !!!)
+
     return new Promise((resolve, reject) => {
       if (!authHeader) {
         reject(new Error("Unauthorized"));

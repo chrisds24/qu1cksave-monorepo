@@ -70,6 +70,20 @@ export class JobController extends Controller {
   ): Promise<Job | undefined> {
     return await new JobService().delete(id, request.user.id);
   }
+
+  // TESTING (REMOVE THIS LATER !!!)
+  @Get('/nada')
+  @Security('jwt', ['member'])
+  @Response('401', 'Unauthorized')
+  public async getNada(
+    @Request() request: express.Request,
+  ): Promise<string> {
+    if (request.user.id) {
+      return "There's an id in request.user.id";
+    } else {
+      return "No id in request.user.id";
+    }
+  }
 }
 
 // ================== DELETE LATER ========================
