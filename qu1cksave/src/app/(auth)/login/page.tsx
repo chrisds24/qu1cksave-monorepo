@@ -170,7 +170,7 @@ export default function Page() {
         />
         <Button
           type="submit"
-          // fullWidth
+          fullWidth
           variant="contained"
           sx={{
             mt: 3,
@@ -181,7 +181,6 @@ export default function Page() {
               backgroundColor: '#4b4e50',
               color: '#ffffff'
             },
-            width: '120px'
            }}
           disabled={buttonDisabled}
         >
