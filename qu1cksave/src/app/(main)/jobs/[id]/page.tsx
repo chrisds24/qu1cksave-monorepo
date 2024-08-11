@@ -301,22 +301,58 @@ export default function Page({ params }: { params: { id: string } }) {
         );
       } else {
         return (
-          <Box sx={{width: '100%', height: '50vh', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+          <Box sx={{width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around'}}>
             <Box sx={{display: 'flex', height: '100%', width: '60%', flexDirection: 'row', alignItems: 'center'}}>
-              <Typography variant="h3" sx={{fontWeight: 'bold', color: '#ffffff'}}>
-                Oops. The selected job cannot be found.
-              </Typography>
+              <Box sx={{display: 'flex', flexDirection: 'column'}}>
+                <Typography variant="h3" sx={{fontWeight: 'bold', color: '#ffffff'}}>
+                  Oops. The selected job cannot be found.
+                </Typography>
+                <Button
+                  sx={{
+                    backgroundColor: '#ffffff',
+                    color: '#000000',
+                    padding: '10px 15px',
+                    '&:hover': {
+                      backgroundColor: '#4b4e50',
+                      color: '#ffffff'
+                    },
+                    marginTop: '25px',
+                    alignSelf: 'center'
+                  }}
+                  onClick={() => router.push('/jobs')}
+                >
+                  Back to Jobs
+                </Button>
+              </Box>
             </Box>
           </Box>
         );
       }
     } else {
       return (
-        <Box sx={{width: '100%', height: '50vh', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+        <Box sx={{width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around'}}>
           <Box sx={{display: 'flex', height: '100%', width: '60%', flexDirection: 'row', alignItems: 'center'}}>
-            <Typography variant="h3" sx={{fontWeight: 'bold', color: '#ffffff'}}>
-              An error occured. Please try again later.
-            </Typography>
+            <Box sx={{display: 'flex', flexDirection: 'column'}}>
+              <Typography variant="h3" sx={{fontWeight: 'bold', color: '#ffffff'}}>
+                An error occured. Please try again later.
+              </Typography>
+              <Button
+                sx={{
+                  backgroundColor: '#ffffff',
+                  color: '#000000',
+                  padding: '10px 15px',
+                  '&:hover': {
+                    backgroundColor: '#4b4e50',
+                    color: '#ffffff'
+                  },
+                  marginTop: '25px',
+                  alignSelf: 'center'
+                }}
+                onClick={() => router.push('/jobs')}
+              >
+                Back to Jobs
+              </Button>
+            </Box>
           </Box>
         </Box>
       );          

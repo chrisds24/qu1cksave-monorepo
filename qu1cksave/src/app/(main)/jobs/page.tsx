@@ -11,6 +11,7 @@ import Filters from "@/components/filters";
 import SortOptions from "@/components/sortOptions";
 import DeleteDialog from "@/components/deleteDialog";
 import PaginationSection from "@/components/paginationSection";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const {
@@ -29,6 +30,8 @@ export default function Page() {
     setOpen,
     jobs
   } = useContext(JobsContext);
+
+  const router = useRouter();
 
   // When page changes
   // - Set jobs shown once current page changes
@@ -141,11 +144,13 @@ export default function Page() {
     );
   } else {
     return (
-      <Box sx={{width: '100%', height: '50vh', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+      <Box sx={{width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around'}}>
         <Box sx={{display: 'flex', height: '100%', width: '60%', flexDirection: 'row', alignItems: 'center'}}>
-          <Typography variant="h3" sx={{fontWeight: 'bold', color: '#ffffff'}}>
-            An error occured. Please try again later.
-          </Typography>
+          <Box sx={{display: 'flex', flexDirection: 'column'}}>
+            <Typography variant="h3" sx={{fontWeight: 'bold', color: '#ffffff'}}>
+              An error occured. Please try again later.
+            </Typography>
+          </Box>
         </Box>
       </Box>
     );      
