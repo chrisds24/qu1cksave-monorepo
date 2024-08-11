@@ -283,9 +283,19 @@ export default function Page() {
         />
         <Button
           type="submit"
-          fullWidth
+          // fullWidth
           variant="contained"
-          sx={{ mt: 3, mb: 2, color: '#ffffff', backgroundColor: '#000000' }}
+          sx={{
+            mt: 3,
+            mb: 2,
+            color: '#ffffff',
+            backgroundColor:'#000000',
+            '&:hover': {
+              backgroundColor: '#4b4e50',
+              color: '#ffffff'
+            },
+            width: '120px'
+          }}
           disabled={buttonDisabled}
         >
           {buttonDisabled ? <CircularProgress size={25} sx={{color: '#ffffff'}} />: 'Sign Up'}
