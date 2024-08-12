@@ -267,6 +267,18 @@ export default function AddOrEditDialog() {
     // }
     if (data.get('description')) newJob['job_description'] = data.get('description') as string;
     if (data.get('notes')) newJob['notes'] = data.get('notes') as string;
+
+    // TODO: Add an error state for description and notes. For now, just send
+    //   an alert and cancel the request.
+    if (
+      (newJob.job_description && newJob.job_description.length > 16384) ||
+      (newJob.notes && newJob.notes.length > 16384)
+    ) { 
+      alert('Job description and notes must each be at most 16384 characters long.')
+      setButtonDisabled(false);
+      return;
+    }
+
     if (data.get('country')) newJob['country'] = data.get('country') as string;
     if (data.get('state')) newJob['us_state'] = data.get('state') as string;
     if (data.get('city')) newJob['city'] = data.get('city') as string;
@@ -306,6 +318,12 @@ export default function AddOrEditDialog() {
     for (let i = 0; i < links.length; i++) {
       const link = data.get(`link${i+1}`);
       if (link) {
+        const strLink = link as string;
+        if (strLink.length > 1024) {
+          alert('Each link must be at most 1024 characters long.')
+          setButtonDisabled(false);
+          return;
+        }
         linksList.push(link as string);
       }
     }
@@ -454,29 +472,33 @@ export default function AddOrEditDialog() {
     // -----------------------------------------------------------------
 
     // Using server actions
-    const job: Job | undefined = await addOrEditJob(newJob, !isAdd ? dialogJob.id : undefined)
-    if (job) {
-      // Add this job to jobs, then set jobs
-      let newJobs = [...jobs];
-      if (!isAdd) {
-        // When editing, remove the outdated job from the jobs list.
-        newJobs = newJobs.filter((j) => j.id !== job.id);
-      }
+    try {
+      const job: Job | undefined = await addOrEditJob(newJob, !isAdd ? dialogJob.id : undefined)
+      if (job) {
+        // Add this job to jobs, then set jobs
+        let newJobs = [...jobs];
+        if (!isAdd) {
+          // When editing, remove the outdated job from the jobs list.
+          newJobs = newJobs.filter((j) => j.id !== job.id);
+        }
 
-      newJobs.push(job)
-      // NOTE: Whenever jobs is set, apply the filters.
-      // This is done in layout.tsx to get filteredJobs
-      setJobs(newJobs)
-      // NOTE: The useEffect to automatically update jobsInPage when jobs
-      //   changes is in job/page.tsx
-      // NOTE: For some reason, the links are weird in the single job view.
-      //   If I create link fields in the modal and set it to for example,
-      //   a bunch of spaces. It creates a link to the single job page for
-      //   the current job.
-      //   (Turns out this is the case for anything that isn't a link)
-    } else {
-      // setJobs(undefined) // No need to go to error page.
-      alert(`Error processing request. Please reload the page and try again.`)
+        newJobs.push(job)
+        // NOTE: Whenever jobs is set, apply the filters.
+        // This is done in layout.tsx to get filteredJobs
+        setJobs(newJobs)
+        // NOTE: The useEffect to automatically update jobsInPage when jobs
+        //   changes is in job/page.tsx
+        // NOTE: For some reason, the links are weird in the single job view.
+        //   If I create link fields in the modal and set it to for example,
+        //   a bunch of spaces. It creates a link to the single job page for
+        //   the current job.
+        //   (Turns out this is the case for anything that isn't a link)
+      } else {
+        // setJobs(undefined) // No need to go to error page.
+        alert(`Error processing request. Please reload the page and try again.`)
+      }
+    } catch {
+      alert(`Error processing request. Please reload the page and try again. Or try reducing the size of your request to under 2 MB by reducing your resume/cover letter file size.`)
     }
 
     handleClose();

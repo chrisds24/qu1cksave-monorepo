@@ -11,6 +11,7 @@ app.use(cors());
 // https://gist.github.com/Maqsim/857a14a4909607be13d6810540d1b04f
 // https://stackoverflow.com/questions/19917401/error-request-entity-too-large (Used this one)
 app.use(express.json({limit: '2mb'}));
+// app.use(express.json({limit: '300kb'}));
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/v0/docs", swaggerUi.serve, async (_req: ExRequest, res: ExResponse) => {

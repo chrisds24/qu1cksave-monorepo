@@ -84,7 +84,7 @@ export class UserService {
         // }     
       }
     } catch (err) {
-      // console.error(err);
+      console.error(err);
       return undefined;
     }
   }

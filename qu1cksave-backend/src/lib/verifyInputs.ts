@@ -12,8 +12,8 @@ export default function verifyNewJobInput(newJob: NewJob) {
     // cover_letter?: NewCoverLetter;
     // title: string;                                     max: 255          DONE
     // company_name: string;                              max: 255          DONE
-    // job_description?: string;                              Won't enforce limit on length  
-    // notes?: string;                                        Won't enforce limit on length       
+    // job_description?: string;                          max: 16384
+    // notes?: string;                                    max: 16384      
     // is_remote: string;                                     selected      DONE                    
     // salary_min?: number;                               max: 9999999      DONE
     // salary_max?: number;                               max: 9999999      DONE
@@ -46,6 +46,8 @@ export default function verifyNewJobInput(newJob: NewJob) {
     // title, company_name, salary_min, salary_max, country, city, found_from, links
     if (!newJob.title || newJob.title.length > 255) { return false }
     if (!newJob.company_name || newJob.company_name.length > 255) { return false }
+    if (newJob.job_description && newJob.job_description.length > 16384) { return false }
+    if (newJob.notes && newJob.notes.length > 16384) { return false }
     if (newJob.salary_min !== undefined && (newJob.salary_min > 9999999 || newJob.salary_min < 0)) { return false }
     if (newJob.salary_max !== undefined && (newJob.salary_max > 9999999 || newJob.salary_max < 0)) { return false }
     if (newJob.country && newJob.country.length > 255) { return false }
@@ -80,7 +82,16 @@ export default function verifyNewJobInput(newJob: NewJob) {
     const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
     if(!newJob.job_status || !statusList.includes(newJob.job_status)) { return false }
 
-    if (newJob.links && newJob.links.length > 10) { return false }
+    const links = newJob.links;
+    if (links) {
+      if (links.length > 10) { return false }
+      for (let i = 0; i < links.length; i++) {
+        const link = links[i];
+        if (link.length > 1024) {
+          return false;
+        }
+      }
+    }
 
     // Check the newResume/newCoverLetter
     // - Both NewResume and NewCoverLetter have a file_name of max length 255

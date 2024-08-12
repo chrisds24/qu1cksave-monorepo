@@ -42,10 +42,12 @@ function checkFilters(
           //   doesn't match the year specified by the filter
           if (!jobProp.year || jobProp.year !== filtersProp.year) return false
         }
-        if (filtersProp.month) {
+        // if (filtersProp.month) {
+        if (filtersProp.month !== undefined) {
           // The job's date saved/applied/posted doesn't have a month or it
           //   doesn't match the month specified by the filter
-          if (!jobProp.month || jobProp.month !== filtersProp.month) return false
+          // if (!jobProp.month || jobProp.month !== filtersProp.month) return false
+          if (jobProp.month === undefined || jobProp.month !== filtersProp.month) return false
         }
       } else {
         if (jobProp !== filtersProp) {

@@ -3,7 +3,7 @@
 import { Job, NewJob } from "@/types/job";
 import { cookies } from "next/headers";
 
-export async function addOrEditJob(newJob: Partial<NewJob>, jobId: string | undefined): Promise<Job | undefined> {   
+export async function addOrEditJob(newJob: Partial<NewJob>, jobId: string | undefined): Promise<Job | undefined> {
   const token = cookies().get("session")?.value; 
   if (!token) {
     return undefined;
@@ -42,7 +42,7 @@ export async function addOrEditJob(newJob: Partial<NewJob>, jobId: string | unde
       return res.json()
     })
     .catch((err) => {
-      console.error(err);
+      // console.error(err);
       return undefined;
     })
 
