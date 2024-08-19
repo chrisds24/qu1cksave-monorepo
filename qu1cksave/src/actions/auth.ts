@@ -25,7 +25,7 @@ export async function login(credentials: Credentials): Promise<User | undefined>
     .then((user) => {
       const expires = new Date(Date.now() + 2*60*60*1000); // Expires in 2 hours
       // Switch to this once using https
-      cookies().set("session", user.accessToken, { expires, httpOnly: true, secure: true, sameSite: true });
+      cookies().set("session", user.accessToken, { expires, httpOnly: true, secure: true, sameSite: 'strict' });
       return {id: user.id, email: user.email, name: user.name, roles: user.roles};
     })
     .catch((err) => {
