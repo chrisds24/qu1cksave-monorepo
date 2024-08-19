@@ -8,7 +8,8 @@ import { redirect } from "next/navigation";
 
 export async function login(credentials: Credentials): Promise<User | undefined> {    
   // const user = await fetch("http://localhost:3010/api/v0/user/login", {
-  const user = await fetch("https://qu1cksave-backend.onrender.com/api/v0/user/login", {
+  // const user = await fetch("https://qu1cksave-backend.onrender.com/api/v0/user/login", {
+  const user = await fetch(`${process.env.BACKEND_URL}/api/v0/user/login`, {
     method: "POST",
     body: JSON.stringify(credentials),
     headers: {
@@ -42,7 +43,8 @@ export async function logout() {
 
 export async function signup(newUser: NewUser): Promise<User | undefined> {
   // const user = await fetch("http://localhost:3010/api/v0/user/signup", {
-  const user = await fetch("https://qu1cksave-backend.onrender.com/api/v0/user/signup", {
+  // const user = await fetch("https://qu1cksave-backend.onrender.com/api/v0/user/signup", {
+  const user = await fetch(`${process.env.BACKEND_URL}/api/v0/user/signup`, {
     method: "POST",
     body: JSON.stringify(newUser),
     headers: {

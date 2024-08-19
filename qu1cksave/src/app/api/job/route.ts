@@ -14,7 +14,8 @@ export async function GET(
   const id = searchParams.get('id');
 
   // let fetchUrl = 'http://localhost:3010/api/v0/job';
-  let fetchUrl = 'https://qu1cksave-backend.onrender.com/api/v0/job';
+  // let fetchUrl = 'https://qu1cksave-backend.onrender.com/api/v0/job';
+  let fetchUrl = `${process.env.BACKEND_URL}/api/v0/job`;
   if (id) {
     fetchUrl += `?id=${id}`;
   }
@@ -50,7 +51,8 @@ export async function POST(
   const newJob = await request.json();
 
   // const job: Job | undefined = await fetch('http://localhost:3010/api/v0/job', {
-  const job: Job | undefined = await fetch('https://qu1cksave-backend.onrender.com/api/v0/job', {
+  // const job: Job | undefined = await fetch('https://qu1cksave-backend.onrender.com/api/v0/job', {
+  const job: Job | undefined = await fetch(`${process.env.BACKEND_URL}/api/v0/job`, {
     method: "POST",
     body: JSON.stringify(newJob),
     headers: {

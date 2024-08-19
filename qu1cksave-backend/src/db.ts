@@ -15,6 +15,8 @@ const pool = new Pool({
   // - https://stackoverflow.com/questions/17604866/difference-between-readfile-and-readfilesync
   // readFileSync does not need closing?
   // - https://stackoverflow.com/questions/75798375/explicitly-closing-a-file-after-readfilesync
+
+  // COMMENT THIS OUT IF IN DEV MODE
   ssl: { 
     // require: true, // Does not exist
     rejectUnauthorized: true,

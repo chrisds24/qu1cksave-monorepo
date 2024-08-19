@@ -14,7 +14,8 @@ export async function PUT(
   const newJob = await request.json();
 
   // const job: Job | undefined = await fetch(`http://localhost:3010/api/v0/job/${params.id}`, {
-  const job: Job | undefined = await fetch(`https://qu1cksave-backend.onrender.com/api/v0/job/${params.id}`, {
+  // const job: Job | undefined = await fetch(`https://qu1cksave-backend.onrender.com/api/v0/job/${params.id}`, {
+  const job: Job | undefined = await fetch(`${process.env.BACKEND_URL}/api/v0/job/${params.id}`, {
     method: "PUT",
     body: JSON.stringify(newJob),
     headers: {
@@ -44,7 +45,8 @@ export async function DELETE(
   }
 
   // const job: Job | undefined = await fetch(`http://localhost:3010/api/v0/job/${params.id}`, {
-  const job: Job | undefined = await fetch(`https://qu1cksave-backend.onrender.com/api/v0/job/${params.id}`, {
+  // const job: Job | undefined = await fetch(`https://qu1cksave-backend.onrender.com/api/v0/job/${params.id}`, {
+  const job: Job | undefined = await fetch(`${process.env.BACKEND_URL}/api/v0/job/${params.id}`, {
     method: "DELETE",
     headers: {
       Authorization: 'Bearer ' + token,

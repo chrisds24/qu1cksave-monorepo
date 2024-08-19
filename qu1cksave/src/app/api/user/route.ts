@@ -10,7 +10,8 @@ export async function GET(
   }
 
   // const users: User[] | undefined = await fetch(`http://localhost:3010/api/v0/user`, {
-  const users: User[] | undefined = await fetch(`https://qu1cksave-backend.onrender.com/api/v0/user`, {
+  // const users: User[] | undefined = await fetch(`https://qu1cksave-backend.onrender.com/api/v0/user`, {
+  const users: User[] | undefined = await fetch(`${process.env.BACKEND_URL}/api/v0/user`, {
     headers: {
       Authorization: 'Bearer ' + token,
     },
