@@ -19,7 +19,7 @@ export class UserController extends Controller {
       });
   }
 
-  @Post("signup")
+  @Post("signup") 
   @Response("409", "Conflict")
   @SuccessResponse("200", "OK")
   public async signup(@Body() newUser: NewUser): Promise<User | undefined> {
