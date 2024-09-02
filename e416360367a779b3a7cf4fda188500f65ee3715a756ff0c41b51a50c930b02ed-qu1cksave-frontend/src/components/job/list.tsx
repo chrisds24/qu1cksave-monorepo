@@ -50,7 +50,7 @@ export default function JobsList() {
     }
   } else {
     return (
-      <JobsListSkeleton />
+      <JobsListSkeleton /> 
     );
   }
 }
