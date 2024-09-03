@@ -96,6 +96,7 @@ export default function JobsLayout({
   useEffect(() => {
     const getJobs = async () => {
       if (sessionUser) {
+        console.log('Called getJobs')
         // Get all jobs for current user
         await fetch(`/api/job?id=${sessionUser.id}`)
           .then((res) => {

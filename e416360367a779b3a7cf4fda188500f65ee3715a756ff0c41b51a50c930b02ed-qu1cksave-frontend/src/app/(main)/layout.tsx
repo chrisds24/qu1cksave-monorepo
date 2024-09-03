@@ -60,6 +60,7 @@ export default function MainLayout({
 
   useEffect(() => {
     const getSession = async () => {
+      console.log('Called getSession') // TEST
       // Get user from session in cookies
       // NOTE: This isn't an API call, so it's fine to use Server Actions
       //   which are POST requests by default
