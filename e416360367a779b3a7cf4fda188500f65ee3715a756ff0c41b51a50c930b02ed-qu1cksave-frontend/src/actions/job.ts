@@ -32,7 +32,7 @@ export async function addOrEditJob(newJob: Partial<NewJob>, jobId: string | unde
     method: jobId ? "PUT" : "POST",
     body: JSON.stringify(newJob),
     headers: {
-      Authorization: 'Bearer ' + token,
+      Authorization: `Bearer ${process.env.API_KEY} ${token}`,
       "Content-Type": "application/json",
     },
   })

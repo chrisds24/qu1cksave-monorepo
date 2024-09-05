@@ -13,6 +13,7 @@ export async function login(credentials: Credentials): Promise<User | undefined>
     method: "POST",
     body: JSON.stringify(credentials),
     headers: {
+      Authorization: `Bearer ${process.env.API_KEY}`,
       "Content-Type": "application/json",
     },
   })
@@ -47,6 +48,7 @@ export async function signup(newUser: NewUser): Promise<User | undefined> {
     method: "POST",
     body: JSON.stringify(newUser),
     headers: {
+      Authorization: `Bearer ${process.env.API_KEY}`,
       "Content-Type": "application/json",
     },
   })

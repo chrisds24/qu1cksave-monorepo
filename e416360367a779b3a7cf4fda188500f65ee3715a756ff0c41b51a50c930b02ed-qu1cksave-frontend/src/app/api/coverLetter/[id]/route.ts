@@ -15,7 +15,7 @@ export async function GET(
   const coverLetter: CoverLetter | undefined = await fetch(`${process.env.BACKEND_URL}/api/v0/coverLetter/${params.id}`, {
     // method: "GET",
     headers: {
-      Authorization: "Bearer " + token,
+      Authorization: `Bearer ${process.env.API_KEY} ${token}`,
     },
   })
     .then((res) => {

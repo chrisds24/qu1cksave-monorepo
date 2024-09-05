@@ -15,7 +15,7 @@ export async function GET(
   const resume: Resume | undefined = await fetch(`${process.env.BACKEND_URL}/api/v0/resume/${params.id}`, {
     // method: "GET",
     headers: {
-      Authorization: "Bearer " + token,
+      Authorization: `Bearer ${process.env.API_KEY} ${token}`,
     },
   })
     .then((res) => {

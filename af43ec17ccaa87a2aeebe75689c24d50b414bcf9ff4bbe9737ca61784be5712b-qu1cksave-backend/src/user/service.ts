@@ -91,10 +91,18 @@ export class UserService {
 
   public async check(authHeader?: string, scopes?: string[]): Promise<User> {
     return new Promise((resolve, reject) => {
+      // DOUBLE CHECK: Since the addition of having an API Key, this condition
+      //   won't ever happen since there'll always be a header. Keep this anyway
       if (!authHeader) {
         reject(new Error("Unauthorized"));
       } else {
-        const token = authHeader.split(" ")[1];
+        const splitHeader = authHeader.split(" ");
+        // const token = authHeader.split(" ")[1]; // OLD
+        // authHeader will be:    Authorization APIKey accessToken
+        if (splitHeader.length < 3 || splitHeader[1] !== process.env.API_KEY) {
+          reject(new Error("Unauthorized"));
+        }
+        const token = splitHeader[2];
         jwt.verify(token, process.env.ACCESS_TOKEN as string, (err, decoded) => {
           if (err) {
             reject(err);
@@ -116,14 +124,4 @@ export class UserService {
       }
     });
   }
-
-  // TODO: Edit this to only return the user count
-  // public async getMultiple(): Promise<User[]> {
-  //   const select = "SELECT id, name, email, roles FROM member";
-  //   const query = {
-  //     text: select,
-  //   };
-  //   const { rows } = await pool.query(query);
-  //   return rows as User[];
-  // }
 }
