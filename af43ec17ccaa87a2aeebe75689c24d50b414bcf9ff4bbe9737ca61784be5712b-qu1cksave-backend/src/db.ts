@@ -17,12 +17,12 @@ const pool = new Pool({
   // - https://stackoverflow.com/questions/75798375/explicitly-closing-a-file-after-readfilesync
 
   // COMMENT THIS OUT IF IN DEV MODE
-  // ssl: { 
-  //   // require: true, // Does not exist
-  //   rejectUnauthorized: true,
-  //   // ca: fs.readFileSync('src/ca_cert/us-west-1-bundle.pem').toString(), 
-  //   ca: fs.readFileSync('us-west-1-bundle.pem').toString(), 
-  // }
+  ssl: { 
+    // require: true, // Does not exist
+    rejectUnauthorized: true,
+    // ca: fs.readFileSync('src/ca_cert/us-west-1-bundle.pem').toString(), 
+    ca: fs.readFileSync('us-west-1-bundle.pem').toString(), 
+  }
 });
 
 export { pool };
