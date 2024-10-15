@@ -61,8 +61,7 @@ export default function MainLayout({
   useEffect(() => {
     const getSession = async () => {
       // Get user from session in cookies
-      // NOTE: This isn't an API call, so it's fine to use Server Actions
-      //   which are POST requests by default
+      // Note: getSessionUser does not perform an API call
       await getSessionUser()
         .then(async (sesUser) => {
           if (sesUser) {
@@ -71,7 +70,7 @@ export default function MainLayout({
         })
     };
     getSession();
-  }, []);
+  }, []); // Having sessionUser as a dependency causes an infinite effect call
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -107,7 +106,6 @@ export default function MainLayout({
           />
         </Link>
       </Box>   
-      {/* <Divider /> */}
       <List>
         {navItems.map((navItem) => (
           <Link key={navItem.name} href={`/${navItem.route}`}>
@@ -140,7 +138,7 @@ export default function MainLayout({
           <ListItemButton>
             <ListItemIcon>
               {
-                sessionUser && sessionUser.name ?
+                sessionUser?.name ?
                 <Avatar {...stringAvatar(sessionUser.name)} /> :
                 <Skeleton
                   variant="circular"
@@ -149,12 +147,10 @@ export default function MainLayout({
                   sx={{bgcolor: '#4b4e50'}}
                 />
               }
-              {/* <Avatar {...stringAvatar(sessionUser ? sessionUser.name : 'N A')} /> */}
             </ListItemIcon>
             <ListItemText
-              // primary={sessionUser ? sessionUser.name : ''}
               primary={
-                sessionUser && sessionUser.name ?
+                sessionUser?.name ?
                 sessionUser.name :
                 <Skeleton
                   variant="text"                 
@@ -205,10 +201,8 @@ export default function MainLayout({
         <AppBar
           position="fixed"
           sx={{
-            // width: { sm: `calc(100% - ${drawerWidth}px)` },
             width: { md: `calc(100% - ${drawerWidth}px)` },
             ml: { sm: `${drawerWidth}px` },
-            // display: { sm: 'none' },
             display: { md: 'none' },
             backgroundColor: '#000000'
           }}
@@ -219,7 +213,6 @@ export default function MainLayout({
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              // sx={{ mr: 2, display: { sm: 'none' } }}
               sx={{ mr: 2, display: { md: 'none' } }}
             >
               <MenuIcon />
@@ -231,7 +224,6 @@ export default function MainLayout({
         </AppBar>
         <Box
           component="nav"
-          // sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
           sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
           aria-label="drawer options"
         >
@@ -245,7 +237,6 @@ export default function MainLayout({
               keepMounted: true, // Better open performance on mobile.
             }}
             sx={{
-              // display: { xs: 'block', sm: 'none' },
               display: { xs: 'block', md: 'none' },
               '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
             }}
@@ -280,15 +271,10 @@ export default function MainLayout({
           component="main"
           sx={{ flexGrow: 1,
             p: 3,
-            // TODO: Maybe change this to md? Doesn't seem to be necessary though
-            //   I'll just change it anyway
-            // width: { sm: `calc(100% - ${drawerWidth}px)` },
             width: { md: `calc(100% - ${drawerWidth}px)` },
             backgroundColor: '#1e1e1e',
-            // height: '100vh'
           }}
         >
-          {/* <Toolbar sx={{display: { xs: 'block', sm: 'none' }}}/> */}
           <Toolbar sx={{display: { xs: 'block', md: 'none' }}}/>
           <SessionUserContext.Provider value={{ sessionUser }}>
             {children}

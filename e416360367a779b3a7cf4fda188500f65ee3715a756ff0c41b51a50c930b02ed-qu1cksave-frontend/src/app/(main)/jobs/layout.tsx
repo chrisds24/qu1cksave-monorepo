@@ -1,12 +1,11 @@
 'use client'
 
-import { Context, Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useState } from "react";
+import { Context, ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { SessionUserContext } from "../layout";
 import { Job } from "@/types/job";
 import applyFilters from "@/lib/applyFilters";
 import sortJobs from "@/lib/sortJobs";
 import { QuickStats, YearMonthDateFilter } from "@/types/common";
-import { Dayjs } from "dayjs";
 import getQuickStats from "@/lib/getQuickStats";
 
 export const JobsContext: Context<any> = createContext(null);
@@ -17,6 +16,7 @@ export default function JobsLayout({
   children: ReactNode
 }) {
   const { sessionUser } = useContext(SessionUserContext);
+
   const [jobs, setJobs] = useState<Job[] | undefined>([]);
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
   const [page, setPage] = useState<number>(1);
@@ -38,7 +38,7 @@ export default function JobsLayout({
   //   These are used for the initial load and whenever jobs changes through
   //   add, edit, or delete. For example, we need to automatically apply
   //   the applied filters whenever we change the jobs list.
-  // NOTE: These are not the values for the fields in the filters component.
+  // Note: These are not the values for the fields in the filters component.
   const [jobFilter, setJobFilter] = useState('');
   const [companyFilter, setCompanyFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState(''); // Dropdown
@@ -50,33 +50,6 @@ export default function JobsLayout({
   const [savedFilter, setSavedFilter]  = useState<YearMonthDateFilter | null>(null);
   const [appliedFilter, setAppliedFilter] = useState<YearMonthDateFilter | null>(null);
   const [postedFilter, setPostedFilter] = useState<YearMonthDateFilter | null>(null);
-
-  // These are the values for the filter related fields
-  // Moving it here so that state is retained when going into a single job
-  // view then back.
-  const [jobFilterField, setJobFilterField] = useState('');
-  const [companyFilterField, setCompanyFilterField] = useState('');
-  const [statusFilterField, setStatusFilterField] = useState('');
-  const [remoteFilterField, setRemoteFilterField] = useState('');
-  const [cityFilterField, setCityFilterField] = useState('');
-  const [stateFilterField, setStateFilterField] = useState('');
-  const [countryFilterField, setCountryFilterField] = useState('');
-  const [fromFilterField, setFromFilterField] = useState('');
-  // Saved
-  const [savedYearField, setSavedYearField] = useState<Dayjs | null>(null);
-  const [savedMonthField, setSavedMonthField] = useState<Dayjs | null>(null);
-  const [savedDateField, setSavedDateField] = useState<Dayjs | null>(null);
-  // Applied
-  const [appliedYearField, setAppliedYearField] = useState<Dayjs | null>(null);
-  const [appliedMonthField, setAppliedMonthField] = useState<Dayjs | null>(null);
-  const [appliedDateField, setAppliedDateField] = useState<Dayjs | null>(null);
-  // Posted
-  const [postedYearField, setPostedYearField] = useState<Dayjs | null>(null);
-  const [postedMonthField, setPostedMonthField] = useState<Dayjs | null>(null);
-  const [postedDateField, setPostedDateField] = useState<Dayjs | null>(null);
-
-  // Current Filters List
-  const [currentFilters, setCurrentFilters] = useState<any[]>([]);
 
   // Sort
   const [sortBy, setSortBy] = useState('Date Saved');
@@ -108,7 +81,7 @@ export default function JobsLayout({
             setJobs(jobs)
             setJobsLoading(false);
           })
-          .catch((err) => {
+          .catch(() => {
             setJobs(undefined)
             setJobsLoading(false);
             alert(`Error processing request.`)
@@ -121,6 +94,10 @@ export default function JobsLayout({
   // Jobs only changes during: initial load, adding, editing, or deleting.
   //   (Not when going to a single job view then going back.)
   // Filters and sorting should also automatically apply once jobs changes
+  // React TODO:
+  // - When jobs change (initial load, add, edit, or delete)
+  //   -- Apply filters to jobs -> Sort those jobs -> Set filtered jobs to those
+  // - Note: I'm not referring to filteredJobs or jobsInPage
   useEffect(() => {
     if (jobs !== undefined) {
       setFilteredJobs(
@@ -146,6 +123,8 @@ export default function JobsLayout({
     }
   }, [jobs]);
 
+  // React TODO:
+  // - When sort options change, set filtered jobs to be sorted accordingly
   useEffect(() => {
     const filteredJobsCopy = [...filteredJobs];
     setFilteredJobs(
@@ -153,48 +132,15 @@ export default function JobsLayout({
     );    
   }, [sortBy, sortIncreasing]);
 
+  // React TODO:
+  // - When filtered jobs change, set jobsInPage and quickStats accordingly
   useEffect(() => {
     setJobsInPage(filteredJobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
     setQuickStats(getQuickStats(filteredJobs));
   }, [filteredJobs]);
 
-  // To show skeleton when jobs are loading:
-  // - Shows the skeleton list, but doesn't work well since it still shows the
-  //   "no jobs yet" message before showing the actual list
-  // useEffect(() => {
-  //   setJobsLoading(false);
-  // }, [jobsInPage])
-
-  useEffect(() => {
-    setCurrentFilters(
-      [
-        {name: 'Job Title', val: jobFilter},
-        {name: 'Company', val: companyFilter},
-        {name: 'Status', val: statusFilter},
-        {name: 'Remote', val: remoteFilter},
-        {name: 'City', val: cityFilter},
-        {name: 'State', val: stateFilter},
-        {name: 'Country', val: countryFilter},
-        {name: 'From', val: fromFilter},
-        {name: 'Saved', val: savedFilter},
-        {name: 'Applied', val: appliedFilter},
-        {name: 'Posted', val: postedFilter}
-      ]
-    )
-  }, [
-    jobFilter,
-    companyFilter,
-    statusFilter,
-    remoteFilter,
-    cityFilter,
-    stateFilter,
-    countryFilter,
-    fromFilter,
-    savedFilter,
-    appliedFilter,
-    postedFilter
-  ]);  
-
+  // React TODO:
+  // - I need to split the Context Providers
   return (
     <JobsContext.Provider
       value={{
@@ -247,46 +193,6 @@ export default function JobsLayout({
         setAppliedFilter,
         postedFilter,
         setPostedFilter,
-        // Current filters
-        currentFilters,
-        // Filter field states
-        jobFilterField,
-        setJobFilterField,
-        companyFilterField,
-        setCompanyFilterField,
-        statusFilterField,
-        setStatusFilterField,
-        remoteFilterField,
-        setRemoteFilterField,
-        cityFilterField,
-        setCityFilterField,
-        stateFilterField,
-        setStateFilterField,
-        countryFilterField,
-        setCountryFilterField,
-        fromFilterField,
-        setFromFilterField,
-        // Saved Filter Field
-        savedYearField,
-        setSavedYearField,
-        savedMonthField,
-        setSavedMonthField,
-        savedDateField,
-        setSavedDateField,
-        // Applied Filter Field
-        appliedYearField,
-        setAppliedYearField,
-        appliedMonthField,
-        setAppliedMonthField,
-        appliedDateField,
-        setAppliedDateField,
-        // Posted Filter Field
-        postedYearField,
-        setPostedYearField,
-        postedMonthField,
-        setPostedMonthField,
-        postedDateField,
-        setPostedDateField,
         // Sorting
         sortBy,
         setSortBy,

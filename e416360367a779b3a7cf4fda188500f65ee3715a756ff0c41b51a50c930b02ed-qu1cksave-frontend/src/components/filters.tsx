@@ -1,12 +1,12 @@
 import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { states } from "@/lib/states";
 import { JobsContext } from "@/app/(main)/jobs/layout";
 import applyFilters from "@/lib/applyFilters";
 import sortJobs from "@/lib/sortJobs";
-import { DatePicker } from "@mui/x-date-pickers";
 import { YearMonthDateFilter } from "@/types/common";
+import { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import YearOnlyDatePicker from "./yearOnlyDatePicker";
 import MonthOnlyDatePicker from "./monthOnlyDatePicker";
@@ -17,54 +17,28 @@ const monthsList = {0: 'January', 1: 'February', 2: 'March', 3: 'April', 4: 'May
 export default function Filters() {
   const {
     // Filters
+    jobFilter,
     setJobFilter,
+    companyFilter,
     setCompanyFilter,
+    statusFilter,
     setStatusFilter,
+    remoteFilter,
     setRemoteFilter,
+    cityFilter,
     setCityFilter,
+    stateFilter,
     setStateFilter,
+    countryFilter,
     setCountryFilter,
+    fromFilter,
     setFromFilter,
+    savedFilter,
     setSavedFilter,
+    appliedFilter,
     setAppliedFilter,
+    postedFilter,
     setPostedFilter,
-    // Current filters
-    currentFilters,
-    // Filter fields
-    jobFilterField,
-    setJobFilterField,
-    companyFilterField,
-    setCompanyFilterField,
-    statusFilterField,
-    setStatusFilterField,
-    remoteFilterField,
-    setRemoteFilterField,
-    cityFilterField,
-    setCityFilterField,
-    stateFilterField,
-    setStateFilterField,
-    countryFilterField,
-    setCountryFilterField,
-    fromFilterField,
-    setFromFilterField,
-    // Saved Filter Field
-    savedYearField,
-    setSavedYearField,
-    savedMonthField,
-    setSavedMonthField,
-    setSavedDateField,
-    // Applied Filter Field
-    appliedYearField,
-    setAppliedYearField,
-    appliedMonthField,
-    setAppliedMonthField,
-    setAppliedDateField,
-    // Posted Filter Field
-    postedYearField,
-    setPostedYearField,
-    postedMonthField,
-    setPostedMonthField,
-    setPostedDateField,
     // Sort
     sortBy,
     sortIncreasing,
@@ -74,6 +48,52 @@ export default function Filters() {
     jobs,
     quickStats
   } = useContext(JobsContext);
+
+  // These are the values for the filter related fields
+  const [jobFilterField, setJobFilterField] = useState(jobFilter);
+  const [companyFilterField, setCompanyFilterField] = useState(companyFilter);
+  const [statusFilterField, setStatusFilterField] = useState(statusFilter);
+  const [remoteFilterField, setRemoteFilterField] = useState(remoteFilter);
+  const [cityFilterField, setCityFilterField] = useState(cityFilter);
+  const [stateFilterField, setStateFilterField] = useState(stateFilter);
+  const [countryFilterField, setCountryFilterField] = useState(countryFilter);
+  const [fromFilterField, setFromFilterField] = useState(fromFilter);
+  // Saved
+  const [savedYearField, setSavedYearField] = useState<Dayjs | null>(
+    savedFilter?.year ? dayjs().year(savedFilter.year) : null
+  );
+  const [savedMonthField, setSavedMonthField] = useState<Dayjs | null>(
+    savedFilter?.month ? dayjs().month(savedFilter.month) : null
+  );
+  // Applied
+  const [appliedYearField, setAppliedYearField] = useState<Dayjs | null>(
+    appliedFilter?.year ? dayjs().year(appliedFilter.year) : null
+  );
+  const [appliedMonthField, setAppliedMonthField] = useState<Dayjs | null>(
+    appliedFilter?.month ? dayjs().month(appliedFilter.month) : null
+  );
+  // Posted
+  const [postedYearField, setPostedYearField] = useState<Dayjs | null>(
+    postedFilter?.year ? dayjs().year(postedFilter.year) : null
+  );
+  const [postedMonthField, setPostedMonthField] = useState<Dayjs | null>(
+    postedFilter?.month ? dayjs().month(postedFilter.month) : null
+  );
+
+  // Currently applied filters list
+  const currentFilters = [
+    {name: 'Job Title', val: jobFilter},
+    {name: 'Company', val: companyFilter},
+    {name: 'Status', val: statusFilter},
+    {name: 'Remote', val: remoteFilter},
+    {name: 'City', val: cityFilter},
+    {name: 'State', val: stateFilter},
+    {name: 'Country', val: countryFilter},
+    {name: 'From', val: fromFilter},
+    {name: 'Saved', val: savedFilter},
+    {name: 'Applied', val: appliedFilter},
+    {name: 'Posted', val: postedFilter}
+  ];
 
   const changeJobFilter = (event: any) => {
     setJobFilterField(event.target.value as string);
@@ -119,22 +139,22 @@ export default function Filters() {
     let savedFilterVal: YearMonthDateFilter | null = null;
     if (savedYearField || savedMonthField) {
       savedFilterVal = {};
-      if (savedYearField) savedFilterVal['year'] = dayjs(savedYearField as string).year();
-      if (savedMonthField) savedFilterVal['month'] = dayjs(savedMonthField as string).month();
+      savedFilterVal['year'] = savedYearField?.year();
+      savedFilterVal['month'] = savedMonthField?.month();
     }
 
     let appliedFilterVal: YearMonthDateFilter | null = null;
     if (appliedYearField || appliedMonthField) {
       appliedFilterVal = {};
-      if (appliedYearField) appliedFilterVal['year'] = dayjs(appliedYearField as string).year();
-      if (appliedMonthField) appliedFilterVal['month'] = dayjs(appliedMonthField as string).month();
+      appliedFilterVal['year'] = appliedYearField?.year();
+      appliedFilterVal['month'] = appliedMonthField?.month();
     }
 
     let postedFilterVal: YearMonthDateFilter | null = null;
     if (postedYearField || postedMonthField) {
       postedFilterVal = {};
-      if (postedYearField) postedFilterVal['year'] = dayjs(postedYearField as string).year();
-      if (postedMonthField) postedFilterVal['month'] = dayjs(postedMonthField as string).month();
+      postedFilterVal['year'] = postedYearField?.year();
+      postedFilterVal['month'] = postedMonthField?.month();
     }
 
     // Set the applied filters
@@ -184,13 +204,10 @@ export default function Filters() {
     setFromFilterField('');
     setSavedYearField(null);
     setSavedMonthField(null);
-    setSavedDateField(null);
     setAppliedYearField(null);
     setAppliedMonthField(null);
-    setAppliedDateField(null);
     setPostedYearField(null);
     setPostedMonthField(null);
-    setPostedDateField(null);
   }
 
   return (
@@ -447,7 +464,7 @@ export default function Filters() {
             <MonthOnlyDatePicker id={'postedMonthField'} name={'postedMonthField'} val={postedMonthField} setVal={setPostedMonthField}/>      
           </Box>
           {
-            currentFilters && currentFilters.length > 0 ?
+            currentFilters?.length > 0 ?
               <Grid rowSpacing={1} columnSpacing={1} container direction='row' sx={{marginBottom: 3}}>
                 {currentFilters.map((filter: any, idx: number) => {
                   if (filter.val) {
