@@ -199,17 +199,9 @@ export default function Page() {
             "& .MuiOutlinedInput-notchedOutline": {
               border: 'solid #3e3e42',
             },
-            // "& .Mui-focused": {
-            //   "& .MuiOutlinedInput-notchedOutline": {
-            //     border: 'solid #ffffff',
-            //   },
-            // },
             "& label": {
               color: '#3e3e42',
             },
-            // "& label.Mui-focused": {
-            //   color: '#ffffff',
-            // },
           }}
         />
         <TextField
@@ -234,17 +226,9 @@ export default function Page() {
             "& .MuiOutlinedInput-notchedOutline": {
               border: 'solid #3e3e42',
             },
-            // "& .Mui-focused": {
-            //   "& .MuiOutlinedInput-notchedOutline": {
-            //     border: 'solid #ffffff',
-            //   },
-            // },
             "& label": {
               color: '#3e3e42',
             },
-            // "& label.Mui-focused": {
-            //   color: '#ffffff',
-            // },
           }}
         />
         <TextField
@@ -268,17 +252,9 @@ export default function Page() {
             "& .MuiOutlinedInput-notchedOutline": {
               border: 'solid #3e3e42',
             },
-            // "& .Mui-focused": {
-            //   "& .MuiOutlinedInput-notchedOutline": {
-            //     border: 'solid #ffffff',
-            //   },
-            // },
             "& label": {
               color: '#3e3e42',
             },
-            // "& label.Mui-focused": {
-            //   color: '#ffffff',
-            // },
           }}
         />
         <Button
