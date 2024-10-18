@@ -16,10 +16,6 @@ export default function SortOptions() {
     setSortIncreasing
   } = useContext(JobsContext);
 
-  const changeSortBy = (event: SelectChangeEvent) => {
-    setSortBy(event.target.value as string);
-  };
-
   const changeSortIncreasing = (
     event: React.MouseEvent<HTMLElement>,
     isIncreasing: boolean | null,
@@ -40,7 +36,10 @@ export default function SortOptions() {
           name="sortBy"
           value={sortBy}
           label="Sort By"
-          onChange={changeSortBy}
+          onChange={
+            (event: SelectChangeEvent) => 
+              setSortBy(event.target.value as string)
+          }
           sx={{
             color: '#ffffff',
             "& .MuiOutlinedInput-notchedOutline": {
