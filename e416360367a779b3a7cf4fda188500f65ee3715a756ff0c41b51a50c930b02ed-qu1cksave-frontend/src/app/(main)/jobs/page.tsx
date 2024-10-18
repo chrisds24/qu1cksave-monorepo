@@ -2,7 +2,7 @@
 
 import { useContext, useEffect } from "react";
 import JobsList from "@/components/job/list";
-import { Box, Button, Fab, Pagination, TextField, Typography } from "@mui/material";
+import { Box, Fab, Typography } from "@mui/material";
 import DiscreteSliderValues from "@/components/discreteSliderValues";
 import { JobsContext } from "./layout";
 import AddOrEditDialog from "@/components/addOrEditDialog";
@@ -11,7 +11,6 @@ import Filters from "@/components/filters";
 import SortOptions from "@/components/sortOptions";
 import DeleteDialog from "@/components/deleteDialog";
 import PaginationSection from "@/components/paginationSection";
-import { useRouter } from "next/navigation";
 
 export default function Page() {
   const {
@@ -19,11 +18,8 @@ export default function Page() {
     page,
     setPage,
     jobsPerPage,
-    setJobsPerPage,
     setJobsInPage,
     pageToJumpTo,
-    setPageToJumpTo,
-    invalidEntry,
     setInvalidEntry,
     setIsAdd,
     setDialogJob,
@@ -31,14 +27,17 @@ export default function Page() {
     jobs
   } = useContext(JobsContext);
 
-  const router = useRouter();
-
+  // React TODO:
+  // - Unneeded effect
+  // - Can just re-calculate jobsInPage in PaginationSection component
   // When page changes
-  // - Set jobs shown once current page changes
   useEffect(() => {
     setJobsInPage(filteredJobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
   }, [page])
 
+  // React TODO:
+  // - Unneeded effect
+  // - MOVE ALL THIS LOGIC to DiscreteSliderValues component
   // When jobsPerPage changes
   // When number of jobs per page change, the following also change:
   // 1.) Jobs shown in current page
@@ -77,6 +76,9 @@ export default function Page() {
     }
   }, [jobsPerPage])
 
+  // React TODO:
+  // - Unneeded effect
+  // - MOVE ALL THIS LOGIC to pageToJumpTo
   useEffect(() => {
     if (pageToJumpTo !== undefined) {
       // -------------------

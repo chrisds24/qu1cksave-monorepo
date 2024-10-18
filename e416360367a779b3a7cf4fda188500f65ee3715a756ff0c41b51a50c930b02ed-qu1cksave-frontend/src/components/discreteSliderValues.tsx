@@ -16,13 +16,8 @@ export default function DiscreteSliderValues() {
     setJobsPerPage(jobsPerPageVal);
   };
 
-  let maxCount;
   // Ensures that the job slider's max doesn't go below 10
-  if (filteredJobsCount < 10) {
-    maxCount = 10;
-  } else {
-    maxCount = filteredJobsCount
-  }
+  const maxCount = filteredJobsCount < 10 ? 10 : filteredJobsCount;
 
   const marks = [
     { value: 10, label: '10' },
@@ -31,6 +26,7 @@ export default function DiscreteSliderValues() {
     { value: 100, label: ''},
     { value: 200, label: ''},
     { value: 500, label: ''},
+    { value: 1000, label: ''},
     // { value: filteredJobsCount, label: `${filteredJobsCount}`},
     { value: maxCount, label: `${maxCount}`},
   ];

@@ -10,8 +10,8 @@ const sortByList = ['Date Saved', 'Date Applied', 'Date Posted', 'Job Title', 'C
 
 export default function SortOptions() {
   const {
-    setSortBy,
     sortBy,
+    setSortBy,
     sortIncreasing,
     setSortIncreasing
   } = useContext(JobsContext);

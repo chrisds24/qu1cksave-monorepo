@@ -1,15 +1,15 @@
 import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useContext, useState } from "react";
+import { ChangeEvent, useContext, useState } from "react";
 import { states } from "@/lib/states";
 import { JobsContext } from "@/app/(main)/jobs/layout";
-import applyFilters from "@/lib/applyFilters";
-import sortJobs from "@/lib/sortJobs";
-import { YearMonthDateFilter } from "@/types/common";
+import { QuickStats, YearMonthDateFilter } from "@/types/common";
 import { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import YearOnlyDatePicker from "./yearOnlyDatePicker";
 import MonthOnlyDatePicker from "./monthOnlyDatePicker";
+import applyFilters from "@/lib/applyFilters";
+import getQuickStats from "@/lib/getQuickStats";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 const monthsList = {0: 'January', 1: 'February', 2: 'March', 3: 'April', 4: 'May', 5: 'June', 6: 'July', 7: 'August', 8: 'September', 9: 'October', 10: 'November', 11: 'December'} as any;
@@ -39,14 +39,8 @@ export default function Filters() {
     setAppliedFilter,
     postedFilter,
     setPostedFilter,
-    // Sort
-    sortBy,
-    sortIncreasing,
     // Other
-    filteredJobs,
-    setFilteredJobs,
-    jobs,
-    quickStats
+    jobs
   } = useContext(JobsContext);
 
   // These are the values for the filter related fields
@@ -95,37 +89,21 @@ export default function Filters() {
     {name: 'Posted', val: postedFilter}
   ];
 
-  const changeJobFilter = (event: any) => {
-    setJobFilterField(event.target.value as string);
-  };
-
-  const changeCompanyFilter = (event: any) => {
-    setCompanyFilterField(event.target.value as string);
-  };
-
-  const changeStatusFilter = (event: SelectChangeEvent) => {
-    setStatusFilterField(event.target.value as string);
-  };
-
-  const changeRemoteFilter = (event: SelectChangeEvent) => {
-    setRemoteFilterField(event.target.value as string);
-  };
-
-  const changeCityFilter = (event: any) => {
-    setCityFilterField(event.target.value as string);
-  };
-
-  const changeStateFilter = (event: SelectChangeEvent) => {
-    setStateFilterField(event.target.value as string);
-  };
-
-  const changeCountryFilter = (event: any) => {
-    setCountryFilterField(event.target.value as string);
-  };
-
-  const changeFromFilter = (event: any) => {
-    setFromFilterField(event.target.value as string);
-  };
+  const filteredJobs = jobs?.length > 0 ? applyFilters(
+    jobs,
+    jobFilter,
+    companyFilter,
+    statusFilter,
+    remoteFilter,
+    cityFilter,
+    stateFilter,
+    countryFilter,
+    fromFilter,
+    savedFilter,
+    appliedFilter,
+    postedFilter
+  ) : [];
+  const quickStats = getQuickStats(filteredJobs);
 
   // - When filters are applied, we need to sort again otherwise we lose
   //   sorting (since the filters are applied to the non-filtered jobs
@@ -169,28 +147,6 @@ export default function Filters() {
     setSavedFilter(savedFilterVal)
     setAppliedFilter(appliedFilterVal)
     setPostedFilter(postedFilterVal)
-
-    // Set the filtered jobs
-    setFilteredJobs(
-      sortJobs(
-        applyFilters(
-          jobs,
-          jobFilterField,
-          companyFilterField,
-          statusFilterField,
-          remoteFilterField,
-          cityFilterField,
-          stateFilterField,
-          countryFilterField,
-          fromFilterField,
-          savedFilterVal,
-          appliedFilterVal,
-          postedFilterVal,
-        ),
-        sortBy,
-        sortIncreasing
-      )
-    );
   }
 
   const clear = () => {
@@ -232,7 +188,10 @@ export default function Filters() {
               fullWidth
               variant="outlined"
               value={jobFilterField}
-              onChange={changeJobFilter}
+              onChange={
+                (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => 
+                  setJobFilterField(event.target.value as string)  
+              }
               sx={{
                 color: '#ffffff',
                 input: {
@@ -254,7 +213,10 @@ export default function Filters() {
               fullWidth
               variant="outlined"
               value={companyFilterField}
-              onChange={changeCompanyFilter}
+              onChange={
+                (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+                  setCompanyFilterField(event.target.value as string)        
+              }
               sx={{
                 // color: '#ffffff',
                 input: {
@@ -278,7 +240,10 @@ export default function Filters() {
                 name="statusFilter"
                 value={statusFilterField}
                 label="Status"
-                onChange={changeStatusFilter}
+                onChange={
+                  (event: SelectChangeEvent) => 
+                    setStatusFilterField(event.target.value as string)              
+                }
                 sx={{
                   color: '#ffffff',
                   "& .MuiOutlinedInput-notchedOutline": {
@@ -310,7 +275,11 @@ export default function Filters() {
                 name="remoteFilter"
                 value={remoteFilterField}
                 label="Remote"
-                onChange={changeRemoteFilter}
+                onChange={
+                  (event: SelectChangeEvent) => {
+                    setRemoteFilterField(event.target.value as string);
+                  }                  
+                }
                 sx={{
                   color: '#ffffff',
                   "& .MuiOutlinedInput-notchedOutline": {
@@ -344,7 +313,10 @@ export default function Filters() {
               label="City"
               variant="outlined"
               value={cityFilterField}
-              onChange={changeCityFilter}
+              onChange={
+                (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => 
+                  setCityFilterField(event.target.value as string)      
+              }
               sx={{
                 color: '#ffffff',
                 input: {
@@ -368,7 +340,10 @@ export default function Filters() {
                 placeholder="State"
                 value={stateFilterField}
                 label="State"
-                onChange={changeStateFilter}
+                onChange={
+                  (event: SelectChangeEvent) =>
+                    setStateFilterField(event.target.value as string)                   
+                }
                 sx={{
                   color: '#ffffff',
                   "& .MuiOutlinedInput-notchedOutline": {
@@ -404,7 +379,10 @@ export default function Filters() {
               label="Country"
               variant="outlined"
               value={countryFilterField}
-              onChange={changeCountryFilter}
+              onChange={
+                (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+                  setCountryFilterField(event.target.value as string)               
+              }
               sx={{
                 color: '#ffffff',
                 input: {
@@ -426,7 +404,10 @@ export default function Filters() {
             placeholder="LinkedIn, Indeed, etc."
             variant="outlined"
             value={fromFilterField}
-            onChange={changeFromFilter}
+            onChange={
+              (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+                setFromFilterField(event.target.value as string)        
+            }
             sx={{
               color: '#ffffff',
               input: {
@@ -503,7 +484,7 @@ export default function Filters() {
                         {`${stat}: `}
                       </Typography>
                       <Typography sx={{fontSize: '17px', fontWeight: 'bold', color: '#ce9178'}} display={'inline'}>
-                        {`${quickStats[stat]}`}
+                        {`${quickStats[stat as keyof QuickStats]}`}
                       </Typography>
                     </Grid>
                   );                   

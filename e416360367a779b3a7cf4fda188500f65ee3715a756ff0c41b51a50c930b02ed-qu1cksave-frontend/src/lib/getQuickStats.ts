@@ -4,7 +4,7 @@ import { Job } from "@/types/job";
 export default function getQuickStats(
   jobs: Job[]
 ): QuickStats {
-  const quickStats = {
+  const quickStats: QuickStats = {
     'Not Applied': 0,
     'Applied': 0,
     'Assessment': 0,

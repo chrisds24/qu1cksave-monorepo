@@ -82,7 +82,6 @@ export default function PaginationSection() {
               inputProps: {
                 min: 1,
                 max:
-                  // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
                   (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
                   1 :
                   Math.ceil(filteredJobs.length / jobsPerPage),
@@ -111,7 +110,6 @@ export default function PaginationSection() {
             helperText={
               invalidEntry ?
               `Must be 1-${
-                  // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
                   (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
                   1 :
                   Math.ceil(filteredJobs.length / jobsPerPage)
@@ -124,9 +122,6 @@ export default function PaginationSection() {
             sx={{
               color: '#ffffff',
               backgroundColor: '#000000',
-              // Need min and max width instead of just width
-              // maxWidth: '40px',
-              // minWidth: '40px',
               height: '40px',
             }}
             onClick={jumpToPage}

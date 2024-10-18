@@ -17,11 +17,10 @@ export default function JobsLayout({
 }) {
   const { sessionUser } = useContext(SessionUserContext);
 
+  // The reason for the undefined is when there's an error?
   const [jobs, setJobs] = useState<Job[] | undefined>([]);
-  const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
   const [page, setPage] = useState<number>(1);
   const [jobsPerPage, setJobsPerPage] = useState<number>(10);
-  const [jobsInPage, setJobsInPage] = useState<Job[]>([]);
   const [pageToJumpTo, setPageToJumpTo] = useState<number>();
   const [invalidEntry, setInvalidEntry] = useState<boolean>(false);
 
@@ -54,9 +53,6 @@ export default function JobsLayout({
   // Sort
   const [sortBy, setSortBy] = useState('Date Saved');
   const [sortIncreasing, setSortIncreasing] = useState(false);
-
-  // Quick Stats
-  const [quickStats, setQuickStats] = useState<QuickStats | null>(null);
 
   // Jobs Loading
   // - Used to indicate if we're showing the skeleton for the jobs
@@ -124,7 +120,11 @@ export default function JobsLayout({
   }, [jobs]);
 
   // React TODO:
-  // - When sort options change, set filtered jobs to be sorted accordingly
+  // - Unneeded effect
+  //
+  // - When sort options change, set filtered jobs to be sorted accordingly 
+  // - Will also need to adjust jobsInPage
+  // - DO THESE in the SortOptions component
   useEffect(() => {
     const filteredJobsCopy = [...filteredJobs];
     setFilteredJobs(
@@ -133,27 +133,16 @@ export default function JobsLayout({
   }, [sortBy, sortIncreasing]);
 
   // React TODO:
-  // - When filtered jobs change, set jobsInPage and quickStats accordingly
-  useEffect(() => {
-    setJobsInPage(filteredJobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
-    setQuickStats(getQuickStats(filteredJobs));
-  }, [filteredJobs]);
-
-  // React TODO:
   // - I need to split the Context Providers
   return (
     <JobsContext.Provider
       value={{
         jobs,
         setJobs,
-        filteredJobs,
-        setFilteredJobs,
         page,
         setPage,
         jobsPerPage,
         setJobsPerPage,
-        jobsInPage,
-        setJobsInPage,
         pageToJumpTo,
         setPageToJumpTo,
         invalidEntry,
@@ -198,9 +187,6 @@ export default function JobsLayout({
         setSortBy,
         sortIncreasing,
         setSortIncreasing,
-        // Quick Stats
-        quickStats,
-        setQuickStats,
         // Jobs Loading
         jobsLoading,
         setJobsLoading
