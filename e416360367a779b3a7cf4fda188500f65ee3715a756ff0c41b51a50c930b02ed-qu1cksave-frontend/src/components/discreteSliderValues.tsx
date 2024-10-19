@@ -2,22 +2,57 @@ import { JobsContext } from "@/app/(main)/jobs/layout";
 import { Box, Slider, Typography } from "@mui/material";
 import { useContext } from "react";
 import DiscreteSliderValuesSkeleton from "./skeleton/discreteSliderValuesSkeleton";
+import applyFilters from "@/lib/applyFilters";
 
 function valuetext(value: number) {
   return `${value}`;
 }
 
 export default function DiscreteSliderValues() {
-  const { filteredJobs, jobsPerPage, jobsLoading, setJobsPerPage } = useContext(JobsContext);
-  // const allJobsCount = jobs.length;
-  const filteredJobsCount = filteredJobs.length;
+  const {
+    // Jobs per page
+    jobsPerPage,
+    setJobsPerPage,
+    // Jobs
+    jobs,
+    // Filters
+    jobFilter,
+    companyFilter,
+    statusFilter,
+    remoteFilter,
+    cityFilter,
+    stateFilter,
+    countryFilter,
+    fromFilter,
+    savedFilter,
+    appliedFilter,
+    postedFilter,
+    // Loading state
+    jobsLoading
+  } = useContext(JobsContext);
+
+  const filteredJobs = jobs?.length > 0 ? applyFilters(
+    jobs,
+    jobFilter,
+    companyFilter,
+    statusFilter,
+    remoteFilter,
+    cityFilter,
+    stateFilter,
+    countryFilter,
+    fromFilter,
+    savedFilter,
+    appliedFilter,
+    postedFilter
+  ) : [];
   
-  const changeJobsPerPage: any = (event: React.ChangeEvent<unknown>, jobsPerPageVal: number) => {
-    setJobsPerPage(jobsPerPageVal);
-  };
+  // TODO: Remove this if the other way works
+  // const changeJobsPerPage: any = (event: React.ChangeEvent<unknown>, jobsPerPageVal: number) => {
+  //   setJobsPerPage(jobsPerPageVal);
+  // };
 
   // Ensures that the job slider's max doesn't go below 10
-  const maxCount = filteredJobsCount < 10 ? 10 : filteredJobsCount;
+  const maxCount = filteredJobs.length < 10 ? 10 : filteredJobs.length;
 
   const marks = [
     { value: 10, label: '10' },
@@ -27,7 +62,6 @@ export default function DiscreteSliderValues() {
     { value: 200, label: ''},
     { value: 500, label: ''},
     { value: 1000, label: ''},
-    // { value: filteredJobsCount, label: `${filteredJobsCount}`},
     { value: maxCount, label: `${maxCount}`},
   ];
   
@@ -40,13 +74,11 @@ export default function DiscreteSliderValues() {
         <Box sx={{ width: 250, marginRight: '1vw' }}>
           <Slider
             aria-label="Restricted values"
-            // defaultValue={10}
             defaultValue={jobsPerPage}
             getAriaValueText={valuetext}
             step={null}
             valueLabelDisplay="auto"
             marks={marks}
-            // max={filteredJobsCount}
             max={maxCount}
             sx={{
               color: '#ffffff', // color of the marks
@@ -64,7 +96,11 @@ export default function DiscreteSliderValues() {
                 color: "#ffffff"
               },
             }}
-            onChange={changeJobsPerPage}
+            // onChange={changeJobsPerPage} // TODO: Remove if other way works
+            onChange={
+              (event: Event, jobsPerPageVal: number | number[]) =>
+                setJobsPerPage(jobsPerPageVal)                             
+            }
           />
         </Box>
       </Box>
