@@ -48,7 +48,17 @@ const createLink = (idx: number, val: string) => {
 }
 
 export default function AddOrEditDialog() {
-  const {open, setOpen, isAdd, setIsAdd, dialogJob, setDialogJob, jobs, setJobs} = useContext(JobsContext);
+  const {
+    open,
+    setOpen,
+    isAdd,
+    setIsAdd,
+    dialogJob,
+    setDialogJob,
+    jobs,
+    setJobs
+  } = useContext(JobsContext);
+
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -168,26 +178,6 @@ export default function AddOrEditDialog() {
       setFromErr(false)
     }
     setFrom(val);
-  };
-
-  const changeApplied = (val: Dayjs | null) => {
-    setApplied(val);
-  };
-
-  const changePosted = (val: Dayjs | null) => {
-    setPosted(val);
-  };
-
-  const changeRemote = (event: SelectChangeEvent) => {
-    setRemote(event.target.value as string);
-  };
-
-  const changeStatus = (event: SelectChangeEvent) => {
-    setStatus(event.target.value as string);
-  };
-
-  const changeState = (event: SelectChangeEvent) => {
-    setState(event.target.value as string);
   };
 
   const handleClose = () => {
@@ -529,11 +519,6 @@ export default function AddOrEditDialog() {
       onClose={handleClose}
       PaperProps={{
         component: 'form',
-        // onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-        //   event.preventDefault();
-        //   // Do stuff here
-        //   handleClose();
-        // },
         onSubmit: handleSubmit,
         sx: {
           backgroundColor: '#1e1e1e',
@@ -561,7 +546,9 @@ export default function AddOrEditDialog() {
               name="status"
               value={status}
               label="Status"
-              onChange={changeStatus}
+              onChange={(event: SelectChangeEvent) =>
+                setStatus(event.target.value as string)
+              }
               sx={{
                 color: '#ffffff',
                 "& .MuiOutlinedInput-notchedOutline": {
@@ -586,8 +573,20 @@ export default function AddOrEditDialog() {
             </Select>
           </FormControl>
           <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 2}}>
-            <CustomDatePicker pickerType={'applied'} err={appliedErr} setErr={setAppliedErr} val={applied} changeVal={changeApplied} />
-            <CustomDatePicker pickerType={'posted'} err={postedErr} setErr={setPostedErr} val={posted} changeVal={changePosted} />
+            <CustomDatePicker
+              pickerType={'applied'}
+              err={appliedErr}
+              setErr={setAppliedErr}
+              val={applied}
+              changeVal={(val: Dayjs | null) => setApplied(val)}
+            />
+            <CustomDatePicker
+              pickerType={'posted'}
+              err={postedErr}
+              setErr={setPostedErr}
+              val={posted}
+              changeVal={(val: Dayjs | null) => setPosted(val)}
+            />
           </Box>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: {xs: 'column', sm: 'row'}, justifyContent: 'space-between'}}>
@@ -633,7 +632,6 @@ export default function AddOrEditDialog() {
               companyErr ? 'Required. Maximum: 255 characters' : ''
             }
             sx={{
-              // color: '#ffffff',
               input: {
                 color: '#ffffff'
               },
@@ -657,7 +655,9 @@ export default function AddOrEditDialog() {
               name="remote"
               value={remote}
               label="Remote"
-              onChange={changeRemote}
+              onChange={(event: SelectChangeEvent) => 
+                setRemote(event.target.value as string)               
+              }
               sx={{
                 color: '#ffffff',
                 "& .MuiOutlinedInput-notchedOutline": {
@@ -669,14 +669,12 @@ export default function AddOrEditDialog() {
                 MenuProps: {
                   MenuListProps: {
                     sx: {
-                      // backgroundColor: '#1e1e1e',
                       backgroundColor: '#000000',
                       color: '#ffffff'
                     }
                   }
                 }
               }}
-              // fullWidth
             >
               <MenuItem key={'Remote Job'} value={'Remote'}>Remote</MenuItem>
               <MenuItem key={'Hybrid Job'} value={'Hybrid'}>Hybrid</MenuItem>
@@ -689,10 +687,22 @@ export default function AddOrEditDialog() {
             </Typography>
             <Box sx={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
               <Box sx={{marginRight: 2, marginBottom: 2}}> 
-                <NumberInputBasic inputType={'Salary Min'} numInputVal={salaryMin} setNumInputVal={setSalaryMin} min={0} max={9999999} />
+                <NumberInputBasic
+                  inputType={'Salary Min'}
+                  numInputVal={salaryMin}
+                  setNumInputVal={setSalaryMin}
+                  min={0}
+                  max={9999999}
+                />
               </Box>
               <Box sx={{marginBottom: 2}}> 
-                <NumberInputBasic inputType={'Salary Max'} numInputVal={salaryMax} setNumInputVal={setSalaryMax} min={0} max={9999999} />
+                <NumberInputBasic
+                  inputType={'Salary Max'}
+                  numInputVal={salaryMax}
+                  setNumInputVal={setSalaryMax}
+                  min={0}
+                  max={9999999}
+                />
               </Box>
             </Box>
           </Box>       
@@ -735,7 +745,9 @@ export default function AddOrEditDialog() {
                 placeholder="State"
                 value={state}
                 label="State"
-                onChange={changeState}
+                onChange={(event: SelectChangeEvent) =>
+                  setState(event.target.value as string)
+                }
                 sx={{
                   color: '#ffffff',
                   "& .MuiOutlinedInput-notchedOutline": {
@@ -746,7 +758,6 @@ export default function AddOrEditDialog() {
                   MenuProps: {
                     MenuListProps: {
                       sx: {
-                        // backgroundColor: '#1e1e1e',
                         backgroundColor: '#000000',
                         color: '#ffffff'
                       }
