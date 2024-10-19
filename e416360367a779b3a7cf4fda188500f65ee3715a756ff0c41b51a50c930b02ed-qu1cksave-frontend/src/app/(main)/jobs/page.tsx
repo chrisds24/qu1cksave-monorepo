@@ -14,89 +14,11 @@ import PaginationSection from "@/components/paginationSection";
 
 export default function Page() {
   const {
-    filteredJobs,
-    page,
-    setPage,
-    jobsPerPage,
-    setJobsInPage,
-    pageToJumpTo,
-    setInvalidEntry,
     setIsAdd,
     setDialogJob,
     setOpen,
     jobs
   } = useContext(JobsContext);
-
-  // React TODO:
-  // - Unneeded effect
-  // - Can just re-calculate jobsInPage in PaginationSection component
-  // When page changes
-  useEffect(() => {
-    setJobsInPage(filteredJobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
-  }, [page])
-
-  // React TODO:
-  // - Unneeded effect
-  // - MOVE ALL THIS LOGIC to DiscreteSliderValues component
-  // When jobsPerPage changes
-  // When number of jobs per page change, the following also change:
-  // 1.) Jobs shown in current page
-  // 2.) The page, if current page ends up higher than our last page due to the
-  //     change in number of jobs per page
-  //     - As a result of the page change, jobs shown in current page changes 
-  useEffect(() => {
-    if (filteredJobs.length) { // So this doesn't trigger when jobs are still loading initially
-      // -------------------
-      // This "wrapped" section was originally just: lastPage = Math.ceil(filteredJobs.length / jobsPerPage)
-      // This new code ensures that we don't divide by 0 and that the last page is at least 1
-      let lastPage;
-      if (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) {
-        lastPage = 1; // Last page is at least 1
-      } else {
-        lastPage = Math.ceil(filteredJobs.length / jobsPerPage) 
-      }
-      // --------------------
-
-      // If we're at a page higher than our last page, go to the last page
-      // Will automatically update jobs shown in current page
-      if (page > lastPage) {
-        setPage(lastPage);
-      } else { // Just change jobs shown in current page
-        setJobsInPage(filteredJobs.slice(jobsPerPage * (page - 1), jobsPerPage * page));
-      }
-
-      // If there's a page to jump to that has been set, do the check below
-      if (pageToJumpTo !== undefined) {
-        if (pageToJumpTo < 1 || pageToJumpTo > lastPage) {
-          setInvalidEntry(true);
-        } else {
-          setInvalidEntry(false);
-        }
-      }
-    }
-  }, [jobsPerPage])
-
-  // React TODO:
-  // - Unneeded effect
-  // - MOVE ALL THIS LOGIC to pageToJumpTo
-  useEffect(() => {
-    if (pageToJumpTo !== undefined) {
-      // -------------------
-      // This "wrapped" section was originally just: lastPage = Math.ceil(filteredJobs.length / jobsPerPage)
-      let lastPage;
-      if (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) {
-        lastPage = 1; // Last page is at least 1
-      } else {
-        lastPage = Math.ceil(filteredJobs.length / jobsPerPage) 
-      }
-      // --------------------
-      if (pageToJumpTo < 1 || pageToJumpTo > lastPage) {
-        setInvalidEntry(true);
-      } else {
-        setInvalidEntry(false);
-      }
-    }
-  }, [pageToJumpTo]);
 
   if (jobs !== undefined) {
     return (

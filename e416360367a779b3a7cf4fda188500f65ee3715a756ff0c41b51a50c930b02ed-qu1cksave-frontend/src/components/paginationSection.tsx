@@ -1,28 +1,69 @@
 import { JobsContext } from "@/app/(main)/jobs/layout";
 import { Box, Button, Pagination, TextField } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import PaginationSectionSkeleton from "./skeleton/paginationSectionSkeleton";
+import applyFilters from "@/lib/applyFilters";
 
 export default function PaginationSection() {
   const {
-    filteredJobs,
+    jobs,
     jobsPerPage,
+    jobsLoading,
+    // Page related
     page,
     setPage,
-    pageToJumpTo,
-    setPageToJumpTo,
-    invalidEntry,
-    jobsLoading
+    // Filters
+    jobFilter,
+    companyFilter,
+    statusFilter,
+    remoteFilter,
+    cityFilter,
+    stateFilter,
+    countryFilter,
+    fromFilter,
+    savedFilter,
+    appliedFilter,
+    postedFilter
   } = useContext(JobsContext);
 
-  const changePage = (event: React.ChangeEvent<unknown>, pageVal: number) => {
-    setPage(pageVal);
-  };
+  // Note: I want these in layout IF I want to preserve it in between
+  //   renders. Though, I'll keep it here since I don't want that behavior.
+  const [pageToJumpTo, setPageToJumpTo] = useState<number>();
+  const [invalidEntry, setInvalidEntry] = useState<boolean>(false);
+
+  const filteredJobs = jobs?.length > 0 ? applyFilters(
+    jobs,
+    jobFilter,
+    companyFilter,
+    statusFilter,
+    remoteFilter,
+    cityFilter,
+    stateFilter,
+    countryFilter,
+    fromFilter,
+    savedFilter,
+    appliedFilter,
+    postedFilter
+  ) : [];
+  
+  let lastPage;
+  // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
+  // This new code ensures that we don't divide by 0 and that there is at least 1 page
+  if (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) {
+    lastPage = 1; // Last page is at least 1
+  } else {
+    lastPage = Math.ceil(filteredJobs.length / jobsPerPage) 
+  }
 
   const changePageToJumpTo = (event: React.ChangeEvent<unknown>) => {
     const eventVal = (event.target as HTMLInputElement).value;
     if (eventVal) { // If there's a page to jump to that has been set
       let pageVal = Number(eventVal);
+      if (pageVal < 1 || pageVal > lastPage) {
+        setInvalidEntry(true);
+      } else {
+        setInvalidEntry(false);
+      }
       setPageToJumpTo(pageVal);
     }
   };
@@ -38,15 +79,12 @@ export default function PaginationSection() {
       // alignItems: 'center' is important when screen width at xs
       <Box sx={{ display: 'flex', flexDirection:  {xs: 'column', sm: 'row'}, alignItems: 'center'}}>
         <Pagination
-          count={
-            // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)
-            // This new code ensures that we don't divide by 0 and that there is at least 1 page
-            (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
-            1 :
-            Math.ceil(filteredJobs.length / jobsPerPage)
-          }
+          count={lastPage}
           page={page}
-          onChange={changePage}
+          onChange={
+            (event: React.ChangeEvent<unknown>, pageVal: number) =>
+              setPage(pageVal)
+          }
           size={'large'}
           sx={{
             '& .MuiPaginationItem-root': {
@@ -81,10 +119,7 @@ export default function PaginationSection() {
             InputProps={{
               inputProps: {
                 min: 1,
-                max:
-                  (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
-                  1 :
-                  Math.ceil(filteredJobs.length / jobsPerPage),
+                max: lastPage,
                 step: "1" 
               },
               style: {

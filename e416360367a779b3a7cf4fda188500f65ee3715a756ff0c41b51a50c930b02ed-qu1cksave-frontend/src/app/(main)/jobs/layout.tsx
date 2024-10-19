@@ -3,10 +3,7 @@
 import { Context, ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { SessionUserContext } from "../layout";
 import { Job } from "@/types/job";
-import applyFilters from "@/lib/applyFilters";
-import sortJobs from "@/lib/sortJobs";
-import { QuickStats, YearMonthDateFilter } from "@/types/common";
-import getQuickStats from "@/lib/getQuickStats";
+import { YearMonthDateFilter } from "@/types/common";
 
 export const JobsContext: Context<any> = createContext(null);
 
@@ -21,15 +18,23 @@ export default function JobsLayout({
   const [jobs, setJobs] = useState<Job[] | undefined>([]);
   const [page, setPage] = useState<number>(1);
   const [jobsPerPage, setJobsPerPage] = useState<number>(10);
-  const [pageToJumpTo, setPageToJumpTo] = useState<number>();
-  const [invalidEntry, setInvalidEntry] = useState<boolean>(false);
 
+  // React TODO:
+  // - I don't think I want the current behavior where if the dialog is open in
+  //   the single job view and we press back to go to the jobs list view, the
+  //   dialog remains open.
   // For dialog
+  // - Used by both jobs/page.tsx and jobs/[id]/page.tsx
+  // - Note that jobs/[id]/page.tsx is not a subroute of jobs/page.tsx
+  //   -- It is a subroute of jobs, which is why state is in the layout
   const [open, setOpen] = useState(false);
   const [isAdd, setIsAdd] = useState(true);
   const [dialogJob, setDialogJob] = useState<Job | undefined>(undefined);
 
+  // React TODO:
+  // - Same idea as for the addOrEditDialog
   // For delete dialog
+  // - Same idea as for the addOrEditDialog
   const [deleteJobOpen, setDeleteJobOpen] = useState(false);
   const [deleteJobId, setDeleteJobId] = useState<string>('');
 
@@ -87,51 +92,6 @@ export default function JobsLayout({
     getJobs();
   }, [sessionUser]);
 
-  // Jobs only changes during: initial load, adding, editing, or deleting.
-  //   (Not when going to a single job view then going back.)
-  // Filters and sorting should also automatically apply once jobs changes
-  // React TODO:
-  // - When jobs change (initial load, add, edit, or delete)
-  //   -- Apply filters to jobs -> Sort those jobs -> Set filtered jobs to those
-  // - Note: I'm not referring to filteredJobs or jobsInPage
-  useEffect(() => {
-    if (jobs !== undefined) {
-      setFilteredJobs(
-        sortJobs(
-          applyFilters(
-            jobs,
-            jobFilter,
-            companyFilter,
-            statusFilter,
-            remoteFilter,
-            cityFilter,
-            stateFilter,
-            countryFilter,
-            fromFilter,
-            savedFilter,
-            appliedFilter,
-            postedFilter
-          ),
-          sortBy,
-          sortIncreasing
-        )
-      );
-    }
-  }, [jobs]);
-
-  // React TODO:
-  // - Unneeded effect
-  //
-  // - When sort options change, set filtered jobs to be sorted accordingly 
-  // - Will also need to adjust jobsInPage
-  // - DO THESE in the SortOptions component
-  useEffect(() => {
-    const filteredJobsCopy = [...filteredJobs];
-    setFilteredJobs(
-      sortJobs(filteredJobsCopy, sortBy, sortIncreasing)      
-    );    
-  }, [sortBy, sortIncreasing]);
-
   // React TODO:
   // - I need to split the Context Providers
   return (
@@ -143,10 +103,6 @@ export default function JobsLayout({
         setPage,
         jobsPerPage,
         setJobsPerPage,
-        pageToJumpTo,
-        setPageToJumpTo,
-        invalidEntry,
-        setInvalidEntry,
         // Add or edit dialog
         open,
         setOpen,
