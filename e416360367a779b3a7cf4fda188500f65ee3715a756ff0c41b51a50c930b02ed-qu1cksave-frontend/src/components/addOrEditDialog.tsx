@@ -3,7 +3,6 @@
 import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { JobsContext } from "@/app/(main)/jobs/layout";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { states } from "@/lib/states";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
