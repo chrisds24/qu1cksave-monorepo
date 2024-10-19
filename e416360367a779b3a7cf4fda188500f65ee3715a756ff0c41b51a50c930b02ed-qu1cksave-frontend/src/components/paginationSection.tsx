@@ -29,7 +29,6 @@ export default function PaginationSection() {
   // Note: I want these in layout IF I want to preserve it in between
   //   renders. Though, I'll keep it here since I don't want that behavior.
   const [pageToJumpTo, setPageToJumpTo] = useState<number>();
-  const [invalidEntry, setInvalidEntry] = useState<boolean>(false);
 
   const filteredJobs = jobs?.length > 0 ? applyFilters(
     jobs,
@@ -55,15 +54,24 @@ export default function PaginationSection() {
     lastPage = Math.ceil(filteredJobs.length / jobsPerPage) 
   }
 
+  let invalidEntry = false;
+  if (pageToJumpTo !== undefined) { // If there's a page to jump to that has been set
+    if (pageToJumpTo < 1 || pageToJumpTo > lastPage) {
+      invalidEntry = true
+    } else {
+      invalidEntry = false
+    }
+  }
+
   const changePageToJumpTo = (event: React.ChangeEvent<unknown>) => {
     const eventVal = (event.target as HTMLInputElement).value;
     if (eventVal) { // If there's a page to jump to that has been set
       let pageVal = Number(eventVal);
-      if (pageVal < 1 || pageVal > lastPage) {
-        setInvalidEntry(true);
-      } else {
-        setInvalidEntry(false);
-      }
+      // if (pageVal < 1 || pageVal > lastPage) {
+      //   setInvalidEntry(true);
+      // } else {
+      //   setInvalidEntry(false);
+      // }
       setPageToJumpTo(pageVal);
     }
   };
@@ -144,11 +152,7 @@ export default function PaginationSection() {
             error={invalidEntry}
             helperText={
               invalidEntry ?
-              `Must be 1-${
-                  (filteredJobs.length === 0 || jobsPerPage === 0 || filteredJobs.length < jobsPerPage) ?
-                  1 :
-                  Math.ceil(filteredJobs.length / jobsPerPage)
-              }` :
+              `Must be 1-${lastPage}` :
               ''
             }
           />
