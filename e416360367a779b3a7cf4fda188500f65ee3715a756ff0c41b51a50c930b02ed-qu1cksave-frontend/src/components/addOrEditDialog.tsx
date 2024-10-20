@@ -63,12 +63,10 @@ export default function AddOrEditDialog() {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-  const editModeWithJobLoaded = !isAdd && dialogJob;
-
   // Create the list of existing links for the loaded job
   const link1 = createLink(1, '');
   const existingLinks: JSX.Element[] = [];
-  if (editModeWithJobLoaded && dialogJob.links) {
+  if (!isAdd && dialogJob?.links) {
     const n = dialogJob.links.length;
     for (let i = 1; i < n + 1; i++) { // Start count at 1
       // i-1 since we count starting from 1
@@ -77,85 +75,103 @@ export default function AddOrEditDialog() {
   }
 
   // If editing, fill in fields and set states based on selected job
-  const [title , setTitle] = useState(
-    editModeWithJobLoaded ? dialogJob.title : ''
-  );
-  const [titleErr, setTitleErr] = useState(
-    (editModeWithJobLoaded && !dialogJob.title) ? true : false
-  );
-  const [company , setCompany] = useState(
-    editModeWithJobLoaded ? dialogJob.company_name : ''
-  );
-  const [companyErr, setCompanyErr] = useState(
-    (editModeWithJobLoaded && !dialogJob.company_name) ? true : false
-  );
-  const [city , setCity] = useState(
-    (editModeWithJobLoaded && dialogJob.city) ? dialogJob.city : ''
-  );
+  const [title , setTitle] = useState('');
+  const [titleErr, setTitleErr] = useState(false);
+  const [company , setCompany] = useState('');
+  const [companyErr, setCompanyErr] = useState(false);
+  const [city , setCity] = useState('');
   const [cityErr, setCityErr] = useState(false);
-  const [country , setCountry] = useState(
-    (editModeWithJobLoaded && dialogJob.country) ? dialogJob.country : ''
-  );
+  const [country , setCountry] = useState('');
   const [countryErr, setCountryErr] = useState(false);
-  const [from , setFrom] = useState(
-    (editModeWithJobLoaded && dialogJob.found_from) ? dialogJob.found_from : ''
-  );
+  const [from , setFrom] = useState('');
   const [fromErr, setFromErr] = useState(false);
-  const [remote, setRemote] = useState(
-    editModeWithJobLoaded ? dialogJob.is_remote : 'Remote'
-  );
-  const [salaryMin, setSalaryMin] = useState<number | null>(
-    (editModeWithJobLoaded && dialogJob.salary_min !== null) ?
-    dialogJob.salary_min :
-    null
-  );
-  const [salaryMax, setSalaryMax] = useState<number | null>(
-    (editModeWithJobLoaded && dialogJob.salary_max !== null) ?
-    dialogJob.salary_max :
-    null
-  );
-  const [status, setStatus] = useState(
-    editModeWithJobLoaded ? dialogJob.job_status : 'Not Applied'
-  );
-  const [applied, setApplied] = useState<Dayjs | null>(
-    (editModeWithJobLoaded && dialogJob.date_applied) ?
-    dayjs(new Date(
-      dialogJob.date_applied.year,
-      dialogJob.date_applied.month,
-      dialogJob.date_applied.date
-    )) :
-    null
-  );
+  const [remote, setRemote] = useState('Remote');
+  const [salaryMin, setSalaryMin] = useState<number | null>(null);
+  const [salaryMax, setSalaryMax] = useState<number | null>(null);
+  const [status, setStatus] = useState('Not Applied');
+  const [applied, setApplied] = useState<Dayjs | null>(null);
   const [appliedErr, setAppliedErr] = useState<DateValidationError | null>(null);
-  const [posted, setPosted] = useState<Dayjs | null>(
-    (editModeWithJobLoaded && dialogJob.date_posted) ?
-    dayjs(new Date(
-      dialogJob.date_posted.year,
-      dialogJob.date_posted.month,
-      dialogJob.date_posted.date
-    )) :
-    null
-  );
+  const [posted, setPosted] = useState<Dayjs | null>(null);
   const [postedErr, setPostedErr] = useState<DateValidationError | null>(null);
-  const [state, setState] = useState(
-    (editModeWithJobLoaded && dialogJob.us_state) ? dialogJob.us_state : ''
-  );
-  const [links, setLinks] = useState<JSX.Element[]>(
-    (editModeWithJobLoaded && dialogJob.links) ? existingLinks : [link1]
-  );
-  // dialogJob.resume.file_name is needed since dialog.resume could be an empty {}
-  //   due to how the postgresql query is constructed
-  const [resumeName, setResumeName] = useState<string>(
-    // (editModeWithJobLoaded && dialogJob.resume && dialogJob.resume.file_name) ?
-    (editModeWithJobLoaded && dialogJob.resume?.file_name) ?
-    dialogJob.resume.file_name :
-    ''
-  );
-  const [coverLetterName, setCoverLetterName] = useState<string>(
-    (editModeWithJobLoaded && dialogJob.cover_letter?.file_name) ?
-    dialogJob.cover_letter.file_name :
-    ''
-  );
+  const [state, setState] = useState('');
+  const [links, setLinks] = useState<JSX.Element[]>([link1]);
+  const [resumeName, setResumeName] = useState<string>('');
+  const [coverLetterName, setCoverLetterName] = useState<string>('');
+
+  // IMPORTANT:
+  // - Storing derived state in state is bad:
+  //   -- https://stackoverflow.com/questions/76796466/react-derived-state-whats-wrong-with-this-code
+  // - Setting initial state using props is an anti-pattern.
+  // - useState not setting initial value:
+  //   -- https://stackoverflow.com/questions/58818727/react-usestate-not-setting-initial-value
+
+  // Need this useEffect so that the initial state of the form fields is
+  //   updated with the selected dialogJob's details, since the form fields
+  //   rely on the dialogJob state through context.
+  // Compare this to filters.tsx, where the filter fields also rely on the
+  //   filter states from the context.
+  // - In the case with the Filters component, the filter fields get prefilled
+  //   with the currently set filters since when the component first consumes
+  //   the context, the context already has the filters set. In other words,
+  //   the component is given the filter states on the first render.
+  // On the other hand, when the dialog first renders, the first render
+  //   consumes the context with the undefined dialogJob then sets the initial
+  //   state of the form fields to the default values. The dialog is
+  //   opened when a job is selected and sets the open state, which the Dialog
+  //   MUI component uses for its "open" attribute. The dialogJob and isAdd
+  //   states are also set when the job is selected, and the dialog actually
+  //   receives this updated data since it consumes the context.
+  //   - However, the initial state of the form fields don't get updated
+  //     since their initial states have already been set on the first
+  //     render (Since the code below to set the initial state only runs on the
+  //     first render)
+  //     const [title , setTitle] = useState(
+  //       (!isAdd && dialogJob) ? dialogJob.title : ''
+  //     );
+  //   - If we wanted the state of the form fields to be updated, we need a
+  //     useEffect with isAdd and dialogJob as a dependency and sets the state
+  //     of the form fields when those two dependencies change (In our case,
+  //     they are changed when a job is selected for editing.)
+  useEffect(() => {
+    // In edit mode and the job exists
+    if (!isAdd && dialogJob) {
+      setTitle(dialogJob.title);
+      if (!dialogJob.title) { setTitleErr(true); }
+      setCompany(dialogJob.company_name);
+      if (!dialogJob.company_name) { setCompanyErr(true); }
+      if (dialogJob.city) { setCity(dialogJob.city); }
+      if (dialogJob.country) { setCountry(dialogJob.country); }
+      if (dialogJob.found_from) { setFrom(dialogJob.found_from); }
+      setRemote(dialogJob.is_remote);
+      setStatus(dialogJob.job_status);
+
+      const dateApplied = dialogJob.date_applied;
+      if (dateApplied) {
+        setApplied(dayjs(new Date(
+          dateApplied.year, dateApplied.month, dateApplied.date
+        )));
+      }
+      const datePosted = dialogJob.date_posted;
+      if (datePosted) {
+        setPosted(dayjs(new Date(
+          datePosted.year, datePosted.month, datePosted.date
+        )));
+      }
+
+      if (dialogJob.salary_min !== null) { setSalaryMin(dialogJob.salary_min); }
+      if (dialogJob.salary_max !== null) { setSalaryMax(dialogJob.salary_max); }
+      if (dialogJob.us_state) { setState(dialogJob.us_state); }
+      if (dialogJob.links) { setLinks(existingLinks); }
+      // dialogJob.resume.file_name is needed since dialog.resume could be an empty {}
+      //   due to how the postgresql query is constructed
+      if (dialogJob.resume?.file_name) {
+        setResumeName(dialogJob.resume.file_name);
+      }
+      if (dialogJob.cover_letter?.file_name) {
+        setCoverLetterName(dialogJob.cover_letter.file_name);
+      }
+    }
+  }, [isAdd, dialogJob]);
 
   const changeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value as string;
@@ -442,7 +458,7 @@ export default function AddOrEditDialog() {
 
     // For EDIT mode, include the resume_id in the NewJob if dialogJob had one
     // - Deals with cases EDIT.A, EDIT.C.b, and EDIT.B.b
-    if (editModeWithJobLoaded && dialogJob.resume_id) {
+    if (!isAdd && dialogJob?.resume_id) {
       // newJob.resume_id = dialogJob.resumeId
       newJob.resume_id = dialogJob.resume_id
     }
@@ -481,7 +497,7 @@ export default function AddOrEditDialog() {
       }
     }
 
-    if (editModeWithJobLoaded && dialogJob.cover_letter_id) {
+    if (!isAdd && dialogJob?.cover_letter_id) {
       newJob.cover_letter_id = dialogJob.cover_letter_id
     }
 
@@ -499,16 +515,7 @@ export default function AddOrEditDialog() {
         }
 
         newJobs.push(job)
-        // NOTE: Whenever jobs is set, apply the filters.
-        // This is done in layout.tsx to get filteredJobs
         setJobs(newJobs)
-        // NOTE: The useEffect to automatically update jobsInPage when jobs
-        //   changes is in job/page.tsx
-        // NOTE: For some reason, the links are weird in the single job view.
-        //   If I create link fields in the modal and set it to for example,
-        //   a bunch of spaces. It creates a link to the single job page for
-        //   the current job.
-        //   (Turns out this is the case for anything that isn't a link)
       } else {
         // setJobs(undefined) // No need to go to error page.
         alert(`Error processing request. Please reload the page and try again.`)
@@ -838,7 +845,7 @@ export default function AddOrEditDialog() {
           multiline
           rows={10}
           fullWidth
-          defaultValue={editModeWithJobLoaded && dialogJob.job_description ? dialogJob.job_description : ''}
+          defaultValue={(!isAdd && dialogJob?.job_description) ? dialogJob.job_description : ''}
           sx={{
             "& .MuiOutlinedInput-notchedOutline": {
               border: 'solid #636369',
@@ -858,7 +865,7 @@ export default function AddOrEditDialog() {
           multiline
           rows={10}
           fullWidth
-          defaultValue={editModeWithJobLoaded && dialogJob.notes ? dialogJob.notes : ''}
+          defaultValue={(!isAdd && dialogJob?.notes) ? dialogJob.notes : ''}
           sx={{
             "& .MuiOutlinedInput-notchedOutline": {
               border: 'solid #636369',
