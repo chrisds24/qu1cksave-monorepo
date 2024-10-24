@@ -3,7 +3,6 @@
 import { Box, Button, Divider, List, ListItem, ListItemText, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
-import { JobsContext } from "../layout";
 import { Job } from "@/types/job";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
@@ -12,6 +11,13 @@ import AddOrEditDialog from "@/components/addOrEditDialog";
 import DeleteDialog from "@/components/deleteDialog";
 import FileDownloadSection from "@/components/fileDownloadSection";
 import SingleJobSkeleton from "@/components/skeleton/singleJobSkeleton";
+import { JobsContext } from "@/contexts/JobsContext";
+import { SetIsAddContext } from "@/contexts/add_or_edit_dialog/IsAddContext";
+import { SetOpenContext } from "@/contexts/add_or_edit_dialog/OpenContext";
+import { SetDialogJobContext } from "@/contexts/add_or_edit_dialog/DialogJobContext";
+import { SetDeleteJobIdContext } from "@/contexts/delete_dialog/DeleteJobIdContext";
+import { SetDeleteJobOpenContext } from "@/contexts/delete_dialog/DeleteJobOpenContext";
+import { JobsLoadingContext } from "@/contexts/JobsLoadingContext";
 
 // Applied, Not Applied, Assessment, Interview, Job Offered, Accepted Offer, Declined Offer
 // Rejected, Ghosted, Closed
@@ -38,7 +44,14 @@ const statusColor = {
 
 export default function Page({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { jobs, setIsAdd, setOpen, setDialogJob, setDeleteJobId, setDeleteJobOpen, jobsLoading } = useContext(JobsContext);
+  const jobs = useContext(JobsContext);
+  const setIsAdd = useContext(SetIsAddContext);
+  const setOpen = useContext(SetOpenContext);
+  const setDialogJob = useContext(SetDialogJobContext);
+  const setDeleteJobId = useContext(SetDeleteJobIdContext);
+  const setDeleteJobOpen = useContext(SetDeleteJobOpenContext);
+  const jobsLoading = useContext(JobsLoadingContext);
+
   if (!jobsLoading) {
     if (jobs !== undefined) {
       // Not to be confused with the filteredJobs state (where we apply the filters to)

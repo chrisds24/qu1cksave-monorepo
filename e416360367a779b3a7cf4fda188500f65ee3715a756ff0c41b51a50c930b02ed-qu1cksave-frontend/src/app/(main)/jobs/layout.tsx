@@ -12,7 +12,7 @@ export default function JobsLayout({
 }: {
   children: ReactNode
 }) {
-  const { sessionUser } = useContext(SessionUserContext);
+  const sessionUser = useContext(SessionUserContext);
   // The reason for the undefined is when there's an error?
   // Note: Moving jobs state here since the setter is needed here
   const [jobs, setJobs] = useState<Job[] | undefined>([]);

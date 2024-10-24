@@ -1,24 +1,25 @@
 'use client'
 
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import JobsList from "@/components/job/list";
 import { Box, Fab, Typography } from "@mui/material";
 import DiscreteSliderValues from "@/components/discreteSliderValues";
-import { JobsContext } from "./layout";
 import AddOrEditDialog from "@/components/addOrEditDialog";
 import AddIcon from '@mui/icons-material/Add';
 import Filters from "@/components/filters";
 import SortOptions from "@/components/sortOptions";
 import DeleteDialog from "@/components/deleteDialog";
 import PaginationSection from "@/components/paginationSection";
+import { SetIsAddContext } from "@/contexts/add_or_edit_dialog/IsAddContext";
+import { SetDialogJobContext } from "@/contexts/add_or_edit_dialog/DialogJobContext";
+import { SetOpenContext } from "@/contexts/add_or_edit_dialog/OpenContext";
+import { JobsContext } from "@/contexts/JobsContext";
 
 export default function Page() {
-  const {
-    setIsAdd,
-    setDialogJob,
-    setOpen,
-    jobs
-  } = useContext(JobsContext);
+  const jobs = useContext(JobsContext);
+  const setIsAdd = useContext(SetIsAddContext);
+  const setDialogJob = useContext(SetDialogJobContext);
+  const setOpen = useContext(SetOpenContext);
 
   if (jobs !== undefined) {
     return (

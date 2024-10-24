@@ -2,7 +2,6 @@ import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, B
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ChangeEvent, useContext, useState } from "react";
 import { states } from "@/lib/states";
-import { JobsContext } from "@/app/(main)/jobs/layout";
 import { QuickStats, YearMonthDateFilter } from "@/types/common";
 import { Dayjs } from "dayjs";
 import dayjs from "dayjs";
@@ -10,38 +9,40 @@ import YearOnlyDatePicker from "./yearOnlyDatePicker";
 import MonthOnlyDatePicker from "./monthOnlyDatePicker";
 import applyFilters from "@/lib/applyFilters";
 import getQuickStats from "@/lib/getQuickStats";
+import { FiltersContext, SetFiltersContext } from "@/contexts/FiltersContext";
+import { JobsContext } from "@/contexts/JobsContext";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 const monthsList = {0: 'January', 1: 'February', 2: 'March', 3: 'April', 4: 'May', 5: 'June', 6: 'July', 7: 'August', 8: 'September', 9: 'October', 10: 'November', 11: 'December'} as any;
 
 export default function Filters() {
   const {
-    // Filters
     jobFilter,
-    setJobFilter,
     companyFilter,
-    setCompanyFilter,
     statusFilter,
-    setStatusFilter,
     remoteFilter,
-    setRemoteFilter,
     cityFilter,
-    setCityFilter,
     stateFilter,
-    setStateFilter,
     countryFilter,
-    setCountryFilter,
     fromFilter,
-    setFromFilter,
     savedFilter,
-    setSavedFilter,
     appliedFilter,
+    postedFilter
+  } = useContext(FiltersContext);
+  const {
+    setJobFilter,
+    setCompanyFilter,
+    setStatusFilter,
+    setRemoteFilter,
+    setCityFilter,
+    setStateFilter,
+    setCountryFilter,
+    setFromFilter,
+    setSavedFilter,
     setAppliedFilter,
-    postedFilter,
-    setPostedFilter,
-    // Other
-    jobs
-  } = useContext(JobsContext);
+    setPostedFilter    
+  } = useContext(SetFiltersContext);
+  const jobs = useContext(JobsContext);
 
   // These are the values for the filter related fields
   const [jobFilterField, setJobFilterField] = useState(jobFilter);

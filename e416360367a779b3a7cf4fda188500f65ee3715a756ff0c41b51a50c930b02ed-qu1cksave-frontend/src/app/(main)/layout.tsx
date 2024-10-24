@@ -276,7 +276,7 @@ export default function MainLayout({
           }}
         >
           <Toolbar sx={{display: { xs: 'block', md: 'none' }}}/>
-          <SessionUserContext.Provider value={{ sessionUser }}>
+          <SessionUserContext.Provider value={ sessionUser }>
             {children}
           </SessionUserContext.Provider>
         </Box>

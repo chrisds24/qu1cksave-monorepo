@@ -1,18 +1,21 @@
-import { JobsContext } from "@/app/(main)/jobs/layout";
 import { Box, Button, Pagination, TextField } from "@mui/material";
 import { useContext, useState } from "react";
 import PaginationSectionSkeleton from "./skeleton/paginationSectionSkeleton";
 import applyFilters from "@/lib/applyFilters";
+import { JobsContext } from "@/contexts/JobsContext";
+import { JobsPerPageContext } from "@/contexts/JobsPerPageContext";
+import { JobsLoadingContext } from "@/contexts/JobsLoadingContext";
+import { PageContext, SetPageContext } from "@/contexts/PageContext";
+import { FiltersContext } from "@/contexts/FiltersContext";
 
 export default function PaginationSection() {
+  const jobs = useContext(JobsContext);
+  const jobsPerPage = useContext(JobsPerPageContext);
+  const jobsLoading = useContext(JobsLoadingContext);
+  const page = useContext(PageContext);
+  const setPage = useContext(SetPageContext);
+
   const {
-    jobs,
-    jobsPerPage,
-    jobsLoading,
-    // Page related
-    page,
-    setPage,
-    // Filters
     jobFilter,
     companyFilter,
     statusFilter,
@@ -24,7 +27,7 @@ export default function PaginationSection() {
     savedFilter,
     appliedFilter,
     postedFilter
-  } = useContext(JobsContext);
+  } = useContext(FiltersContext);
 
   // Note: I want these in layout IF I want to preserve it in between
   //   renders. Though, I'll keep it here since I don't want that behavior.

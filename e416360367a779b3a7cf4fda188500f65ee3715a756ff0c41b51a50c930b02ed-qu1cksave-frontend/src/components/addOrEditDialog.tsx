@@ -2,7 +2,6 @@
 
 import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { JobsContext } from "@/app/(main)/jobs/layout";
 import { states } from "@/lib/states";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -16,6 +15,10 @@ import NumberInputBasic from "./numberInput";
 import { NewCoverLetter } from "@/types/coverLetter";
 import { DateValidationError } from "@mui/x-date-pickers/models";
 import CustomDatePicker from "./customDatePicker";
+import { OpenContext, SetOpenContext } from "@/contexts/add_or_edit_dialog/OpenContext";
+import { IsAddContext, SetIsAddContext } from "@/contexts/add_or_edit_dialog/IsAddContext";
+import { DialogJobContext, SetDialogJobContext } from "@/contexts/add_or_edit_dialog/DialogJobContext";
+import { JobsContext, SetJobsContext } from "@/contexts/JobsContext";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
@@ -48,16 +51,14 @@ const createLink = (idx: number, val: string) => {
 }
 
 export default function AddOrEditDialog() {
-  const {
-    open,
-    setOpen,
-    isAdd,
-    setIsAdd,
-    dialogJob,
-    setDialogJob,
-    jobs,
-    setJobs
-  } = useContext(JobsContext);
+  const open = useContext(OpenContext);
+  const setOpen = useContext(SetOpenContext);
+  const isAdd = useContext(IsAddContext);
+  const setIsAdd = useContext(SetIsAddContext);
+  const dialogJob = useContext(DialogJobContext);
+  const setDialogJob = useContext(SetDialogJobContext);
+  const jobs = useContext(JobsContext);
+  const setJobs = useContext(SetJobsContext);
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const theme = useTheme();

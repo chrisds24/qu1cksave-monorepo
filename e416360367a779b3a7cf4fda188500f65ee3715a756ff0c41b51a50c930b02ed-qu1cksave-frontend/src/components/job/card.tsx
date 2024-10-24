@@ -6,7 +6,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
-import { JobsContext } from "@/app/(main)/jobs/layout";
+import { SetOpenContext } from "@/contexts/add_or_edit_dialog/OpenContext";
+import { SetIsAddContext } from "@/contexts/add_or_edit_dialog/IsAddContext";
+import { SetDialogJobContext } from "@/contexts/add_or_edit_dialog/DialogJobContext";
+import { SetDeleteJobIdContext } from "@/contexts/delete_dialog/DeleteJobIdContext";
+import { SetDeleteJobOpenContext } from "@/contexts/delete_dialog/DeleteJobOpenContext";
 
 // Applied, Not Applied, Assessment, Interview, Job Offered, Accepted Offer, Declined Offer
 // Rejected, Ghosted, Closed
@@ -35,7 +39,11 @@ export default function JobCard(props: any) {
   const job: Job | undefined = props.job;
   const router = useRouter();
 
-  const {setOpen, setIsAdd, setDialogJob, setDeleteJobId, setDeleteJobOpen} = useContext(JobsContext);
+  const setOpen = useContext(SetOpenContext);
+  const setIsAdd = useContext(SetIsAddContext);
+  const setDialogJob = useContext(SetDialogJobContext);
+  const setDeleteJobId = useContext(SetDeleteJobIdContext);
+  const setDeleteJobOpen = useContext(SetDeleteJobOpenContext);
 
   if (job) {
     const dateApplied = job.date_applied;

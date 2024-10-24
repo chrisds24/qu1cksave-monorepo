@@ -1,4 +1,6 @@
-import { JobsContext } from '@/app/(main)/jobs/layout';
+import { DeleteJobIdContext, SetDeleteJobIdContext } from '@/contexts/delete_dialog/DeleteJobIdContext';
+import { DeleteJobOpenContext, SetDeleteJobOpenContext } from '@/contexts/delete_dialog/DeleteJobOpenContext';
+import { JobsContext, SetJobsContext } from '@/contexts/JobsContext';
 import { CircularProgress } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -10,7 +12,13 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useContext, useState } from 'react';
 
 export default function DeleteDialog() {
-  const {deleteJobId, deleteJobOpen, setDeleteJobOpen, setDeleteJobId, jobs, setJobs} = useContext(JobsContext);
+  const deleteJobId = useContext(DeleteJobIdContext);
+  const setDeleteJobId = useContext(SetDeleteJobIdContext);
+  const deleteJobOpen = useContext(DeleteJobOpenContext);
+  const setDeleteJobOpen = useContext(SetDeleteJobOpenContext);
+  const jobs = useContext(JobsContext);
+  const setJobs = useContext(SetJobsContext);
+
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const pathname = usePathname();
   const router = useRouter();

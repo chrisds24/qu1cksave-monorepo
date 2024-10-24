@@ -1,20 +1,19 @@
 // Sort options component
 
-import { JobsContext } from "@/app/(main)/jobs/layout";
 import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { useContext } from "react";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { SetSortByContext, SortByContext } from "@/contexts/SortByContext";
+import { SetSortIncreasingContext, SortIncreasingContext } from "@/contexts/SortIncreasingContext";
 
 const sortByList = ['Date Saved', 'Date Applied', 'Date Posted', 'Job Title', 'Company'];
 
 export default function SortOptions() {
-  const {
-    sortBy,
-    setSortBy,
-    sortIncreasing,
-    setSortIncreasing
-  } = useContext(JobsContext);
+  const sortBy = useContext(SortByContext);
+  const setSortBy = useContext(SetSortByContext);
+  const sortIncreasing = useContext(SortIncreasingContext);
+  const setSortIncreasing = useContext(SetSortIncreasingContext);
 
   const changeSortIncreasing = (
     event: React.MouseEvent<HTMLElement>,

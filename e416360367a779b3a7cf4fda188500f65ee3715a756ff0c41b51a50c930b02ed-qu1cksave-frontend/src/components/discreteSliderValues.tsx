@@ -1,24 +1,24 @@
-import { JobsContext } from "@/app/(main)/jobs/layout";
 import { Box, Slider, Typography } from "@mui/material";
 import { useContext } from "react";
 import DiscreteSliderValuesSkeleton from "./skeleton/discreteSliderValuesSkeleton";
 import applyFilters from "@/lib/applyFilters";
+import { JobsPerPageContext, SetJobsPerPageContext } from "@/contexts/JobsPerPageContext";
+import { PageContext, SetPageContext } from "@/contexts/PageContext";
+import { JobsContext } from "@/contexts/JobsContext";
+import { FiltersContext } from "@/contexts/FiltersContext";
+import { JobsLoadingContext } from "@/contexts/JobsLoadingContext";
 
 function valuetext(value: number) {
   return `${value}`;
 }
 
 export default function DiscreteSliderValues() {
+  const jobsPerPage = useContext(JobsPerPageContext);
+  const setJobsPerPage = useContext(SetJobsPerPageContext);
+  const page = useContext(PageContext);
+  const setPage = useContext(SetPageContext);
+  const jobs = useContext(JobsContext);
   const {
-    // Jobs per page
-    jobsPerPage,
-    setJobsPerPage,
-    // Page related
-    page,
-    setPage,
-    // Jobs
-    jobs,
-    // Filters
     jobFilter,
     companyFilter,
     statusFilter,
@@ -29,10 +29,9 @@ export default function DiscreteSliderValues() {
     fromFilter,
     savedFilter,
     appliedFilter,
-    postedFilter,
-    // Loading state
-    jobsLoading
-  } = useContext(JobsContext);
+    postedFilter
+  } = useContext(FiltersContext);
+  const jobsLoading = useContext(JobsLoadingContext);
 
   const filteredJobs = jobs?.length > 0 ? applyFilters(
     jobs,

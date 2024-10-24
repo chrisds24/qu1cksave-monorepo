@@ -3,12 +3,13 @@ import DownloadIcon from '@mui/icons-material/Download';
 import { Resume } from "@/types/resume";
 import { Job } from "@/types/job";
 import { useContext, useState } from "react";
-import { JobsContext } from "@/app/(main)/jobs/layout";
 import { CoverLetter } from "@/types/coverLetter";
+import { JobsContext, SetJobsContext } from "@/contexts/JobsContext";
 
 export default function FileDownloadSection(props: any) {
   const { job, fileType } = props;
-  const {jobs, setJobs} = useContext(JobsContext);
+  const jobs = useContext(JobsContext);
+  const setJobs = useContext(SetJobsContext);
   // https://stackoverflow.com/questions/65668008/disabling-submit-button-when-submitting-form-in-react-not-working-as-expected-wh
   // https://mui.com/material-ui/react-button/
   const [buttonDisabled, setButtonDisabled] = useState(false);

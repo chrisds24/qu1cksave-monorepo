@@ -4,15 +4,20 @@ import { Box, Stack, Typography } from "@mui/material";
 import { Job } from "@/types/job";
 import { useContext } from "react";
 import JobCard from "./card";
-import { JobsContext } from "@/app/(main)/jobs/layout";
 import JobsListSkeleton from "../skeleton/jobsListSkeleton";
 import sortJobs from "@/lib/sortJobs";
 import applyFilters from "@/lib/applyFilters";
+import { JobsContext } from "@/contexts/JobsContext";
+import { FiltersContext } from "@/contexts/FiltersContext";
+import { JobsLoadingContext } from "@/contexts/JobsLoadingContext";
+import { SortByContext } from "@/contexts/SortByContext";
+import { SortIncreasingContext } from "@/contexts/SortIncreasingContext";
+import { JobsPerPageContext } from "@/contexts/JobsPerPageContext";
+import { PageContext } from "@/contexts/PageContext";
 
 export default function JobsList() {
-  const { 
-    jobs,
-    // Filters
+  const jobs = useContext(JobsContext);
+  const {
     jobFilter,
     companyFilter,
     statusFilter,
@@ -24,15 +29,12 @@ export default function JobsList() {
     savedFilter,
     appliedFilter,
     postedFilter,
-    // Loading status
-    jobsLoading,
-    // Sort options
-    sortBy,
-    sortIncreasing,
-    // Page related
-    jobsPerPage,
-    page
-  } = useContext(JobsContext);
+  } = useContext(FiltersContext);
+  const jobsLoading = useContext(JobsLoadingContext);
+  const sortBy = useContext(SortByContext);
+  const sortIncreasing = useContext(SortIncreasingContext);
+  const jobsPerPage = useContext(JobsPerPageContext);
+  const page = useContext(PageContext);
 
   // Get the jobs for the current page
   // - These jobs are filtered based on the applied filters, sorted based on
