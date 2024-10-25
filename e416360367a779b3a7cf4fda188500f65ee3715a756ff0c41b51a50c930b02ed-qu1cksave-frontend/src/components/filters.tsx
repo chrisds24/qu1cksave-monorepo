@@ -123,10 +123,12 @@ export default function Filters() {
   // Memoizing filteredJobs then having it as a dependency here works.
   // See "Memoizing a dependency of another Hook"
   //   section of https://react.dev/reference/react/useMemo
-  const quickStats = useMemo(
-    () => getQuickStats(filteredJobs),
-    [filteredJobs]
-  );
+  // const quickStats = useMemo(
+  //   () => getQuickStats(filteredJobs),
+  //   [filteredJobs]
+  // );
+  // However, it's not really needed since getQuickStats isn't expensive
+  const quickStats = getQuickStats(filteredJobs);
 
   // - When filters are applied, we need to sort again otherwise we lose
   //   sorting (since the filters are applied to the non-filtered jobs
