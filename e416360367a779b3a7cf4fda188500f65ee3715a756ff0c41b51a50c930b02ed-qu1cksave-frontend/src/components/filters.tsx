@@ -120,6 +120,9 @@ export default function Filters() {
     ]
   );
 
+  // Memoizing filteredJobs then having it as a dependency here works.
+  // See "Memoizing a dependency of another Hook"
+  //   section of https://react.dev/reference/react/useMemo
   const quickStats = useMemo(
     () => getQuickStats(filteredJobs),
     [filteredJobs]
