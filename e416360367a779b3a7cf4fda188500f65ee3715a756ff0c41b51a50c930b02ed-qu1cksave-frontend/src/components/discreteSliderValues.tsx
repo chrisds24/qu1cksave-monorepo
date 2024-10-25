@@ -122,7 +122,8 @@ export default function DiscreteSliderValues() {
         <Box sx={{ width: 250, marginRight: '1vw' }}>
           <Slider
             aria-label="Restricted values"
-            defaultValue={jobsPerPage}
+            // defaultValue={jobsPerPage}
+            value={jobsPerPage}
             getAriaValueText={valuetext}
             step={null}
             valueLabelDisplay="auto"
