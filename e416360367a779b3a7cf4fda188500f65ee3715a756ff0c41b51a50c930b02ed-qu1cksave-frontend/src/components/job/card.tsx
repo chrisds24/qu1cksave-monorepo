@@ -5,7 +5,7 @@ import { Box, Button, Divider, Paper, Typography } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
+import { memo, useContext } from "react";
 import { SetOpenContext } from "@/contexts/add_or_edit_dialog/OpenContext";
 import { SetIsAddContext } from "@/contexts/add_or_edit_dialog/IsAddContext";
 import { SetDialogJobContext } from "@/contexts/add_or_edit_dialog/DialogJobContext";
@@ -35,7 +35,14 @@ const statusColor = {
   'Closed': '#808080' // Gray
 };
 
-export default function JobCard(props: any) {
+// Important: Using memo actually speeds things up by a lot. For example,
+//   this is easily seen when there's a ton of jobs and the user has
+//   jobsPerPage at maximum and they try to change sortBy and sortIncreasing.
+// This is crucial since JobList doesn't have a children prop where JobCard
+//   is wrapped by JobList. (Though, they still have a parent <-> child
+//   relationship.)
+// export default function JobCard(props: any) {
+export const JobCard = memo(function JobCard(props: any) {
   const job: Job | undefined = props.job;
   const router = useRouter();
 
@@ -239,4 +246,5 @@ export default function JobCard(props: any) {
       </Paper>
     );
   }
-}
+// };
+});

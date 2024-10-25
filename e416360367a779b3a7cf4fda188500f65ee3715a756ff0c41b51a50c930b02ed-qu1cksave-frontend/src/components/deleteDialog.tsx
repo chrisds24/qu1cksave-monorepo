@@ -50,8 +50,6 @@ export default function DeleteDialog() {
         // NOTE: Whenever jobs is set, apply the filters.
         // This is done in layout.tsx to get filteredJobs
         setJobs(newJobs)
-        // NOTE: The useEffect automatically updates jobsInPage when jobs
-        //   changes is in job/page.tsx
 
         // If not in jobs, go to jobs
         //   Need to do this since the deleted job's page would be empty

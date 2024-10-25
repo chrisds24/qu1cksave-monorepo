@@ -18,7 +18,7 @@ import FolderIcon from '@mui/icons-material/Folder';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import Link from 'next/link';
 import { getSessionUser, logout } from '@/actions/auth';
-import { Context, ReactNode, createContext, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { User } from '@/types/user';
 import { Avatar, Skeleton } from '@mui/material';
 import stringAvatar from '@/lib/stringAvatar';
@@ -26,6 +26,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { usePathname } from 'next/navigation';
+import { SessionUserIdContext } from '@/contexts/SessionUserIdContext';
 
 const drawerWidth = 180;
 
@@ -34,8 +35,6 @@ const navItems = [
   {name: 'Documents', icon: <FolderIcon sx={{color: '#ffffff'}}/>, route: 'documents'},
   {name: 'Statistics', icon: <BarChartIcon sx={{color: '#ffffff'}}/>, route: 'statistics'}
 ]
-
-export const SessionUserContext: Context<any> = createContext(null);
 
 export default function MainLayout({
   children, // will be a page or nested layout
@@ -61,6 +60,8 @@ export default function MainLayout({
   useEffect(() => {
     const getSession = async () => {
       // Get user from session in cookies
+      // It makes sense to always get the sessionUser to ensure that the
+      //   session is still valid.
       // Note: getSessionUser does not perform an API call
       await getSessionUser()
         .then(async (sesUser) => {
@@ -276,9 +277,9 @@ export default function MainLayout({
           }}
         >
           <Toolbar sx={{display: { xs: 'block', md: 'none' }}}/>
-          <SessionUserContext.Provider value={ sessionUser }>
+          <SessionUserIdContext.Provider value={ sessionUser?.id }>
             {children}
-          </SessionUserContext.Provider>
+          </SessionUserIdContext.Provider>
         </Box>
       </Box>
     </LocalizationProvider>

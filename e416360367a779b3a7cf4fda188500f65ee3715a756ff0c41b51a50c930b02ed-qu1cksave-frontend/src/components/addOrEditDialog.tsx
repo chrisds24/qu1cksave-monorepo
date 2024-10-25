@@ -173,6 +173,14 @@ export default function AddOrEditDialog() {
       }
     }
   }, [isAdd, dialogJob]);
+  // React TODO:
+  // - For the dialogJob dependency above, think about the following:
+  // - https://react.dev/learn/removing-effect-dependencies
+  //   -- In "Move dynamic objects and functions inside your Effect", it talks
+  //      about moving the creation of an object inside the effect.
+  // Solution: This shouldn't be a problem
+  // - dialogJob (a Job object or undefined) isn't always being recreated and
+  //   is only being changed when setDialogJob is called
 
   const changeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value as string;

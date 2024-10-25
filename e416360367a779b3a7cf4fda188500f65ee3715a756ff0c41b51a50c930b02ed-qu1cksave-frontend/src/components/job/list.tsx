@@ -3,7 +3,8 @@
 import { Box, Stack, Typography } from "@mui/material";
 import { Job } from "@/types/job";
 import { useContext } from "react";
-import JobCard from "./card";
+// import JobCard from "./card";
+import { JobCard } from "./card";
 import JobsListSkeleton from "../skeleton/jobsListSkeleton";
 import sortJobs from "@/lib/sortJobs";
 import applyFilters from "@/lib/applyFilters";
