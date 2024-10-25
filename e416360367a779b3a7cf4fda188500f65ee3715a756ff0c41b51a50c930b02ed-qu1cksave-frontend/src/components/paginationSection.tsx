@@ -1,12 +1,12 @@
 import { Box, Button, Pagination, TextField } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import PaginationSectionSkeleton from "./skeleton/paginationSectionSkeleton";
-import applyFilters from "@/lib/applyFilters";
 import { JobsContext } from "@/contexts/JobsContext";
 import { JobsPerPageContext } from "@/contexts/JobsPerPageContext";
 import { JobsLoadingContext } from "@/contexts/JobsLoadingContext";
 import { PageContext, SetPageContext } from "@/contexts/PageContext";
 import { FiltersContext } from "@/contexts/FiltersContext";
+import getFilteredJobs from "@/lib/getFilteredJobs";
 
 export default function PaginationSection() {
   const jobs = useContext(JobsContext);
@@ -33,20 +33,35 @@ export default function PaginationSection() {
   //   renders. Though, I'll keep it here since I don't want that behavior.
   const [pageToJumpTo, setPageToJumpTo] = useState<number>();
 
-  const filteredJobs = jobs?.length > 0 ? applyFilters(
-    jobs,
-    jobFilter,
-    companyFilter,
-    statusFilter,
-    remoteFilter,
-    cityFilter,
-    stateFilter,
-    countryFilter,
-    fromFilter,
-    savedFilter,
-    appliedFilter,
-    postedFilter
-  ) : [];
+  const filteredJobs = useMemo(
+    () => getFilteredJobs(
+      jobs,
+      jobFilter,
+      companyFilter,
+      statusFilter,
+      remoteFilter,
+      cityFilter,
+      stateFilter,
+      countryFilter,
+      fromFilter,
+      savedFilter,
+      appliedFilter,
+      postedFilter
+    ), [
+      jobs,
+      jobFilter,
+      companyFilter,
+      statusFilter,
+      remoteFilter,
+      cityFilter,
+      stateFilter,
+      countryFilter,
+      fromFilter,
+      savedFilter,
+      appliedFilter,
+      postedFilter 
+    ]
+  );
   
   let lastPage;
   // This section was originally just: Math.ceil(filteredJobs.length / jobsPerPage)

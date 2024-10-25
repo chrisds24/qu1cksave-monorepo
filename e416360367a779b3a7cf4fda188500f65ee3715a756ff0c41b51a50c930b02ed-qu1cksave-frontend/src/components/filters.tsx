@@ -1,16 +1,16 @@
 import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { ChangeEvent, useContext, useState } from "react";
+import { ChangeEvent, useContext, useMemo, useState } from "react";
 import { states } from "@/lib/states";
 import { QuickStats, YearMonthDateFilter } from "@/types/common";
 import { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import YearOnlyDatePicker from "./yearOnlyDatePicker";
 import MonthOnlyDatePicker from "./monthOnlyDatePicker";
-import applyFilters from "@/lib/applyFilters";
 import getQuickStats from "@/lib/getQuickStats";
 import { FiltersContext, SetFiltersContext } from "@/contexts/FiltersContext";
 import { JobsContext } from "@/contexts/JobsContext";
+import getFilteredJobs from "@/lib/getFilteredJobs";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 const monthsList = {0: 'January', 1: 'February', 2: 'March', 3: 'April', 4: 'May', 5: 'June', 6: 'July', 7: 'August', 8: 'September', 9: 'October', 10: 'November', 11: 'December'} as any;
@@ -90,21 +90,40 @@ export default function Filters() {
     {name: 'Posted', val: postedFilter}
   ];
 
-  const filteredJobs = jobs?.length > 0 ? applyFilters(
-    jobs,
-    jobFilter,
-    companyFilter,
-    statusFilter,
-    remoteFilter,
-    cityFilter,
-    stateFilter,
-    countryFilter,
-    fromFilter,
-    savedFilter,
-    appliedFilter,
-    postedFilter
-  ) : [];
-  const quickStats = getQuickStats(filteredJobs);
+  const filteredJobs = useMemo(
+    () => getFilteredJobs(
+      jobs,
+      jobFilter,
+      companyFilter,
+      statusFilter,
+      remoteFilter,
+      cityFilter,
+      stateFilter,
+      countryFilter,
+      fromFilter,
+      savedFilter,
+      appliedFilter,
+      postedFilter
+    ), [
+      jobs,
+      jobFilter,
+      companyFilter,
+      statusFilter,
+      remoteFilter,
+      cityFilter,
+      stateFilter,
+      countryFilter,
+      fromFilter,
+      savedFilter,
+      appliedFilter,
+      postedFilter 
+    ]
+  );
+
+  const quickStats = useMemo(
+    () => getQuickStats(filteredJobs),
+    [filteredJobs]
+  );
 
   // - When filters are applied, we need to sort again otherwise we lose
   //   sorting (since the filters are applied to the non-filtered jobs

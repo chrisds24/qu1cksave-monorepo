@@ -2,12 +2,10 @@
 
 import { Box, Stack, Typography } from "@mui/material";
 import { Job } from "@/types/job";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 // import JobCard from "./card";
 import { JobCard } from "./card";
 import JobsListSkeleton from "../skeleton/jobsListSkeleton";
-import sortJobs from "@/lib/sortJobs";
-import applyFilters from "@/lib/applyFilters";
 import { JobsContext } from "@/contexts/JobsContext";
 import { FiltersContext } from "@/contexts/FiltersContext";
 import { JobsLoadingContext } from "@/contexts/JobsLoadingContext";
@@ -15,6 +13,7 @@ import { SortByContext } from "@/contexts/SortByContext";
 import { SortIncreasingContext } from "@/contexts/SortIncreasingContext";
 import { JobsPerPageContext } from "@/contexts/JobsPerPageContext";
 import { PageContext } from "@/contexts/PageContext";
+import getJobsInPage from "@/lib/getJobsInPage";
 
 export default function JobsList() {
   const jobs = useContext(JobsContext);
@@ -41,8 +40,8 @@ export default function JobsList() {
   // - These jobs are filtered based on the applied filters, sorted based on
   //   the applied sort options, depends on the number of jobs to be shown
   //   for each page, and finally the current page selected 
-  const jobsInPage = jobs?.length > 0 ? sortJobs(
-    applyFilters(
+  const jobsInPage = useMemo(
+    () => getJobsInPage(
       jobs,
       jobFilter,
       companyFilter,
@@ -54,11 +53,30 @@ export default function JobsList() {
       fromFilter,
       savedFilter,
       appliedFilter,
-      postedFilter
-    ),
-    sortBy,
-    sortIncreasing
-  ).slice(jobsPerPage * (page - 1), jobsPerPage * page) : [];
+      postedFilter,
+      sortBy,
+      sortIncreasing,
+      jobsPerPage,
+      page
+    ), [
+      jobs,
+      jobFilter,
+      companyFilter,
+      statusFilter,
+      remoteFilter,
+      cityFilter,
+      stateFilter,
+      countryFilter,
+      fromFilter,
+      savedFilter,
+      appliedFilter,
+      postedFilter,
+      sortBy,
+      sortIncreasing,
+      jobsPerPage,
+      page      
+    ]
+  );
 
   if (!jobsLoading) {
     if (jobs.length > 0) {

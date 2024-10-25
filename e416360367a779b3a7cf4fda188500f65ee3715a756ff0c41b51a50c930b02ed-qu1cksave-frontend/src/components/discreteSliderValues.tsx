@@ -1,12 +1,12 @@
 import { Box, Slider, Typography } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import DiscreteSliderValuesSkeleton from "./skeleton/discreteSliderValuesSkeleton";
-import applyFilters from "@/lib/applyFilters";
 import { JobsPerPageContext, SetJobsPerPageContext } from "@/contexts/JobsPerPageContext";
 import { PageContext, SetPageContext } from "@/contexts/PageContext";
 import { JobsContext } from "@/contexts/JobsContext";
 import { FiltersContext } from "@/contexts/FiltersContext";
 import { JobsLoadingContext } from "@/contexts/JobsLoadingContext";
+import getFilteredJobs from "@/lib/getFilteredJobs";
 
 function valuetext(value: number) {
   return `${value}`;
@@ -33,20 +33,35 @@ export default function DiscreteSliderValues() {
   } = useContext(FiltersContext);
   const jobsLoading = useContext(JobsLoadingContext);
 
-  const filteredJobs = jobs?.length > 0 ? applyFilters(
-    jobs,
-    jobFilter,
-    companyFilter,
-    statusFilter,
-    remoteFilter,
-    cityFilter,
-    stateFilter,
-    countryFilter,
-    fromFilter,
-    savedFilter,
-    appliedFilter,
-    postedFilter
-  ) : [];
+  const filteredJobs = useMemo(
+    () => getFilteredJobs(
+      jobs,
+      jobFilter,
+      companyFilter,
+      statusFilter,
+      remoteFilter,
+      cityFilter,
+      stateFilter,
+      countryFilter,
+      fromFilter,
+      savedFilter,
+      appliedFilter,
+      postedFilter
+    ), [
+      jobs,
+      jobFilter,
+      companyFilter,
+      statusFilter,
+      remoteFilter,
+      cityFilter,
+      stateFilter,
+      countryFilter,
+      fromFilter,
+      savedFilter,
+      appliedFilter,
+      postedFilter 
+    ]
+  );
   
   // const changeJobsPerPage = (event: Event, jobsPerPageVal: number | number[]) => {
   // Using this instead of the commented code above so we can divide by jobsPerPageVal

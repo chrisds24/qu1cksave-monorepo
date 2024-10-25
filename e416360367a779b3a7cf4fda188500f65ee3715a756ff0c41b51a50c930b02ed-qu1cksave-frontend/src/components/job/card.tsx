@@ -41,6 +41,8 @@ const statusColor = {
 // This is crucial since JobList doesn't have a children prop where JobCard
 //   is wrapped by JobList. (Though, they still have a parent <-> child
 //   relationship.)
+// Note: By wrapping JobCard in memo, we have turned it into a pure component
+//   since it only renders if its state or props have changed.
 // export default function JobCard(props: any) {
 export const JobCard = memo(function JobCard(props: any) {
   const job: Job | undefined = props.job;
