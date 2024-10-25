@@ -448,13 +448,13 @@ export default function Filters() {
           {
             currentFilters?.length > 0 ?
               <Grid rowSpacing={1} columnSpacing={1} container direction='row' sx={{marginBottom: 3}}>
-                {currentFilters.map((filter: any, idx: number) => {
+                {currentFilters.map((filter: any) => {
                   if (filter.val) {
                     if (filter.name === 'Saved' || filter.name === 'Applied' || filter.name === 'Posted') {
                       const year = filter.val.year;
                       const month = filter.val.month;
                       return (
-                        <Grid item key={`Current Filter ${idx}`}>
+                        <Grid item key={`Current Filter ${filter.name}`}>
                           <Chip
                             label={`${filter.name}: ${month !== undefined ? monthsList[month as keyof any] : ''} ${year ? year : ''}`}
                             sx={{backgroundColor: '#1e1e1e', color: '#ffffff', fontSize: '16px'}}
@@ -463,7 +463,7 @@ export default function Filters() {
                       );
                     } else {
                       return (
-                        <Grid item key={`Current Filter ${idx}`} sx={{maxWidth: {xs: '70vw', md: '90%'}}}>
+                        <Grid item key={`Current Filter ${filter.name}`} sx={{maxWidth: {xs: '70vw', md: '90%'}}}>
                           <Chip label={`${filter.name}: ${filter.val}`} sx={{backgroundColor: '#1e1e1e', color: '#ffffff', fontSize: '16px'}} />
                         </Grid>
                       );
@@ -478,7 +478,7 @@ export default function Filters() {
           {
             quickStats ?
               <Grid rowSpacing={1} columnSpacing={4} container direction='row'>
-                {Object.keys(quickStats).map((stat: string, idx: number) => {
+                {Object.keys(quickStats).map((stat: string) => {
                   return (
                     <Grid item key={`${stat} Stat`}>
                       <Typography sx={{fontSize: '17px', color: '#ffffff'}} display={'inline'}>

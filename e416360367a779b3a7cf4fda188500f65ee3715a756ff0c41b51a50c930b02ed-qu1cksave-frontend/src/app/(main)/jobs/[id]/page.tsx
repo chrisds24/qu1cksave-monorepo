@@ -220,6 +220,13 @@ export default function Page({ params }: { params: { id: string } }) {
             <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginBottom: 1}}>
               {'Description'}
             </Typography>
+            {/*
+              Note: I'm fine using idx as key here since I want to re-render
+              the whole thing anyway if paragraphs changes (In other words,
+              the description of the job changes). If it doesn't change, then
+              the description's paragraphs would retain the same order and
+              that shouldn't be a problem.
+            */}
             { paragraphs.length > 0 ?
               paragraphs.map((paragraph, idx) => 
                 paragraph ?
@@ -246,6 +253,7 @@ export default function Page({ params }: { params: { id: string } }) {
             <Typography color='#c586c0' sx={{fontSize: '20px', fontWeight: 'bold', marginBottom: 1}}>
               {'Notes'}
             </Typography>
+            {/* Note: Same idea as paragraphs regarding idx as key */}
             { notesParagraphs.length > 0 ?
               notesParagraphs.map((paragraph, idx) => 
                 paragraph ?
@@ -267,6 +275,7 @@ export default function Page({ params }: { params: { id: string } }) {
               </Typography>
               {job.links && job.links.length > 0 ?
                 <List sx={{padding: '0px 0px 0px 0px'}}>
+                  {/* Note: Same idea as paragraphs regarding idx as key */}
                   {job.links.map((link, idx) =>
                     <ListItem
                       key={`Link ${idx}`}

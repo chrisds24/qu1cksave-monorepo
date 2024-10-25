@@ -22,6 +22,9 @@ import { JobsContext, SetJobsContext } from "@/contexts/JobsContext";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
+// Note: Ok to use idx as key here since links always retain the same order.
+// They're also deleted in LIFO order, so the first link will always have idx
+// 1, second has ids 2, and so on.
 const createLink = (idx: number, val: string) => {
   return (
     <TextField
@@ -890,6 +893,11 @@ export default function AddOrEditDialog() {
           Links
         </Typography>
         <Box sx={{ display: 'flex', flexDirection: 'column'}}>
+          {/*
+            Note: The links (see createLink) are using idx as the key, which is
+            fine since the links stay in the same order and are deleted in LIFO
+            order.
+          */}
           {links.map((link) =>
             link
           )}
