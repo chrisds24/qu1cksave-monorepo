@@ -18,7 +18,7 @@ import CustomDatePicker from "./customDatePicker";
 import { OpenContext, SetOpenContext } from "@/contexts/add_or_edit_dialog/OpenContext";
 import { IsAddContext, SetIsAddContext } from "@/contexts/add_or_edit_dialog/IsAddContext";
 import { DialogJobContext, SetDialogJobContext } from "@/contexts/add_or_edit_dialog/DialogJobContext";
-import { JobsContext, SetJobsContext } from "@/contexts/JobsContext";
+import { JobsDispatchContext } from "@/contexts/JobsContext";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
@@ -60,8 +60,7 @@ export default function AddOrEditDialog() {
   const setIsAdd = useContext(SetIsAddContext);
   const dialogJob = useContext(DialogJobContext);
   const setDialogJob = useContext(SetDialogJobContext);
-  const jobs = useContext(JobsContext);
-  const setJobs = useContext(SetJobsContext);
+  const dispatch = useContext(JobsDispatchContext);
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const theme = useTheme();
@@ -519,17 +518,13 @@ export default function AddOrEditDialog() {
     try {
       const job: Job | undefined = await addOrEditJob(newJob, !isAdd ? dialogJob.id : undefined)
       if (job) {
-        // Add this job to jobs, then set jobs
-        let newJobs = [...jobs];
-        if (!isAdd) {
-          // When editing, remove the outdated job from the jobs list.
-          newJobs = newJobs.filter((j) => j.id !== job.id);
+        if (isAdd) { // Add
+          dispatch({type: 'added', job: job});
+        } else { // Edit
+          dispatch({type: 'edited', job: job});
         }
-
-        newJobs.push(job)
-        setJobs(newJobs)
       } else {
-        // setJobs(undefined) // No need to go to error page.
+        // No need to set jobs to undefined (which will go to error page)
         alert(`Error processing request. Please reload the page and try again.`)
       }
     } catch {

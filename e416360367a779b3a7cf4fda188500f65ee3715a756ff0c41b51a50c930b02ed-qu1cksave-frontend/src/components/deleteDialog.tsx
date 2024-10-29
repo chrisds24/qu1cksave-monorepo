@@ -1,6 +1,6 @@
 import { DeleteJobIdContext, SetDeleteJobIdContext } from '@/contexts/delete_dialog/DeleteJobIdContext';
 import { DeleteJobOpenContext, SetDeleteJobOpenContext } from '@/contexts/delete_dialog/DeleteJobOpenContext';
-import { JobsContext, SetJobsContext } from '@/contexts/JobsContext';
+import { JobsDispatchContext } from '@/contexts/JobsContext';
 import { CircularProgress } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -16,8 +16,7 @@ export default function DeleteDialog() {
   const setDeleteJobId = useContext(SetDeleteJobIdContext);
   const deleteJobOpen = useContext(DeleteJobOpenContext);
   const setDeleteJobOpen = useContext(SetDeleteJobOpenContext);
-  const jobs = useContext(JobsContext);
-  const setJobs = useContext(SetJobsContext);
+  const dispatch = useContext(JobsDispatchContext);
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const pathname = usePathname();
@@ -44,12 +43,7 @@ export default function DeleteDialog() {
         return res.json();
       })
       .then((job) => {
-        // Remove this job from jobs, then set jobs
-        let newJobs = [...jobs];
-        newJobs = newJobs.filter((j) => j.id !== job.id);
-        // NOTE: Whenever jobs is set, apply the filters.
-        // This is done in layout.tsx to get filteredJobs
-        setJobs(newJobs)
+        dispatch({type: 'deleted', jobId: job.id});
 
         // If not in jobs, go to jobs
         //   Need to do this since the deleted job's page would be empty
@@ -58,7 +52,7 @@ export default function DeleteDialog() {
         }
       })
       .catch((err) => {
-        // setJobs(undefined) // Not needed
+        // No need to set jobs to undefined (which will go to error page)
         alert(`Error processing request. Please reload the page and try again.`)
       });
 

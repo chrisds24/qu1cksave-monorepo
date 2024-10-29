@@ -1,15 +1,13 @@
 import { Box, Button, Typography } from "@mui/material";
 import DownloadIcon from '@mui/icons-material/Download';
 import { Resume } from "@/types/resume";
-import { Job } from "@/types/job";
 import { useContext, useState } from "react";
 import { CoverLetter } from "@/types/coverLetter";
-import { JobsContext, SetJobsContext } from "@/contexts/JobsContext";
+import { JobsDispatchContext } from "@/contexts/JobsContext";
 
 export default function FileDownloadSection(props: any) {
   const { job, fileType } = props;
-  const jobs = useContext(JobsContext);
-  const setJobs = useContext(SetJobsContext);
+  const dispatch = useContext(JobsDispatchContext);
   // https://stackoverflow.com/questions/65668008/disabling-submit-button-when-submitting-form-in-react-not-working-as-expected-wh
   // https://mui.com/material-ui/react-button/
   const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -73,9 +71,7 @@ export default function FileDownloadSection(props: any) {
             } else {
               job!.cover_letter! = fileVal;
             }
-            const newJobs = jobs.filter((j: Job) => j.id !== job!.id);
-            newJobs.push(job);
-            setJobs(newJobs);
+            dispatch({type: 'edited', job: job});
 
             // Create an <a href=... then programatically click
             // - https://stackoverflow.com/questions/50694881/how-to-download-file-in-react-js
