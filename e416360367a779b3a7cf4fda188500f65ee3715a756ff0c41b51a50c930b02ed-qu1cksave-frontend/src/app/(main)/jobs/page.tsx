@@ -40,7 +40,6 @@ export default function Page() {
         <JobsList />
   
         <Box sx={{marginTop: '3vh' }} />
-        <PaginationSection />
   
         <Fab
           aria-label='add'
