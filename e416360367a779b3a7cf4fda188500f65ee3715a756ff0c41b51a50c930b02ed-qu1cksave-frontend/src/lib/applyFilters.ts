@@ -12,6 +12,9 @@ function checkFilters(
   //     - Check if the properties specified by the filters are equal
   // 3.) job is missing at least one property specified in the filters
   //     - Job can't satisfy the filters
+  // Search with contains, starts with, or equals?
+  // - https://ux.stackexchange.com/questions/86818/substring-search-vs-starting-letter-search
+  //   -- Contains is the most useful
   for (const key in filters) {
     // https://stackoverflow.com/questions/57086672/element-implicitly-has-an-any-type-because-expression-of-type-string-cant-b
     // Note for non date related properties:
@@ -42,7 +45,7 @@ function checkFilters(
           //   doesn't match the year specified by the filter
           if (!jobProp.year || jobProp.year !== filtersProp.year) return false
         }
-        // if (filtersProp.month) {
+        // Don't just check if falsy since month could be 0
         if (filtersProp.month !== undefined) {
           // The job's date saved/applied/posted doesn't have a month or it
           //   doesn't match the month specified by the filter
@@ -50,7 +53,11 @@ function checkFilters(
           if (jobProp.month === undefined || jobProp.month !== filtersProp.month) return false
         }
       } else {
-        if (jobProp !== filtersProp) {
+        if (
+          !(jobProp as string).toLowerCase().includes(
+            (filtersProp as string).toLowerCase()
+          )
+        ) {
           return false;
         }
       }
