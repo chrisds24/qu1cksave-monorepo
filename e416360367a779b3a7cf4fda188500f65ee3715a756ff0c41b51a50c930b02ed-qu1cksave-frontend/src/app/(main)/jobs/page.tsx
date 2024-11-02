@@ -14,6 +14,7 @@ import { SetIsAddContext } from "@/contexts/add_or_edit_dialog/IsAddContext";
 import { SetDialogJobContext } from "@/contexts/add_or_edit_dialog/DialogJobContext";
 import { SetOpenContext } from "@/contexts/add_or_edit_dialog/OpenContext";
 import { JobsContext } from "@/contexts/JobsContext";
+import SearchJobs from "@/components/searchJobs";
 
 export default function Page() {
   const jobs = useContext(JobsContext);
@@ -30,6 +31,8 @@ export default function Page() {
           <SortOptions />
           <DiscreteSliderValues />
         </Box>
+
+        <SearchJobs />
   
         <PaginationSection />
         <Box sx={{marginBottom: 2.5 }} />

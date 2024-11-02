@@ -14,6 +14,8 @@ import { SortIncreasingContext } from "@/contexts/SortIncreasingContext";
 import { JobsPerPageContext } from "@/contexts/JobsPerPageContext";
 import { PageContext } from "@/contexts/PageContext";
 import getJobsInPage from "@/lib/getJobsInPage";
+import { SearchByContext } from "@/contexts/SearchByContext";
+import { SearchInputContext } from "@/contexts/SearchInputContext";
 
 export default function JobsList() {
   const jobs = useContext(JobsContext);
@@ -35,6 +37,8 @@ export default function JobsList() {
   const sortIncreasing = useContext(SortIncreasingContext);
   const jobsPerPage = useContext(JobsPerPageContext);
   const page = useContext(PageContext);
+  const searchInput = useContext(SearchInputContext);
+  const searchBy = useContext(SearchByContext);
 
   // Get the jobs for the current page
   // - These jobs are filtered based on the applied filters, sorted based on
@@ -57,7 +61,9 @@ export default function JobsList() {
       sortBy,
       sortIncreasing,
       jobsPerPage,
-      page
+      page,
+      searchInput,
+      searchBy
     ), [
       jobs,
       jobFilter,
@@ -74,7 +80,9 @@ export default function JobsList() {
       sortBy,
       sortIncreasing,
       jobsPerPage,
-      page      
+      page,
+      searchInput,
+      searchBy      
     ]
   );
 
