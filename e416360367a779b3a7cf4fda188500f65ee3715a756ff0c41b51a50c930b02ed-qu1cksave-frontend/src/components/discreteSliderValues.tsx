@@ -7,6 +7,9 @@ import { JobsContext } from "@/contexts/JobsContext";
 import { FiltersContext } from "@/contexts/FiltersContext";
 import { JobsLoadingContext } from "@/contexts/JobsLoadingContext";
 import getFilteredJobs from "@/lib/getFilteredJobs";
+import applySearch from "@/lib/applySearch";
+import { SearchInputContext } from "@/contexts/SearchInputContext";
+import { SearchByContext } from "@/contexts/SearchByContext";
 
 function valuetext(value: number) {
   return `${value}`;
@@ -31,22 +34,33 @@ export default function DiscreteSliderValues() {
     appliedFilter,
     postedFilter
   } = useContext(FiltersContext);
+  const searchInput = useContext(SearchInputContext);
+  const searchBy = useContext(SearchByContext);
   const jobsLoading = useContext(JobsLoadingContext);
 
+  // Filtered jobs WITH search applied
+  // Note: Search affects available pages since search affects the jobs that
+  //   are to be shown, which obviously affects the total number of pages.
+  //   So search is basically an additional filter on top of the already
+  //   specified filters.
   const filteredJobs = useMemo(
-    () => getFilteredJobs(
-      jobs,
-      jobFilter,
-      companyFilter,
-      statusFilter,
-      remoteFilter,
-      cityFilter,
-      stateFilter,
-      countryFilter,
-      fromFilter,
-      savedFilter,
-      appliedFilter,
-      postedFilter
+    () => applySearch(
+      getFilteredJobs(
+        jobs,
+        jobFilter,
+        companyFilter,
+        statusFilter,
+        remoteFilter,
+        cityFilter,
+        stateFilter,
+        countryFilter,
+        fromFilter,
+        savedFilter,
+        appliedFilter,
+        postedFilter
+      ),
+      searchInput,
+      searchBy
     ), [
       jobs,
       jobFilter,
@@ -59,7 +73,9 @@ export default function DiscreteSliderValues() {
       fromFilter,
       savedFilter,
       appliedFilter,
-      postedFilter 
+      postedFilter,
+      searchInput,
+      searchBy
     ]
   );
   

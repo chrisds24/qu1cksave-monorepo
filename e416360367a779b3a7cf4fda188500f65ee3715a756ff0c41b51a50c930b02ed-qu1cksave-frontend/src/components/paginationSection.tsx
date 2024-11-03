@@ -7,6 +7,9 @@ import { JobsLoadingContext } from "@/contexts/JobsLoadingContext";
 import { PageContext, SetPageContext } from "@/contexts/PageContext";
 import { FiltersContext } from "@/contexts/FiltersContext";
 import getFilteredJobs from "@/lib/getFilteredJobs";
+import { SearchInputContext } from "@/contexts/SearchInputContext";
+import { SearchByContext } from "@/contexts/SearchByContext";
+import applySearch from "@/lib/applySearch";
 
 export default function PaginationSection() {
   const jobs = useContext(JobsContext);
@@ -14,7 +17,6 @@ export default function PaginationSection() {
   const jobsLoading = useContext(JobsLoadingContext);
   const page = useContext(PageContext);
   const setPage = useContext(SetPageContext);
-
   const {
     jobFilter,
     companyFilter,
@@ -28,25 +30,36 @@ export default function PaginationSection() {
     appliedFilter,
     postedFilter
   } = useContext(FiltersContext);
+  const searchInput = useContext(SearchInputContext);
+  const searchBy = useContext(SearchByContext);
 
   // Note: I want these in layout IF I want to preserve it in between
   //   renders. Though, I'll keep it here since I don't want that behavior.
   const [pageToJumpTo, setPageToJumpTo] = useState<number>();
 
+  // Filtered jobs WITH search applied
+  // Note: Search affects available pages since search affects the jobs that
+  //   are to be shown, which obviously affects the total number of pages.
+  //   So search is basically an additional filter on top of the already
+  //   specified filters.
   const filteredJobs = useMemo(
-    () => getFilteredJobs(
-      jobs,
-      jobFilter,
-      companyFilter,
-      statusFilter,
-      remoteFilter,
-      cityFilter,
-      stateFilter,
-      countryFilter,
-      fromFilter,
-      savedFilter,
-      appliedFilter,
-      postedFilter
+    () => applySearch(
+      getFilteredJobs(
+        jobs,
+        jobFilter,
+        companyFilter,
+        statusFilter,
+        remoteFilter,
+        cityFilter,
+        stateFilter,
+        countryFilter,
+        fromFilter,
+        savedFilter,
+        appliedFilter,
+        postedFilter
+      ),
+      searchInput,
+      searchBy
     ), [
       jobs,
       jobFilter,
@@ -59,7 +72,9 @@ export default function PaginationSection() {
       fromFilter,
       savedFilter,
       appliedFilter,
-      postedFilter 
+      postedFilter,
+      searchInput,
+      searchBy
     ]
   );
   

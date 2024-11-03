@@ -2,29 +2,7 @@ import { Job } from "@/types/job";
 import sortJobs from "./sortJobs";
 import applyFilters from "./applyFilters";
 import { YearMonthDateFilter } from "@/types/common";
-
-// Search feature TODO: I might need to move this to its own file since other
-// components might need it (paginationSection and maybe discreteSliderValues?)
-function applySearch(
-  jobs: Job[],
-  searchInput: string,
-  searchBy: string,
-) {
-  if (!searchInput) { // No search input, so nothing to search by
-    return jobs;
-  }
-
-  return jobs.filter((job) => {
-    const jobProp = job[searchBy as keyof Job];
-    if (jobProp) {
-      return (jobProp as string).toLowerCase().includes(
-        searchInput.toLowerCase()
-      )
-    }
-    // Job doesn't have the specified property to search by
-    return false;
-  });
-};
+import applySearch from "./applySearch";
 
 export default function getJobsInPage(
   jobs: Job[] | undefined,
