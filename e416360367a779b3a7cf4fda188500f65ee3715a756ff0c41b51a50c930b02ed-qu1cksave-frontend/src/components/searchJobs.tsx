@@ -156,7 +156,7 @@ export default function SearchJobs() {
         options={searchSuggestions}
         getOptionLabel={(option) => option}
         sx={{
-          width: 300,
+          width: {xs: 200, sm: 300},
           marginRight: 2,
         }}
         renderInput={(params: any) =>
