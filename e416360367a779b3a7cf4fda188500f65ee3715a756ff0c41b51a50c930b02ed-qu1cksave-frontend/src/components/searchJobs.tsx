@@ -114,7 +114,7 @@ export default function SearchJobs() {
 
   // https://stackoverflow.com/questions/72417636/cannot-read-properties-of-undefined-reading-label
   return (
-    <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 3}}>
+    <Box sx={{display: 'flex', flexDirection: 'row', marginBottom: 3, marginRight: 2}}>
       {/* https://mui.com/material-ui/react-autocomplete/#controlled-states */}
       <Autocomplete
         freeSolo
@@ -155,8 +155,26 @@ export default function SearchJobs() {
         id="search-jobs-autocomplete"
         options={searchSuggestions}
         getOptionLabel={(option) => option}
-        sx={{ width: 300, marginRight: 2 }}
-        renderInput={(params: any) => <TextField {...params} label="Search" />}
+        sx={{
+          width: 300,
+          marginRight: 2,
+        }}
+        renderInput={(params: any) =>
+          <TextField {...params} label="Search"
+            sx={{
+              color: '#ffffff',
+              input: {
+                color: '#ffffff'
+              },
+              "& .MuiOutlinedInput-notchedOutline": {
+                border: 'solid #636369',
+              },
+              "& label": {
+                color: '#636369',
+              },              
+            }}
+          />
+        }
       />
 
       {/* Search By dropdown */}

@@ -174,12 +174,16 @@ export default function PaginationSection() {
               marginBottom: {xs: 0, sm: 1},
               marginRight: 1,
               padding: '1px',
+              color: '#ffffff',
+              input: {
+                color: '#ffffff'
+              },
               "& .MuiOutlinedInput-notchedOutline": {
-                border: 'solid #2d2d30',
+                border: 'solid #636369',
               },
               "& label": {
-                color: '#ffffff',
-              }
+                color: '#636369',
+              },   
             }}
             value={pageToJumpTo}
             error={invalidEntry}

@@ -31,11 +31,11 @@ export default function Page() {
           <SortOptions />
           <DiscreteSliderValues />
         </Box>
-
-        <SearchJobs />
   
-        <PaginationSection />
-        <Box sx={{marginBottom: 2.5 }} />
+        <Box sx= {{ display: 'flex', flexDirection: {xs: 'column', lg: 'row'}, justifyContent: 'space-between', marginBottom: 2.5, alignItems: {xs: 'center', sm: 'flex-start'}}}>
+          <SearchJobs />
+          <PaginationSection />
+        </Box>
   
         <AddOrEditDialog />
         <DeleteDialog />
