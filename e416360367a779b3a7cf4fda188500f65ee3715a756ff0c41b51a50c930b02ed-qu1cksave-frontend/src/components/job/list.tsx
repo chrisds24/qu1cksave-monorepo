@@ -4,7 +4,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import { Job } from "@/types/job";
 import { useContext, useMemo } from "react";
 // import JobCard from "./card";
-import { JobCard } from "./card";
+import { JobCard } from "./card/card";
 import JobsListSkeleton from "../skeleton/jobsListSkeleton";
 import { JobsContext } from "@/contexts/JobsContext";
 import { FiltersContext } from "@/contexts/FiltersContext";

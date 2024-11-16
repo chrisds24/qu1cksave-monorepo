@@ -1,3 +1,5 @@
+/* ----------------- SECTION: Default Next.js global styles ---------------- */
+
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
@@ -94,6 +96,8 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb)); */
+  /* I added this. Same font-family used by YouTube video title */
+  font-family: Roboto, Arial, sans-serif !important;
 }
 
 a {
@@ -107,7 +111,7 @@ a {
   }
 }
 
-/* Button */
+/* ------------------------- SECTION: Button ------------------------- */
 .btn-1 {
   color: #ffffff;
   background-color: #000000;
@@ -123,8 +127,7 @@ a {
 }
 
 .btn-1:active {
-  border-width: 1px;
-  border-color: #ffffff;
+  background-color: #707477;
 }
 
 .btn-err {
@@ -135,3 +138,45 @@ a {
   margin-right: 8px;
 }
 
+/* ------------------------- SECTION: Text-styling ------------------------- */
+
+/* ------------ Sub-section: Job Status ------------ */
+
+/* Yellow */
+.applied {
+  color: #cccc00;
+}
+.assessment {
+  color: #ffff00;
+}
+.interview {
+  color: #ffff27;
+}
+
+/*  Green */
+.job-Offered {
+  color: #00cc00;
+} 
+.accepted-offer {
+  color: #00ff00;
+} 
+
+.declined-offer {
+  color: #6262ff; /* Blue */
+}
+
+.not-applied {
+  color: #cc8400; /* Orange */
+}
+
+/* Red */
+.rejected {
+  color: #ff0000;
+}
+.ghosted {
+  color: #b10000;
+}
+
+.closed {
+  color: #808080 /* Gray */
+}

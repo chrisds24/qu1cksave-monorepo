@@ -1,7 +1,6 @@
-import { AppBar, Box, Button, IconButton, Toolbar, Typography } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
+import { AppBar, Box, Button, Toolbar } from "@mui/material";
 import Link from 'next/link'
-import styles from "./page.module.css";
+// import styles from "./page.module.css"; // Used by initial boilerplate
 import Intro from "@/components/landing/intro";
 import Features from "@/components/landing/features";
 import Footer from "@/components/landing/footer";

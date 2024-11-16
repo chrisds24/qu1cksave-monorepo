@@ -1,0 +1,29 @@
+.card {
+  background-color: #2d2d30;
+  width: 100%;
+  color: #ffffff;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  /* The MUI Paper component I originally had used elevation={3} */
+}
+
+.card:hover {
+  background-color: #141416;
+  cursor: pointer;
+}
+
+/*
+  backgroundColor: '#2d2d30',
+  width: '100%',
+  color: '#ffffff',
+  padding: 2,
+  display: 'flex',
+  flexDirection: 'column',
+  '&:hover': {
+    backgroundColor: '#171717'
+  },
+  cursor: 'pointer'
+  elevation={3}
+*/

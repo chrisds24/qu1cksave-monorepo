@@ -1,7 +1,8 @@
 'use client'
 
+import styles from './card.module.css';
 import { Job } from "@/types/job";
-import { Box, Divider, Paper, Typography } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useRouter } from "next/navigation";
@@ -12,9 +13,28 @@ import { SetDialogJobContext } from "@/contexts/add_or_edit_dialog/DialogJobCont
 import { SetDeleteJobIdContext } from "@/contexts/delete_dialog/DeleteJobIdContext";
 import { SetDeleteJobOpenContext } from "@/contexts/delete_dialog/DeleteJobOpenContext";
 
-
 // Applied, Not Applied, Assessment, Interview, Job Offered, Accepted Offer, Declined Offer
 // Rejected, Ghosted, Closed
+// const statusColor = {
+//   // Yellow
+//   'Applied': 'applied',
+//   'Assessment': 'assessment',
+//   'Interview': 'interview',
+
+//   // Green
+//   'Job Offered': 'job-offered',
+//   'Accepted Offer': 'accepted-offer',
+
+//   'Declined Offer': 'declined-offer', // Blue
+
+//   'Not Applied': 'not-applied', // Orange
+
+//   // Red
+//   'Rejected': 'rejected',
+//   'Ghosted': 'ghosted',
+
+//   'Closed': 'closed' // Gray
+// };
 const statusColor = {
   // Yellow
   'Applied': '#cccc00',
@@ -82,22 +102,8 @@ export const JobCard = memo(function JobCard(props: any) {
     }
 
     return (
-      <Paper
-        sx={{
-          backgroundColor: '#2d2d30',
-          width: '100%',
-          color: '#ffffff',
-          padding: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          '&:hover': {
-            backgroundColor: '#171717'
-          },
-          cursor: 'pointer'
-        }}
-        elevation={3}
-        onClick={() => router.push(`/jobs/${job.id}`)}
-      >
+      <div className={styles.card} onClick={() => router.push(`/jobs/${job.id}`)}>
+        {/* CSS TODO: Add the statusColor class as one if the classes. Use a span or div as a container? */}
         <Typography color={(statusColor as any)[jobStatus]} fontWeight={'bold'} sx={{fontSize: '17px', display: {xs: 'flex', sm: 'none'}, marginBottom: 1}}>
           {`${job.job_status}`}
         </Typography>
@@ -230,7 +236,7 @@ export const JobCard = memo(function JobCard(props: any) {
             </button>          
           </Box>
         </Box>
-      </Paper>
+      </div>
     );
   }
 // };
