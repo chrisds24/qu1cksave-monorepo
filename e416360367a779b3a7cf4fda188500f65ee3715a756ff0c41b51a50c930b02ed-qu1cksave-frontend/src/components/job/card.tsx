@@ -1,7 +1,7 @@
 'use client'
 
 import { Job } from "@/types/job";
-import { Box, Button, Divider, Paper, Typography } from "@mui/material";
+import { Box, Divider, Paper, Typography } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useRouter } from "next/navigation";
@@ -11,6 +11,7 @@ import { SetIsAddContext } from "@/contexts/add_or_edit_dialog/IsAddContext";
 import { SetDialogJobContext } from "@/contexts/add_or_edit_dialog/DialogJobContext";
 import { SetDeleteJobIdContext } from "@/contexts/delete_dialog/DeleteJobIdContext";
 import { SetDeleteJobOpenContext } from "@/contexts/delete_dialog/DeleteJobOpenContext";
+
 
 // Applied, Not Applied, Assessment, Interview, Job Offered, Accepted Offer, Declined Offer
 // Rejected, Ghosted, Closed
@@ -200,18 +201,8 @@ export const JobCard = memo(function JobCard(props: any) {
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', flexDirection: 'row', alignSelf: {xs: 'flex-end', sm: 'center'}}}>
-            <Button
-              variant="contained"
-              sx={{
-                color: '#ffffff',
-                backgroundColor: '#000000',
-                marginRight: 1,
-                '&:hover': {
-                  backgroundColor: '#0b0b0b',
-                },
-                width: '64px',
-                height: '36px'
-              }}
+            <button
+              className="btn-1 mr-8px"
               onClick={
                 (event) =>  {
                   event.stopPropagation();
@@ -224,15 +215,9 @@ export const JobCard = memo(function JobCard(props: any) {
               <EditIcon
                 sx={{ color: '#ffffff'}}
               />
-            </Button>
-            <Button
-              variant="contained"
-              sx={{
-                color: '#ffffff',
-                width: '64px',
-                height: '36px'
-              }}
-              color='error'
+            </button>
+            <button
+              className="btn-1 mr-8px btn-err"
               onClick={
                 (event) =>  {
                   event.stopPropagation();
@@ -242,7 +227,7 @@ export const JobCard = memo(function JobCard(props: any) {
               }
             >
               <DeleteIcon sx={{ color: '#ffffff'}} />
-            </Button>          
+            </button>          
           </Box>
         </Box>
       </Paper>
