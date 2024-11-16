@@ -111,6 +111,13 @@ a {
   }
 }
 
+/*
+  IMPORTANT
+  - I'm mixing regular HTML with MUI components, relying only on MUI when
+    I need to. (Ex. slider for jobs per page, MUI's Pagination component, MUI's
+    Date Picker, and MUI icons)
+*/
+
 /* ------------------------- SECTION: Button ------------------------- */
 .btn-1 {
   color: #ffffff;
