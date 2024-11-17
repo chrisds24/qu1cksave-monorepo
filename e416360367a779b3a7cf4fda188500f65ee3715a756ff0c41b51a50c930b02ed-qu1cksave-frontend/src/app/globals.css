@@ -149,7 +149,7 @@ a {
 
 /* ------------------------- SECTION: Text-styling ------------------------- */
 
-/* ------------ Sub-section: Job Status ------------ */
+/* ------------ Sub-section: Job Status Color ------------ */
 
 /* Yellow */
 .applied {
@@ -188,4 +188,10 @@ a {
 
 .closed {
   color: #808080 /* Gray */
+}
+
+/* ------------ Sub-section: Shared Text Colors ------------ */
+
+.date-value-color {
+  color: #ce9178;
 }

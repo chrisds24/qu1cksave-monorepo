@@ -107,35 +107,35 @@ export const JobCard = memo(function JobCard(props: any) {
         <p className={`${styles['status']} ${(statusColor as any)[jobStatus]} ${styles['status-top']}`}>
           {`${job.job_status}`}
         </p>
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 1}}>
-          <Box sx={{marginRight: 5, display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
-            <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+        <div className={styles['date-and-status-container']}>
+          <div className={styles['date-applied-container']}>
+            <p className={styles['date-label']}>
               {'Applied:'} 
-            </Typography>
-            <Typography color='#ce9178' sx={{fontSize: '17px'}}>
+            </p>
+            <p className="date-value-color">
               {
                 applied ?
                 `${applied!.toLocaleString('default', { month: 'long' })} ${applied!.getDate()}, ${applied!.getFullYear()}` :
                 'N/A'
               } 
-            </Typography>                 
-          </Box>
-          <Box sx={{marginRight: {xs: 0, sm: 5}, display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
-            <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>
+            </p>                 
+          </div>
+          <div className={styles['date-posted-container']}>
+            <p className={styles['date-label']}>
               {'Posted:'} 
-            </Typography>
-            <Typography color='#ce9178' sx={{fontSize: '17px'}}>
+            </p>
+            <p className="date-value-color">
               {
                 posted ?
                 `${posted!.toLocaleString('default', { month: 'long' })} ${posted!.getDate()}, ${posted!.getFullYear()}` :
                 'N/A'
               } 
-            </Typography>              
-          </Box>
-          <Typography color={(statusColor as any)[jobStatus]} fontWeight={'bold'} sx={{fontSize: '17px', display: {xs: 'none', sm: 'flex'}}}>
+            </p>              
+          </div>
+          <p className={`${styles['status']} ${(statusColor as any)[jobStatus]} ${styles['status-row']}`}>
             {`${job.job_status}`}
-          </Typography>
-        </Box>
+          </p>
+        </div>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
           <Typography color='#4fc1ff' fontWeight='bold' sx={{fontSize: '19px', width: {xs: '100%', sm: '60%'}, marginRight: 2, alignSelf: 'center'}}>
             {`${job.title}`}

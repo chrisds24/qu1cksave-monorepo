@@ -21,12 +21,37 @@
 .status {
   font-weight: bold;
   font-size: 17px;
-  margin-bottom: 8px;
 }
 
 /* Status is on top below sm breakpoint */
 .status-top {
   display: flex;
+  margin-bottom: 8px;
+}
+
+/* display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 1 */
+.date-and-status-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  font-size: 17px;
+}
+
+.date-applied-container {
+  margin-right: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.date-label {
+  margin-right: 8px;
+}
+
+.date-posted-container {
+  margin-right: 0px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Status is in date applied/posted row for sm (and above) breakpoint */
@@ -49,6 +74,15 @@
 @media (min-width: 600px) {
   .status-top {
     display: none;
+  }
+
+  .date-applied-container {
+    flex-direction: row;
+  }
+
+  .date-posted-container {
+    margin-right: 40px;
+    flex-direction: row;
   }
 
   .status-row {
