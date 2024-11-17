@@ -15,46 +15,46 @@ import { SetDeleteJobOpenContext } from "@/contexts/delete_dialog/DeleteJobOpenC
 
 // Applied, Not Applied, Assessment, Interview, Job Offered, Accepted Offer, Declined Offer
 // Rejected, Ghosted, Closed
-// const statusColor = {
-//   // Yellow
-//   'Applied': 'applied',
-//   'Assessment': 'assessment',
-//   'Interview': 'interview',
-
-//   // Green
-//   'Job Offered': 'job-offered',
-//   'Accepted Offer': 'accepted-offer',
-
-//   'Declined Offer': 'declined-offer', // Blue
-
-//   'Not Applied': 'not-applied', // Orange
-
-//   // Red
-//   'Rejected': 'rejected',
-//   'Ghosted': 'ghosted',
-
-//   'Closed': 'closed' // Gray
-// };
 const statusColor = {
   // Yellow
-  'Applied': '#cccc00',
-  'Assessment': '#ffff00',
-  'Interview': '#ffff27',
+  'Applied': 'applied',
+  'Assessment': 'assessment',
+  'Interview': 'interview',
 
   // Green
-  'Job Offered': '#00cc00',
-  'Accepted Offer': '#00ff00',
+  'Job Offered': 'job-offered',
+  'Accepted Offer': 'accepted-offer',
 
-  'Declined Offer': '#6262ff', // Blue
+  'Declined Offer': 'declined-offer', // Blue
 
-  'Not Applied': '#cc8400', // Orange
+  'Not Applied': 'not-applied', // Orange
 
   // Red
-  'Rejected': '#ff0000',
-  'Ghosted': '#b10000',
+  'Rejected': 'rejected',
+  'Ghosted': 'ghosted',
 
-  'Closed': '#808080' // Gray
+  'Closed': 'closed' // Gray
 };
+// const statusColor = {
+//   // Yellow
+//   'Applied': '#cccc00',
+//   'Assessment': '#ffff00',
+//   'Interview': '#ffff27',
+
+//   // Green
+//   'Job Offered': '#00cc00',
+//   'Accepted Offer': '#00ff00',
+
+//   'Declined Offer': '#6262ff', // Blue
+
+//   'Not Applied': '#cc8400', // Orange
+
+//   // Red
+//   'Rejected': '#ff0000',
+//   'Ghosted': '#b10000',
+
+//   'Closed': '#808080' // Gray
+// };
 
 // Important: Using memo actually speeds things up by a lot. For example,
 //   this is easily seen when there's a ton of jobs and the user has
@@ -102,11 +102,11 @@ export const JobCard = memo(function JobCard(props: any) {
     }
 
     return (
-      <div className={styles.card} onClick={() => router.push(`/jobs/${job.id}`)}>
-        {/* CSS TODO: Add the statusColor class as one if the classes. Use a span or div as a container? */}
-        <Typography color={(statusColor as any)[jobStatus]} fontWeight={'bold'} sx={{fontSize: '17px', display: {xs: 'flex', sm: 'none'}, marginBottom: 1}}>
+      <div className={styles['card']} onClick={() => router.push(`/jobs/${job.id}`)}>
+        {/* Status shows up on top below sm breakpoint */}
+        <p className={`${styles['status']} ${(statusColor as any)[jobStatus]} ${styles['status-top']}`}>
           {`${job.job_status}`}
-        </Typography>
+        </p>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 1}}>
           <Box sx={{marginRight: 5, display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
             <Typography color='#ffffff' sx={{fontSize: '17px', marginRight: 1}}>

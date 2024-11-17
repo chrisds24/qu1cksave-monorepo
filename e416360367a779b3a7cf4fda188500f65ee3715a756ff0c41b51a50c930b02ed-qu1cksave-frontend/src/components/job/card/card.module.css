@@ -6,7 +6,11 @@
   border-radius: 8px;
   display: flex;
   flex-direction: column;
-  /* The MUI Paper component I originally had used elevation={3} */
+  /*
+    The MUI Paper component I originally had used elevation={3}
+    TODO: I'll need to add a shadow to replicate that behavior
+  */
+
 }
 
 .card:hover {
@@ -14,16 +18,40 @@
   cursor: pointer;
 }
 
+.status {
+  font-weight: bold;
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+
+/* Status is on top below sm breakpoint */
+.status-top {
+  display: flex;
+}
+
+/* Status is in date applied/posted row for sm (and above) breakpoint */
+.status-row {
+  display: none;
+}
+
+/* ----------------- Media queries --------------- */
 /*
-  backgroundColor: '#2d2d30',
-  width: '100%',
-  color: '#ffffff',
-  padding: 2,
-  display: 'flex',
-  flexDirection: 'column',
-  '&:hover': {
-    backgroundColor: '#171717'
-  },
-  cursor: 'pointer'
-  elevation={3}
+  Note: I'm using MUI breakpoints
+    https://mui.com/material-ui/customization/breakpoints/
+  xs, extra-small: 0px
+  sm, small: 600px
+  md, medium: 900px
+  lg, large: 1200px
+  xl, extra-large: 1536px 
 */
+
+/* Status */
+@media (min-width: 600px) {
+  .status-top {
+    display: none;
+  }
+
+  .status-row {
+    display: flex;
+  }
+}
