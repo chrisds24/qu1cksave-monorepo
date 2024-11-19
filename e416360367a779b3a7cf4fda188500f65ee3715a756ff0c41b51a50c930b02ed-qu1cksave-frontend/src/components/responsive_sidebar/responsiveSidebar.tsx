@@ -23,9 +23,8 @@ export default function ResponsiveSidebar(
   {currentPage} : {currentPage: string}
 ) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const sidebarDisplay = mobileOpen ? 'sidebar-open' : 'sidebar-closed';
-  const sidebarSlideIn = mobileOpen ? ` ${styles['sidebar-slide-in']}`: '';
-  const sidebarSlideOut = mobileOpen ? '': ` ${styles['sidebar-slide-out']}`;
+  const mobileSidebarDisplay = mobileOpen ? 'mobile-open' : 'mobile-closed';
+  const backdropDisplay = mobileOpen ? '': 'backdrop-closed';
 
   return (
     <>
@@ -41,19 +40,19 @@ export default function ResponsiveSidebar(
         </p>
       </div>
       {/* Sidebar when breakpoint is md or above */}
-      <div className={styles['sidebar']}>
+      <div className={`${styles['sidebar']} ${styles['sidebar-wide']}`}>
         {sidebarContent}
       </div>
-      {/* Sidebar when breakpoint is below md. */}
+      {/* "Mobile" sidebar when breakpoint is below md. */}
       <div className={
-        `${styles['sidebar']} ${styles[sidebarDisplay]}
-        ${sidebarSlideIn}${sidebarSlideOut}`
+        `${styles['sidebar']} ${styles[mobileSidebarDisplay]}`
       }>
         {sidebarContent}
       </div>
       {/* Sidebar backdrop with open sidebar below md breakpoint. */}
       <div
-        className={`${styles['sidebar-backdrop']} ${styles[sidebarDisplay]}`}
+        className={`
+          ${styles['backdrop']} ${styles[backdropDisplay]}`}
         onClick={() => setMobileOpen(false)}
       />
     </>

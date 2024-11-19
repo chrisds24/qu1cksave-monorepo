@@ -37,41 +37,52 @@
   width: 180px;
   background-color: #000000;
   height: 100vh;
-  display: none;
   z-index: 3;
 }
 
-/* When breakpoint is below md, this indicates a closed sidebar */
-.sidebar-closed {
+/* 
+  Sidebar when breakpoint above md
+  Display is none below md
+*/
+.sidebar-wide {
   display: none;
 }
 
-/* When breakpoint is below md, this indicates an open sidebar */
-.sidebar-open {
-  display: block;
-  position: fixed;
+/* When breakpoint is below md, this indicates a closed sidebar */
+.mobile-closed {
+  display: none;
+  /* We can't see this since display becomes none immediately */
+  /* animation-duration: 0.2s;
+  animation-name: slide-out; */
 }
 
-.sidebar-slide-in {
-  /* Animation */
+/* When breakpoint is below md, this indicates an open sidebar */
+.mobile-open {
+  display: block;
+  position: fixed;
   animation-duration: 0.2s;
   animation-name: slide-in;
 }
 
-/* TODO: DOES NOT WORK AS EXPECTED */
-.sidebar-slide-out {
-  /* Animation */
-  animation-duration: 0.2s;
-  animation-name: slide-out;
-  transition: display 0.2s;
-}
-
-.sidebar-backdrop {
+/*
+  Unlike .sidebar, display and position is included here. In sidebar, we could
+  not include it since sidebar is the styling used by both the wide and mobile
+  sidebars (we have two sidebars). Here, there's only one sidebar.
+ */
+.backdrop {
+  display: block;
+  position: fixed;
   height: 100vh;
   width: 100vw;
   z-index: 2;
   opacity: 50%;
   background-color: #000000;
+  /* transition: opacity 2s; */
+}
+
+.backdrop-closed {
+  display: none;
+  /* opacity: 0%; */
 }
 
 /* ------------------- SECTION: Animation Keyframes  -------------------- */
@@ -111,12 +122,20 @@
     display: none;
   }
 
-  .sidebar {
+  .sidebar-wide {
     display: block;
     position: fixed;
   }
 
-  .sidebar-backdrop {
+  /* 
+    We don't want this because mobile sidebar slides in again
+    when we go below md.
+   */
+  /* .mobile-open {
+    display: none;
+  } */
+
+  .backdrop {
     display: none;
   }
 }
