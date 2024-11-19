@@ -23,17 +23,17 @@ export default function ResponsiveSidebar(
   {currentPage} : {currentPage: string}
 ) {
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  const toggleSidebar = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
   const sidebarDisplay = mobileOpen ? 'sidebar-open' : 'sidebar-closed';
+  const sidebarSlideIn = mobileOpen ? ` ${styles['sidebar-slide-in']}`: '';
+  const sidebarSlideOut = mobileOpen ? '': ` ${styles['sidebar-slide-out']}`;
 
   return (
     <>
       <div className={styles['navbar']}>
-        <button className={styles['menu-button']} onClick={toggleSidebar}>
+        <button
+          className={styles['menu-button']}
+          onClick={() => setMobileOpen(true)}
+        >
           <MenuIcon />
         </button>
         <p className={styles['current-page-text']}>
@@ -45,11 +45,17 @@ export default function ResponsiveSidebar(
         {sidebarContent}
       </div>
       {/* Sidebar when breakpoint is below md. */}
-      <div className={`${styles['sidebar']} ${styles[sidebarDisplay]}`}>
+      <div className={
+        `${styles['sidebar']} ${styles[sidebarDisplay]}
+        ${sidebarSlideIn}${sidebarSlideOut}`
+      }>
         {sidebarContent}
       </div>
       {/* Sidebar backdrop with open sidebar below md breakpoint. */}
-      <div className={`${styles['sidebar-backdrop']} ${styles[sidebarDisplay]}`} />
+      <div
+        className={`${styles['sidebar-backdrop']} ${styles[sidebarDisplay]}`}
+        onClick={() => setMobileOpen(false)}
+      />
     </>
   );
 }

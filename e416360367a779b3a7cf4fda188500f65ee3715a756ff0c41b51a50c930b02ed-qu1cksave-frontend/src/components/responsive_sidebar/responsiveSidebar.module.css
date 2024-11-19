@@ -52,12 +52,48 @@
   position: fixed;
 }
 
+.sidebar-slide-in {
+  /* Animation */
+  animation-duration: 0.2s;
+  animation-name: slide-in;
+}
+
+/* TODO: DOES NOT WORK AS EXPECTED */
+.sidebar-slide-out {
+  /* Animation */
+  animation-duration: 0.2s;
+  animation-name: slide-out;
+  transition: display 0.2s;
+}
+
 .sidebar-backdrop {
   height: 100vh;
   width: 100vw;
   z-index: 2;
   opacity: 50%;
   background-color: #000000;
+}
+
+/* ------------------- SECTION: Animation Keyframes  -------------------- */
+
+@keyframes slide-in {
+  from {
+    translate: -180px 0;
+  }
+
+  to {
+    translate: 0 0;
+  }
+}
+
+@keyframes slide-out {
+  from {
+    translate: 0 0;
+  }
+
+  to {
+    translate: -180px 0;
+  }
 }
 
 /* ------------------- SECTION: Media queries  ------------------------ */
@@ -78,5 +114,9 @@
   .sidebar {
     display: block;
     position: fixed;
+  }
+
+  .sidebar-backdrop {
+    display: none;
   }
 }
