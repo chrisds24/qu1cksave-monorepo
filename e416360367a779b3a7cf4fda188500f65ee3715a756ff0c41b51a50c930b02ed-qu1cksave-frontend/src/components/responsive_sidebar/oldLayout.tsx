@@ -26,7 +26,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { usePathname } from 'next/navigation';
 import { SessionUserIdContext } from '@/contexts/SessionUserIdContext';
-import ResponsiveSidebar from '@/components/responsive_sidebar/responsiveSidebar';
 
 const drawerWidth = 180;
 
@@ -198,14 +197,81 @@ export default function MainLayout({
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <>
-        <ResponsiveSidebar currentPage={currentPage} />
+        <AppBar
+          position="fixed"
+          sx={{
+            width: { md: `calc(100% - ${drawerWidth}px)` },
+            ml: { sm: `${drawerWidth}px` },
+            display: { md: 'none' },
+            backgroundColor: '#000000'
+          }}
+        >
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { md: 'none' } }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap component="div">
+              {currentPage}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <Box
+          component="nav"
+          sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+          aria-label="drawer options"
+        >
+          {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onTransitionEnd={handleDrawerTransitionEnd}
+            onClose={handleDrawerClose}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+            sx={{
+              display: { xs: 'block', md: 'none' },
+              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            }}
+            PaperProps={{
+              sx: {
+                backgroundColor: '#000000',
+              }
+            }}
+            elevation={5}
+          >
+            {drawer}
+          </Drawer>
+          <Drawer
+            variant="permanent"
+            sx={{
+              // display: { xs: 'none', sm: 'block' },
+              display: { xs: 'none', md: 'block' },
+              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            }}
+            open
+            PaperProps={{
+              sx: {
+                backgroundColor: '#000000',
+              }
+            }}
+            elevation={5}
+          >
+            {drawer}
+          </Drawer>
+        </Box>
         <Box
           component="main"
           sx={{ flexGrow: 1,
             p: 3,
             width: { md: `calc(100% - ${drawerWidth}px)` },
             backgroundColor: '#1e1e1e',
-            marginLeft: {xs: 0, md: `${drawerWidth}px`}
           }}
         >
           <Toolbar sx={{display: { xs: 'block', md: 'none' }}}/>

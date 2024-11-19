@@ -35,26 +35,6 @@ const statusColor = {
 
   'Closed': 'closed' // Gray
 };
-// const statusColor = {
-//   // Yellow
-//   'Applied': '#cccc00',
-//   'Assessment': '#ffff00',
-//   'Interview': '#ffff27',
-
-//   // Green
-//   'Job Offered': '#00cc00',
-//   'Accepted Offer': '#00ff00',
-
-//   'Declined Offer': '#6262ff', // Blue
-
-//   'Not Applied': '#cc8400', // Orange
-
-//   // Red
-//   'Rejected': '#ff0000',
-//   'Ghosted': '#b10000',
-
-//   'Closed': '#808080' // Gray
-// };
 
 // Important: Using memo actually speeds things up by a lot. For example,
 //   this is easily seen when there's a ton of jobs and the user has
