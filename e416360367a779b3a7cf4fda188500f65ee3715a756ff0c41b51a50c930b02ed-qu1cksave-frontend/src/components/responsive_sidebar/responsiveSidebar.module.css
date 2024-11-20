@@ -48,20 +48,24 @@
   display: none;
 }
 
+.sidebar-mobile {
+  /* 
+    Instead of changing the mobile sidebar's display, just move it into or out
+    of the viewport when opening/closing.
+  */
+  display: block;
+  position: fixed;
+  transition: left 0.25s;
+}
+
 /* When breakpoint is below md, this indicates a closed sidebar */
 .mobile-closed {
-  display: none;
-  /* We can't see this since display becomes none immediately */
-  /* animation-duration: 0.2s;
-  animation-name: slide-out; */
+  left: -180px;
 }
 
 /* When breakpoint is below md, this indicates an open sidebar */
 .mobile-open {
-  display: block;
-  position: fixed;
-  animation-duration: 0.2s;
-  animation-name: slide-in;
+  left: 0px;
 }
 
 /*
@@ -77,33 +81,24 @@
   z-index: 2;
   opacity: 50%;
   background-color: #000000;
-  /* transition: opacity 2s; */
+  /* 
+    Remove backdrop with display: none, but have it fade it out with opacity
+    instead of disappearing immediately. Same for showing the backdrop, but the
+    other way around.
+   */
+   transition: opacity 0.25s, display 0.25s allow-discrete;
 }
 
 .backdrop-closed {
   display: none;
-  /* opacity: 0%; */
+  opacity: 0%;
 }
 
-/* ------------------- SECTION: Animation Keyframes  -------------------- */
-
-@keyframes slide-in {
-  from {
-    translate: -180px 0;
-  }
-
-  to {
-    translate: 0 0;
-  }
-}
-
-@keyframes slide-out {
-  from {
-    translate: 0 0;
-  }
-
-  to {
-    translate: -180px 0;
+/* Needed so that fade-in works. Not supported in Firefox */
+@starting-style {
+  .backdrop {
+    /* Don't put display: none */
+    opacity: 0%;
   }
 }
 
@@ -137,5 +132,6 @@
 
   .backdrop {
     display: none;
+    opacity: 0%;
   }
 }

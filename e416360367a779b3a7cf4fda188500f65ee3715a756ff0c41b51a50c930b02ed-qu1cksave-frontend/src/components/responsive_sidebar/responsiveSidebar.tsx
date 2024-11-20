@@ -45,7 +45,8 @@ export default function ResponsiveSidebar(
       </div>
       {/* "Mobile" sidebar when breakpoint is below md. */}
       <div className={
-        `${styles['sidebar']} ${styles[mobileSidebarDisplay]}`
+        `${styles['sidebar']} ${styles['sidebar-mobile']}
+        ${styles[mobileSidebarDisplay]}`
       }>
         {sidebarContent}
       </div>
