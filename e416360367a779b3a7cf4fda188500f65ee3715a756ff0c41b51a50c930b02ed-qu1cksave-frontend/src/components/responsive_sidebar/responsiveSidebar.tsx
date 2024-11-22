@@ -2,22 +2,11 @@
 import { useState } from 'react';
 import styles from './responsiveSidebar.module.css';
 import MenuIcon from '@mui/icons-material/Menu';
+import SidebarContent from '../sidebar_content/sidebarContent';
 
-const sidebarContent = <>
-  <div className={styles['logo-container']}>
-    <a href="/">
-      <img
-        src="/qu1cksave_black_bg.png"
-        alt="qu1cksave logo"
-        height="56px"
-        className="qu1cksave-logo"
-      />
-    </a>
-  </div>
-  <div>
-    TODO
-  </div>
-</>;
+// Needed to move this to own component since I need to pass currentPage to it,
+// but I didn't want to define it inside the ResponsiveSidebar code below.
+// const sidebarContent = ... ;
 
 export default function ResponsiveSidebar(
   {currentPage} : {currentPage: string}
@@ -41,14 +30,15 @@ export default function ResponsiveSidebar(
       </div>
       {/* Sidebar when breakpoint is md or above */}
       <div className={`${styles['sidebar']} ${styles['sidebar-wide']}`}>
-        {sidebarContent}
+        {/* {sidebarContent} */}
+        <SidebarContent currentPage={currentPage} />
       </div>
       {/* "Mobile" sidebar when breakpoint is below md. */}
       <div className={
         `${styles['sidebar']} ${styles['sidebar-mobile']}
         ${styles[mobileSidebarDisplay]}`
       }>
-        {sidebarContent}
+        <SidebarContent currentPage={currentPage} />
       </div>
       {/* Sidebar backdrop with open sidebar below md breakpoint. */}
       <div
