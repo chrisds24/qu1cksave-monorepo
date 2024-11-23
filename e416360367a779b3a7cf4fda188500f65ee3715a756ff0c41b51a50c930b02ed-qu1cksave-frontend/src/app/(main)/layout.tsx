@@ -7,7 +7,6 @@ import { ReactNode, useEffect, useState } from 'react';
 import { User } from '@/types/user';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { usePathname } from 'next/navigation';
 import { SessionUserIdContext } from '@/contexts/SessionUserIdContext';
 import ResponsiveSidebar from '@/components/responsive_sidebar/responsiveSidebar';
 
@@ -19,18 +18,6 @@ export default function MainLayout({
   children: ReactNode
 }) {
   const [sessionUser, setSessionUser] = useState<User>();
-
-  const pathname = usePathname();
-  let currentPage;
-  if (pathname.startsWith('/jobs')) {
-    currentPage = 'Jobs';
-  } else if (pathname.startsWith('/documents')) {
-    currentPage = 'Documents';
-  } else if (pathname.startsWith('/statistics')) {
-    currentPage = 'Statistics';
-  } else {
-    currentPage = '';
-  }
 
   useEffect(() => {
     const getSession = async () => {
@@ -52,7 +39,6 @@ export default function MainLayout({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <>
         <ResponsiveSidebar
-          currentPage={currentPage}
           sessionUserName={sessionUser?.name}
           setSessionUser={setSessionUser}
         />
