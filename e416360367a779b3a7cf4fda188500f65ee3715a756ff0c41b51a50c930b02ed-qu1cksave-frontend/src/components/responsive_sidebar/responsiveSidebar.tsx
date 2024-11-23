@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import styles from './responsiveSidebar.module.css';
 import MenuIcon from '@mui/icons-material/Menu';
 import { User } from '@/types/user';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import WorkIcon from '@mui/icons-material/Work';
 import FolderIcon from '@mui/icons-material/Folder';
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -28,6 +28,8 @@ export default function ResponsiveSidebar(
     setSessionUser: Dispatch<SetStateAction<User | undefined>>
   }
 ) {
+  const router = useRouter();
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileSidebarDisplay = mobileOpen ? 'mobile-open' : 'mobile-closed';
   const backdropDisplay = mobileOpen ? '': 'backdrop-closed';
@@ -49,34 +51,38 @@ export default function ResponsiveSidebar(
   const sidebarContent = (
     <>
       <div className={styles['logo-container']}>
-        <a href="/">
-          <img
-            src="/qu1cksave_black_bg.png"
-            alt="qu1cksave logo"
-            height="56px"
-            className="qu1cksave-logo"
-          />
-        </a>
+        {/* 
+          Note: Don't use Link or a tag to wrap this. It causes the whole page
+          to reload. Just use router.push like I did below
+        */}
+        <img
+          src="/qu1cksave_black_bg.png"
+          alt="qu1cksave logo"
+          height="56px"
+          className="qu1cksave-logo"
+          onClick={() => router.push('/')}
+        />
       </div>
       <ul className={styles['nav-item-list']}>
         {navItems.map((navItem) => 
-          <a href={`/${navItem.route}`} key={`${navItem.name} Nav`}>
-            <li>
-              <div className={
+          <li key={`${navItem.name} Nav`}>
+            <div 
+              className={
                 `${styles['nav-item-container']}
                 ${currentPage === navItem.name ? styles['selected'] : ''}`
-              }>
-                <div className={styles['nav-item-logo-container']}>
-                  {navItem.icon}
-                </div>
-                <div className={styles['nav-item-text-container']}>
-                  <p className={styles['nav-item-text']}>
-                    {navItem.name}
-                  </p>
-                </div>
+              }
+              onClick={() => router.push(`/${navItem.route}`)}
+            >
+              <div className={styles['nav-item-logo-container']}>
+                {navItem.icon}
               </div>
-            </li>
-          </a>
+              <div className={styles['nav-item-text-container']}>
+                <p className={styles['nav-item-text']}>
+                  {navItem.name}
+                </p>
+              </div>
+            </div>
+          </li>
         )}
         <li key={'Account Nav'}>
           <div className={
