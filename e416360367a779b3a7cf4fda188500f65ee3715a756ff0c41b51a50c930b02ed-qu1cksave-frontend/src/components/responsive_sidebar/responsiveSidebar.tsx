@@ -1,15 +1,25 @@
 'use client'
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import styles from './responsiveSidebar.module.css';
 import MenuIcon from '@mui/icons-material/Menu';
 import SidebarContent from '../sidebar_content/sidebarContent';
+import { User } from '@/types/user';
 
 // Needed to move this to own component since I need to pass currentPage to it,
 // but I didn't want to define it inside the ResponsiveSidebar code below.
 // const sidebarContent = ... ;
 
 export default function ResponsiveSidebar(
-  {currentPage} : {currentPage: string}
+  {
+    currentPage,
+    sessionUserName,
+    setSessionUser
+  } :
+  {
+    currentPage: string,
+    sessionUserName: string | undefined,
+    setSessionUser: Dispatch<SetStateAction<User | undefined>>
+  }
 ) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileSidebarDisplay = mobileOpen ? 'mobile-open' : 'mobile-closed';
@@ -31,14 +41,22 @@ export default function ResponsiveSidebar(
       {/* Sidebar when breakpoint is md or above */}
       <div className={`${styles['sidebar']} ${styles['sidebar-wide']}`}>
         {/* {sidebarContent} */}
-        <SidebarContent currentPage={currentPage} />
+        <SidebarContent
+          currentPage={currentPage}
+          sessionUserName={sessionUserName}
+          setSessionUser={setSessionUser}
+        />
       </div>
       {/* "Mobile" sidebar when breakpoint is below md. */}
       <div className={
         `${styles['sidebar']} ${styles['sidebar-mobile']}
         ${styles[mobileSidebarDisplay]}`
       }>
-        <SidebarContent currentPage={currentPage} />
+        <SidebarContent
+          currentPage={currentPage}
+          sessionUserName={sessionUserName}
+          setSessionUser={setSessionUser}
+        />
       </div>
       {/* Sidebar backdrop with open sidebar below md breakpoint. */}
       <div

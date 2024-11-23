@@ -1,27 +1,10 @@
 'use client'
 
-import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import WorkIcon from '@mui/icons-material/Work';
-import FolderIcon from '@mui/icons-material/Folder';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import Link from 'next/link';
 import { getSessionUser, logout } from '@/actions/auth';
 import { ReactNode, useEffect, useState } from 'react';
 import { User } from '@/types/user';
-import { Avatar, Skeleton } from '@mui/material';
-import stringAvatar from '@/lib/stringAvatar';
-import LogoutIcon from '@mui/icons-material/Logout';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { usePathname } from 'next/navigation';
@@ -30,19 +13,11 @@ import ResponsiveSidebar from '@/components/responsive_sidebar/responsiveSidebar
 
 const drawerWidth = 180;
 
-const navItems = [
-  {name: 'Jobs', icon: <WorkIcon sx={{color: '#ffffff'}}/>, route: 'jobs'},
-  {name: 'Documents', icon: <FolderIcon sx={{color: '#ffffff'}}/>, route: 'documents'},
-  {name: 'Statistics', icon: <BarChartIcon sx={{color: '#ffffff'}}/>, route: 'statistics'}
-]
-
 export default function MainLayout({
   children, // will be a page or nested layout
 }: {
   children: ReactNode
 }) {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
   const [sessionUser, setSessionUser] = useState<User>();
 
   const pathname = usePathname();
@@ -73,132 +48,14 @@ export default function MainLayout({
     getSession();
   }, []); // Having sessionUser as a dependency causes an infinite effect call
 
-  const handleDrawerClose = () => {
-    setIsClosing(true);
-    setMobileOpen(false);
-  };
-
-  const handleDrawerTransitionEnd = () => {
-    setIsClosing(false);
-  };
-
-  const handleDrawerToggle = () => {
-    if (!isClosing) {
-      setMobileOpen(!mobileOpen);
-    }
-  };
-
-  const drawer = (
-    <div>
-      <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        flexDirection: 'column',
-        backgroundColor: '#000000',
-        height: 64 // The Toolbar that MUI uses to add the space has height 64
-      }}>
-        <Link href="/">
-          <img
-            height={56}
-            width={'auto'}
-            src="/qu1cksave_black_bg.png"
-            alt="qu1cksave logo"
-            style={{marginTop: 4}}
-          />
-        </Link>
-      </Box>   
-      <List>
-        {navItems.map((navItem) => (
-          <Link key={navItem.name} href={`/${navItem.route}`}>
-            <ListItem
-              disablePadding
-              sx={{
-                '&:hover': {
-                  backgroundColor: '#171717',
-                },
-              }}
-            >
-              <ListItemButton>
-                <ListItemIcon>
-                  {navItem.icon}
-                </ListItemIcon>
-                <ListItemText primary={navItem.name} sx={{ color: '#ffffff' }}/>
-              </ListItemButton>
-            </ListItem>
-          </Link>
-        ))}
-        <ListItem
-          key={'sessionUser'}
-          disablePadding
-          sx={{
-            '&:hover': {
-              backgroundColor: '#171717',
-            },
-          }}
-        >
-          <ListItemButton>
-            <ListItemIcon>
-              {
-                sessionUser?.name ?
-                <Avatar {...stringAvatar(sessionUser.name)} /> :
-                <Skeleton
-                  variant="circular"
-                  width={40}
-                  height={40}
-                  sx={{bgcolor: '#4b4e50'}}
-                />
-              }
-            </ListItemIcon>
-            <ListItemText
-              primary={
-                sessionUser?.name ?
-                sessionUser.name :
-                <Skeleton
-                  variant="text"                 
-                  sx={{
-                    bgcolor: '#4b4e50',
-                    fontSize: '20px'
-                  }}
-                />
-              }
-              sx={{ color: '#ffffff', textOverflow: 'ellipsis' }}
-              primaryTypographyProps={{ 
-                style: {
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
-                }
-            }}
-            />
-          </ListItemButton>
-        </ListItem>
-        <ListItem
-          key={'logout'}
-          disablePadding
-          sx={{
-            '&:hover': {
-              backgroundColor: '#171717',
-            },
-          }}
-        >
-          <ListItemButton onClick={() => {
-            logout();
-            setSessionUser(undefined);
-          }}>
-            <ListItemIcon>
-              <LogoutIcon sx={{color: '#ffffff'}}/>
-            </ListItemIcon>
-            <ListItemText primary={'Logout'} sx={{ color: '#ffffff' }}/>
-          </ListItemButton>
-        </ListItem>        
-      </List>
-    </div>
-  );
-
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <>
-        <ResponsiveSidebar currentPage={currentPage} />
+        <ResponsiveSidebar
+          currentPage={currentPage}
+          sessionUserName={sessionUser?.name}
+          setSessionUser={setSessionUser}
+        />
         <Box
           component="main"
           sx={{ flexGrow: 1,

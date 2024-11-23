@@ -23,16 +23,6 @@
   font-size: 20px;
 }
 
-.logo-container {
-  height: 64px;
-  background-color: #000000;
-  align-items: center;
-}
-
-.qu1cksave-logo {
-  margin-top: 4px;
-}
-
 .sidebar {
   width: 180px;
   background-color: #000000;

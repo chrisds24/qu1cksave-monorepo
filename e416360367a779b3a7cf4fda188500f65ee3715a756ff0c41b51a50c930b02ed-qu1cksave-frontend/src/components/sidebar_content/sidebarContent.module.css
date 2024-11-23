@@ -1,6 +1,16 @@
-.nav-item-list {
-  padding: 8px 0px;
+.logo-container {
+  display: flex;
+  height: 64px;
+  background-color: #000000;
+  justify-content: center;
+  margin-top: 4px;
 }
+
+.nav-item-list {
+  /* padding: 8px 0px; */
+  padding: 0px 0px;
+}
+
 .nav-item-container {
   display: flex;
   justify-content: space-between;
@@ -9,6 +19,7 @@
   padding: 8px 8px;
   margin: 8px 8px;
   border-radius: 8px;
+  cursor: pointer;
 }
 
 .nav-item-container:hover {
@@ -16,7 +27,7 @@
 }
 
 .nav-item-container.selected {
-  background-color: #4b4e50;
+  background-color: #323436;
 }
 
 .nav-item-logo-container {
@@ -33,4 +44,10 @@
   align-items: center;
   min-width: 91px;
   max-width: 91px;
+}
+
+.nav-item-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
