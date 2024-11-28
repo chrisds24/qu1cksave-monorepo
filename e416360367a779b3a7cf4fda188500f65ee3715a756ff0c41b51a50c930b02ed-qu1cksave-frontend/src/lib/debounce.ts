@@ -1,8 +1,8 @@
-export function useDebounce(func: any, delay: number) {
+export function debounce(func: any, delay: number) {
   let timeout: any = null;
 
   return (...args: any[]) => {
-    if (timeout) { clearTimeout(timeout) }
+    if (timeout) clearTimeout(timeout)
     timeout = setTimeout(() => {
       func(...args);
       timeout = null;

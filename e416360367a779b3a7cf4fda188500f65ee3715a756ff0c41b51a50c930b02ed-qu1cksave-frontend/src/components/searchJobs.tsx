@@ -5,11 +5,12 @@ import { PageContext, SetPageContext } from "@/contexts/PageContext";
 import { SearchByContext, SetSearchByContext } from "@/contexts/SearchByContext";
 import { SearchInputContext, SetSearchInputContext } from "@/contexts/SearchInputContext";
 import applySearch from "@/lib/applySearch";
+import { debounce } from "@/lib/debounce";
 import getFilteredJobs from "@/lib/getFilteredJobs";
 import { states } from "@/lib/states";
 import { Job } from "@/types/job";
 import { Autocomplete, Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 
 const jobProps = {
   'title': 'Title',
@@ -45,7 +46,64 @@ function getSearchSuggestions(
   ) as Array<string>));
 }
 
+// Set searchInput and also page (if needed)
+function updateSearchInput(
+  setSearchInput: any,
+  newSearchFieldVal: string,
+  filteredJobs: Job[],
+  searchBy: string,
+  jobsPerPage: number,
+  page: number,
+  setPage: any
+): void {
+  setSearchInput(newSearchFieldVal);
+
+  // Get the the new filtered jobs after applying the search
+  // Note: No need to re-apply the filters to recalculate the filtered
+  //   jobs since only the search is changing.
+  // IMPORTANT: We need this next state for the next render since we
+  //   need to adjust the page in advance here in case our current page
+  //   goes over the last page for the next render. 
+  const searchedJobs = applySearch(
+    filteredJobs,
+    newSearchFieldVal, // Notice how we're using the new searchFieldVal
+    searchBy
+  );
+
+  let lastPage;
+  // Note that paginationSection and discreteSliderValues use filteredJobs
+  //   since their filteredJobs have the search applied to it. The filteredJobs
+  //   here do not.
+  if (searchedJobs.length === 0 || jobsPerPage === 0 || searchedJobs.length < jobsPerPage) {
+    lastPage = 1; // Last page is at least 1
+  } else {
+    lastPage = Math.ceil(searchedJobs.length / jobsPerPage);
+  }
+
+  // Changing the search input changes the jobs to be shown, which
+  //   affects the total number of pages.
+  // Therefore, we need to adjust the current page in advance as needed
+  // If we're at a page higher than our last page, go to the last page
+  if (page > lastPage) {
+    setPage(lastPage);
+  }
+}
+
+// https://stackoverflow.com/questions/42361485/how-long-should-you-debounce-text-input
+// - 250 is recommended in the link above
+// - Though, 500 also feels just right for me if I want a very slight delay
+const debouncedUpdateSearchInput = debounce(updateSearchInput, 250);
+
 export default function SearchJobs() {
+  // IMPORTANT: This is the value of the search field, and setting it shouldn't
+  //   be debounced. Meanwhile, searchInput is the value used by other
+  //   components to filter jobs and/or calculate other values they need, which
+  //   is just the same value as searchFieldVal. The only difference is that
+  //   setting searchInput is debounced, since we obviously don't want to
+  //   perform expensive calculations and re-rendering until the user has
+  //   finished typing.
+  const [searchFieldVal, setSearchFieldVal] = useState<string>('');
+
   const jobs = useContext(JobsContext);
   const {
     jobFilter,
@@ -67,6 +125,8 @@ export default function SearchJobs() {
   const jobsPerPage = useContext(JobsPerPageContext);
   const page = useContext(PageContext);
   const setPage = useContext(SetPageContext);
+
+  // const debouncedUpdateSearchInput = useDebounce(updateSearchInput, 2000);
 
   // Note: Search suggestions are based on the filtered jobs (Without the
   //   search applied).
@@ -103,7 +163,7 @@ export default function SearchJobs() {
   // Note: We are passing the suggestions to the autocomplete based on the jobs
   //   that satisfy the filters and the chosen search by option. Then the
   //   autocomplete takes care of updating the shown suggestions as the
-  //   search input is changed. As searchInput changes, this component
+  //   search field value is changed. As searchFieldVal changes, this component
   //   re-renders. But we don't want to recalculate the search suggestions
   //   since those stay the same unless the filtered jobs (w/o search applied)
   //   or the search by option changes, so we utilize useMemo here.
@@ -118,39 +178,18 @@ export default function SearchJobs() {
       {/* https://mui.com/material-ui/react-autocomplete/#controlled-states */}
       <Autocomplete
         freeSolo
-        inputValue={searchInput}
-        onInputChange={(event, newSearchInput) => {
-          setSearchInput(newSearchInput);
-
-          // Get the the new filtered jobs after applying the search
-          // Note: No need to re-apply the filters to recalculate the filtered
-          //   jobs since only the search is changing.
-          // We need this next state for the next render since we need to
-          //   adjust the page in advance here in case our current page goes
-          //   over the last page for the next render. 
-          const searchedJobs = applySearch(
+        inputValue={searchFieldVal}
+        onInputChange={(event, newSearchFieldVal) => {
+          setSearchFieldVal(newSearchFieldVal);
+          debouncedUpdateSearchInput(
+            setSearchInput,
+            newSearchFieldVal,
             filteredJobs,
-            newSearchInput, // Notice how we're using the new searchInput
-            searchBy
+            searchBy,
+            jobsPerPage,
+            page,
+            setPage
           );
-
-          let lastPage;
-          // Note that paginationSection and discreteSliderValues use filteredJobs
-          //   since their filteredJobs have the search applied to it. The filteredJobs
-          //   here do not.
-          if (searchedJobs.length === 0 || jobsPerPage === 0 || searchedJobs.length < jobsPerPage) {
-            lastPage = 1; // Last page is at least 1
-          } else {
-            lastPage = Math.ceil(searchedJobs.length / jobsPerPage);
-          }
-
-          // Changing the search input changes the jobs to be shown, which
-          //   affects the total number of pages.
-          // Therefore, we need to adjust the current page in advance as needed
-          // If we're at a page higher than our last page, go to the last page
-          if (page > lastPage) {
-            setPage(lastPage);
-          }
         }}
         id="search-jobs-autocomplete"
         options={searchSuggestions}
@@ -193,6 +232,8 @@ export default function SearchJobs() {
               setSearchBy(newSearchBy);
 
               // Get the new filtered jobs with the applied search
+              // Note: Using searchInput here, unlike getting searchedJobs for
+              //   the searchField which uses newSearchFieldVal.
               const searchedJobs = applySearch(
                 filteredJobs,
                 searchInput,
