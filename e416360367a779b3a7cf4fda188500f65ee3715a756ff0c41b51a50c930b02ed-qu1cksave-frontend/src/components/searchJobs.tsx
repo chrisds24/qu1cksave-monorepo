@@ -95,15 +95,6 @@ function updateSearchInput(
 const debouncedUpdateSearchInput = debounce(updateSearchInput, 250);
 
 export default function SearchJobs() {
-  // IMPORTANT: This is the value of the search field, and setting it shouldn't
-  //   be debounced. Meanwhile, searchInput is the value used by other
-  //   components to filter jobs and/or calculate other values they need, which
-  //   is just the same value as searchFieldVal. The only difference is that
-  //   setting searchInput is debounced, since we obviously don't want to
-  //   perform expensive calculations and re-rendering until the user has
-  //   finished typing.
-  const [searchFieldVal, setSearchFieldVal] = useState<string>('');
-
   const jobs = useContext(JobsContext);
   const {
     jobFilter,
@@ -125,6 +116,15 @@ export default function SearchJobs() {
   const jobsPerPage = useContext(JobsPerPageContext);
   const page = useContext(PageContext);
   const setPage = useContext(SetPageContext);
+
+  // IMPORTANT: This is the value of the search field, and setting it shouldn't
+  //   be debounced. Meanwhile, searchInput is the value used by other
+  //   components to filter jobs and/or calculate other values they need, which
+  //   is just the same value as searchFieldVal. The only difference is that
+  //   setting searchInput is debounced, since we obviously don't want to
+  //   perform expensive calculations and re-rendering until the user has
+  //   finished typing.
+  const [searchFieldVal, setSearchFieldVal] = useState<string>(searchInput);
 
   // NOTE: Doesn't work
   // - When the component re-renders (Ex. due to typing), debounce gets called

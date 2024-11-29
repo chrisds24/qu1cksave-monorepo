@@ -1,5 +1,5 @@
 import { Box, Slider, Typography } from "@mui/material";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import DiscreteSliderValuesSkeleton from "./skeleton/discreteSliderValuesSkeleton";
 import { JobsPerPageContext, SetJobsPerPageContext } from "@/contexts/JobsPerPageContext";
 import { PageContext, SetPageContext } from "@/contexts/PageContext";
@@ -10,10 +10,53 @@ import getFilteredJobs from "@/lib/getFilteredJobs";
 import applySearch from "@/lib/applySearch";
 import { SearchInputContext } from "@/contexts/SearchInputContext";
 import { SearchByContext } from "@/contexts/SearchByContext";
+import { Job } from "@/types/job";
+import { debounce } from "@/lib/debounce";
 
 function valuetext(value: number) {
   return `${value}`;
 }
+
+function updateJobsPerPage(
+  setJobsPerPage: any,
+  newSliderVal: number,
+  filteredJobs: Job[],
+  page: number,
+  setPage: any  
+) {
+  setJobsPerPage(newSliderVal);
+            
+  // When jobsPerPage changes, the following also change:
+  // 1.) jobsInPage (automatically done once state updates since jobs list
+  //     re-renders)
+  // 2.) page: If current page ends up higher than our last page due to the
+  //     change in number of jobs per page, move to the new last page
+  //     As a result of the page change, jobs shown in current page will be
+  //     adjusted to the new last page
+  // Important:
+  // - Use newSliderVal since sliderVal woudln't be updated yet
+  //   We want to set lastPage based on the new sliderVal
+  // - filteredJobs remains the same
+  // - page needs to be set here so it's updated in the following render
+  // - invalidEntry (to check if currently inputted pageToJumpTo is valid) is
+  //   calculated in paginationSection
+
+  // This section was originally just: lastPage = Math.ceil(filteredJobs.length / sliderVal)
+  // This new code ensures that we don't divide by 0 and that the last page is at least 1
+  let lastPage;
+  if (filteredJobs.length === 0 || newSliderVal === 0 || filteredJobs.length < (newSliderVal as number)) {
+    lastPage = 1; // Last page is at least 1
+  } else {
+    lastPage = Math.ceil(filteredJobs.length / (newSliderVal as number)) 
+  }
+
+  // If we're at a page higher than our last page, go to the last page
+  if (page > lastPage) {
+    setPage(lastPage);
+  }
+}
+
+const debouncedUpdateJobsPerPage = debounce(updateJobsPerPage, 500);
 
 export default function DiscreteSliderValues() {
   const jobsPerPage = useContext(JobsPerPageContext);
@@ -37,6 +80,8 @@ export default function DiscreteSliderValues() {
   const searchInput = useContext(SearchInputContext);
   const searchBy = useContext(SearchByContext);
   const jobsLoading = useContext(JobsLoadingContext);
+
+  const [sliderVal, setSliderVal] = useState<number>(jobsPerPage);
 
   // Filtered jobs WITH search applied
   // Note: Search affects available pages since search affects the jobs that
@@ -78,41 +123,6 @@ export default function DiscreteSliderValues() {
       searchBy
     ]
   );
-  
-  // const changeJobsPerPage = (event: Event, jobsPerPageVal: number | number[]) => {
-  // Using this instead of the commented code above so we can divide by jobsPerPageVal
-  const changeJobsPerPage: any = (event: React.ChangeEvent<unknown>, jobsPerPageVal: number) => {
-    setJobsPerPage(jobsPerPageVal);
-
-    // When jobsPerPage changes, the following also change:
-    // 1.) jobsInPage (automatically done once state updates since jobs list
-    //     re-renders)
-    // 2.) page: If current page ends up higher than our last page due to the
-    //     change in number of jobs per page, move to the new last page
-    //     As a result of the page change, jobs shown in current page will be
-    //     adjusted to the new last page
-    // Important:
-    // - Use jobsPerPageVal since jobsPerPage woudln't be updated yet
-    //   We want to set lastPage based on the new jobsPerPage
-    // - filteredJobs remains the same
-    // - page needs to be set here so it's updated in the following render
-    // - invalidEntry (to check if currently inputted pageToJumpTo is valid) is
-    //   calculated in paginationSection
-
-    // This section was originally just: lastPage = Math.ceil(filteredJobs.length / jobsPerPage)
-    // This new code ensures that we don't divide by 0 and that the last page is at least 1
-    let lastPage;
-    if (filteredJobs.length === 0 || jobsPerPageVal === 0 || filteredJobs.length < jobsPerPageVal) {
-      lastPage = 1; // Last page is at least 1
-    } else {
-      lastPage = Math.ceil(filteredJobs.length / jobsPerPageVal) 
-    }
-
-    // If we're at a page higher than our last page, go to the last page
-    if (page > lastPage) {
-      setPage(lastPage);
-    }
-  };
 
   // Ensures that the job slider's max doesn't go below 10
   const maxCount = filteredJobs.length < 10 ? 10 : filteredJobs.length;
@@ -138,8 +148,8 @@ export default function DiscreteSliderValues() {
         <Box sx={{ width: 250, marginRight: '1vw' }}>
           <Slider
             aria-label="Restricted values"
-            // defaultValue={jobsPerPage}
-            value={jobsPerPage}
+            // value={jobsPerPage}
+            value={sliderVal}
             getAriaValueText={valuetext}
             step={null}
             valueLabelDisplay="auto"
@@ -161,7 +171,19 @@ export default function DiscreteSliderValues() {
                 color: "#ffffff"
               },
             }}
-            onChange={changeJobsPerPage}
+            // onChange={changeJobsPerPage}
+            onChange={
+              (event, newSliderVal) => {
+                setSliderVal(newSliderVal as number);
+                debouncedUpdateJobsPerPage(
+                  setJobsPerPage,
+                  newSliderVal,
+                  filteredJobs,
+                  page,
+                  setPage  
+                );
+              }
+            }
           />
         </Box>
       </Box>
