@@ -1,3 +1,5 @@
+/* ----------------- SECTION: Default Next.js global styles ---------------- */
+
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
@@ -94,6 +96,8 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb)); */
+  /* I added this. Same font-family used by YouTube video title */
+  font-family: Roboto, Arial, sans-serif !important;
 }
 
 a {
@@ -105,4 +109,89 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+/*
+  IMPORTANT
+  - I'm mixing regular HTML with MUI components, relying only on MUI when
+    I need to. (Ex. slider for jobs per page, MUI's Pagination component, MUI's
+    Date Picker, and MUI icons)
+*/
+
+/* ------------------------- SECTION: Button ------------------------- */
+.btn-1 {
+  color: #ffffff;
+  background-color: #000000;
+  width: 64px;
+  height: 36px;
+  /* border-radius: 4px;  MUI uses this */
+  border-radius: 8px;
+  border-width: 0px;
+}
+
+.btn-1:hover {
+  background-color: #4b4e50;
+}
+
+.btn-1:active {
+  background-color: #707477;
+}
+
+.btn-err {
+  background-color: #d32f2f;
+}
+
+/* -------------------- SECTION: Margins and paddings -------------------- */
+
+.mr-8px {
+  margin-right: 8px;
+}
+
+/* ------------------------- SECTION: Text-styling ------------------------- */
+
+/* ------------ Sub-section: Job Status Color ------------ */
+
+/* Yellow */
+.applied {
+  color: #cccc00;
+}
+.assessment {
+  color: #ffff00;
+}
+.interview {
+  color: #ffff27;
+}
+
+/*  Green */
+.job-Offered {
+  color: #00cc00;
+} 
+.accepted-offer {
+  color: #00ff00;
+} 
+
+.declined-offer {
+  color: #6262ff; /* Blue */
+}
+
+.not-applied {
+  color: #cc8400; /* Orange */
+}
+
+/* Red */
+.rejected {
+  color: #ff0000;
+}
+.ghosted {
+  color: #b10000;
+}
+
+.closed {
+  color: #808080 /* Gray */
+}
+
+/* ------------ Sub-section: Shared Text Colors ------------ */
+
+.date-value-color {
+  color: #ce9178;
 }

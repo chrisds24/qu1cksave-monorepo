@@ -1,0 +1,183 @@
+.navbar {
+  position: fixed;
+  z-index: 2;
+  height: 64px;
+  width: 100vw;
+  background-color: #000000;
+  display: flex;
+  align-items: center;
+  /* top/bottom left/right */
+  padding: 0px 24px;
+}
+
+.menu-button {
+  margin-right: 24px;
+  background-color: #000000;
+  border-style: none;
+  cursor: pointer;
+}
+
+.current-page-text {
+  color: #ffffff;
+  /* font-size: 1.25rem; */
+  font-size: 20px;
+}
+
+.sidebar {
+  width: 180px;
+  background-color: #000000;
+  height: 100vh;
+  z-index: 4;
+}
+
+/* 
+  Sidebar when breakpoint above md
+  Display is none below md
+*/
+.sidebar-wide {
+  display: none;
+}
+
+.sidebar-mobile {
+  /* 
+    Instead of changing the mobile sidebar's display, just move it into or out
+    of the viewport when opening/closing.
+  */
+  display: block;
+  position: fixed;
+  transition: left 0.25s;
+}
+
+/* When breakpoint is below md, this indicates a closed sidebar */
+.mobile-closed {
+  left: -180px;
+}
+
+/* When breakpoint is below md, this indicates an open sidebar */
+.mobile-open {
+  left: 0px;
+}
+
+/*
+  Unlike .sidebar, display and position is included here. In sidebar, we could
+  not include it since sidebar is the styling used by both the wide and mobile
+  sidebars (we have two sidebars). Here, there's only one sidebar.
+ */
+.backdrop {
+  display: block;
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  z-index: 3;
+  opacity: 50%;
+  background-color: #000000;
+  /* 
+    Remove backdrop with display: none, but have it fade it out with opacity
+    instead of disappearing immediately. Same for showing the backdrop, but the
+    other way around.
+   */
+   transition: opacity 0.25s, display 0.25s allow-discrete;
+}
+
+.backdrop-closed {
+  display: none;
+  opacity: 0%;
+}
+
+/* Needed so that fade-in works. Not supported in Firefox */
+@starting-style {
+  .backdrop {
+    /* Don't put display: none */
+    opacity: 0%;
+  }
+}
+
+/*  ------------------- SECTION: Sidebar Content  ------------------------ */
+.logo-container {
+  display: flex;
+  height: 64px;
+  background-color: #000000;
+  justify-content: center;
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+.nav-item-list {
+  /* padding: 8px 0px; */
+  padding: 0px 0px;
+}
+
+.nav-item-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 8px;
+  margin: 8px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.nav-item-container:hover {
+  background-color: #4b4e50;
+}
+
+.nav-item-container.selected {
+  background-color: #323436;
+}
+
+.nav-item-logo-container {
+  display: flex;
+  align-items: center;
+  min-width: 56px;
+  max-width: 56px;
+}
+
+.nav-item-text-container {
+  font-size: 16px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  min-width: 91px;
+  max-width: 91px;
+}
+
+.nav-item-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ------------------- SECTION: Media queries  ------------------------ */
+/*
+  Note: I'm using MUI breakpoints
+    https://mui.com/material-ui/customization/breakpoints/
+  xs, extra-small: 0px
+  sm, small: 600px
+  md, medium: 900px
+  lg, large: 1200px
+  xl, extra-large: 1536px 
+*/
+@media (min-width: 900px) {
+  .navbar {
+    display: none;
+  }
+
+  .sidebar-wide {
+    display: block;
+    position: fixed;
+  }
+
+  /* 
+    We don't want this because mobile sidebar slides in again
+    when we go below md.
+   */
+  /* .mobile-open {
+    display: none;
+  } */
+
+  .backdrop {
+    display: none;
+    opacity: 0%;
+  }
+}

@@ -1,0 +1,91 @@
+.card {
+  background-color: #2d2d30;
+  width: 100%;
+  color: #ffffff;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  /*
+    The MUI Paper component I originally had used elevation={3}
+    TODO: I'll need to add a shadow to replicate that behavior
+  */
+
+}
+
+.card:hover {
+  background-color: #141416;
+  cursor: pointer;
+}
+
+.status {
+  font-weight: bold;
+  font-size: 17px;
+}
+
+/* Status is on top below sm breakpoint */
+.status-top {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+/* display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 1 */
+.date-and-status-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  font-size: 17px;
+}
+
+.date-applied-container {
+  margin-right: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.date-label {
+  margin-right: 8px;
+}
+
+.date-posted-container {
+  margin-right: 0px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Status is in date applied/posted row for sm (and above) breakpoint */
+.status-row {
+  display: none;
+}
+
+/* ----------------- SECTION: Media queries --------------- */
+/*
+  Note: I'm using MUI breakpoints
+    https://mui.com/material-ui/customization/breakpoints/
+  xs, extra-small: 0px
+  sm, small: 600px
+  md, medium: 900px
+  lg, large: 1200px
+  xl, extra-large: 1536px 
+*/
+
+/* Status */
+@media (min-width: 600px) {
+  .status-top {
+    display: none;
+  }
+
+  .date-applied-container {
+    flex-direction: row;
+  }
+
+  .date-posted-container {
+    margin-right: 40px;
+    flex-direction: row;
+  }
+
+  .status-row {
+    display: flex;
+  }
+}
