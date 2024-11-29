@@ -126,7 +126,15 @@ export default function SearchJobs() {
   const page = useContext(PageContext);
   const setPage = useContext(SetPageContext);
 
-  // const debouncedUpdateSearchInput = useDebounce(updateSearchInput, 2000);
+  // NOTE: Doesn't work
+  // - When the component re-renders (Ex. due to typing), debounce gets called
+  //   again. As a result, a new debouncedUpdateSearchInput is returned which
+  //   will be called the next time searchFieldVal is set. Meaning that we're
+  //   not updating the timeout variable from the previous
+  //   debouncedUpdateSearchInput, so there's no debouncing being done at all.
+  // https://www.developerway.com/posts/debouncing-in-react
+  // - Good resource. But I won't be using their approach
+  // const debouncedUpdateSearchInput = debounce(updateSearchInput, 250);
 
   // Note: Search suggestions are based on the filtered jobs (Without the
   //   search applied).
