@@ -46,11 +46,14 @@ function checkFilters(
           if (!jobProp.year || jobProp.year !== filtersProp.year) return false
         }
         // Don't just check if falsy since month could be 0
-        if (filtersProp.month !== undefined) {
+        // if (filtersProp.month !== undefined) {
+        // Needed to add null case since Spring Boot backend has null for non existent values
+        if (!(filtersProp.month === undefined || filtersProp.month === null)) {
           // The job's date saved/applied/posted doesn't have a month or it
           //   doesn't match the month specified by the filter
           // if (!jobProp.month || jobProp.month !== filtersProp.month) return false
-          if (jobProp.month === undefined || jobProp.month !== filtersProp.month) return false
+          // if (jobProp.month === undefined || jobProp.month !== filtersProp.month) return false
+          if (jobProp.month === undefined || jobProp.month === null || jobProp.month !== filtersProp.month) return false
         }
       } else {
         if (

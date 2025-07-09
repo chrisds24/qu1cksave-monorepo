@@ -480,7 +480,9 @@ export default function Filters() {
                       return (
                         <Grid item key={`Current Filter ${filter.name}`}>
                           <Chip
-                            label={`${filter.name}: ${month !== undefined ? monthsList[month as keyof any] : ''} ${year ? year : ''}`}
+                            // Needed to add null case since Spring Boot backend has null for non existent values
+                            // label={`${filter.name}: ${month !== undefined ? monthsList[month as keyof any] : ''} ${year ? year : ''}`}
+                            label={`${filter.name}: ${!(month === undefined || month === null) ? monthsList[month as keyof any] : ''} ${year ? year : ''}`}
                             sx={{backgroundColor: '#1e1e1e', color: '#ffffff', fontSize: '16px'}}
                           />
                         </Grid>
