@@ -43,6 +43,12 @@ export async function addOrEditJob(newJob: Partial<NewJob>, jobId: string | unde
       // The Express backend only sets the status code to an error for
       //   Unauthorized. Otherwise, it simply returns undefined when other
       //   errors happen. Calling res.json() should trigger the catch block
+      // When the Express API returns undefined, res and/or res.body isn't
+      //   actually undefined. But res.json throws SyntaxError: Unexpected
+      //   end of JSON input
+      // NOTE: The Spring Boot API returns null instead but sets the status
+      //   code to not ok, so we still go to the catch block like we used to
+      //   in the Express version.
       if (!res.ok) {
         throw res;
       }
