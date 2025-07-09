@@ -18,9 +18,13 @@ export async function login(credentials: Credentials): Promise<User | undefined>
     },
   })
     .then((res) => {
+      // Spring Boot API returns null with a non 200 range status code if
+      //   something goes wrong, including when the user can't be found, which
+      //   triggers the catch block
       if (!res.ok) {
         throw res;
       }
+      // If res body is undefined, res.json() causes an error
       return res.json();
     })
     .then((user) => {
@@ -67,7 +71,9 @@ export async function signup(newUser: NewUser): Promise<User | undefined> {
 
 export async function decrypt(token: string): Promise<User | undefined> {
   let result = undefined;
-  jwt.verify(token, process.env.ACCESS_TOKEN as string, (err, decoded) => {
+  // https://www.npmjs.com/package/jsonwebtoken
+  // - there are other libraries that expect base64 encoded secrets (random bytes encoded using base64)...
+  jwt.verify(token, Buffer.from(process.env.ACCESS_TOKEN as string, 'base64'), (err, decoded) => {
     if (err) {
       result = undefined;
     } else {
