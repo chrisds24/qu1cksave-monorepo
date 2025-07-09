@@ -287,7 +287,7 @@ export class JobService {
       // Case 1: When newJob doesn't have a resume_id, the job doesn't have a resume in the first place
       if (resumeId) { // Cases 2 and 3
         // console.log(`newJob has no newResume, but has a resume_id.`)
-        if (newJob.keepResume) {
+        if (newJob.keep_resume) {
           // Case 2: Keep the resume given the resumeId. Need to select it using the given id     
           // SELECT from resume table. Attach this resume later.
           // console.log(`newJob has keepResume as TRUE.`)
@@ -384,7 +384,7 @@ export class JobService {
       // Case 1
       if (coverLetterId) { // Cases 2 and 3
         // console.log(`newJob has no newCoverLetter, but has a cover_letter_id.`)
-        if (newJob.keepCoverLetter) {
+        if (newJob.keep_cover_letter) {
           // Case 2     
           // SELECT from cover_letter table. Attach this cover_letter later.
           // console.log(`newJob has keepCoverLetter as TRUE.`)

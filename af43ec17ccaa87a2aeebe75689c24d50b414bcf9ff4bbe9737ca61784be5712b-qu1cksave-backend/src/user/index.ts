@@ -28,5 +28,5 @@ export interface User {
   name: string;
   // roles: Role[];
   roles: string[];
-  accessToken?: string;
+  access_token?: string;
 }

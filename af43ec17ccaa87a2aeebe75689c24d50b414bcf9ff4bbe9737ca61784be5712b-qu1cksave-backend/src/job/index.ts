@@ -66,6 +66,6 @@ export interface NewJob {
   links?: string[];
   found_from?: string;
   // In job EDIT mode, used to determine if resume is to be deleted or not
-  keepResume?: boolean;
-  keepCoverLetter?: boolean;
+  keep_resume?: boolean;
+  keep_cover_letter?: boolean;
 }

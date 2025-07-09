@@ -51,7 +51,7 @@
     "swagger": "tsoa spec-and-routes",
     "predev": "npm run swagger",
     "check-types": "tsc --noEmit",
-    "dev-backend": "docker-compose up -d && npm run dev"
+    "dev-backend": "docker compose up -d && npm run dev"
   },
   "nodemonConfig": {
     "watch": [

@@ -449,7 +449,7 @@ export default function AddOrEditDialog() {
             // Case EDIT.A: When the job originally had a resume and the user didn't change it.
             // - If we used dialogJob.resume.file_name, this case would always be true
             //   if the job had a resume from the beginning (WRONG BEHAVIOR)
-            newJob.keepResume = true;
+            newJob.keep_resume = true;
             // (SEE BELOW) Also include the resume_id in the NewJob
           } else {
             // This branch is for cases EDIT.C.a and EDIT.C.b
@@ -457,7 +457,7 @@ export default function AddOrEditDialog() {
             //   OR it never had one to begin with
             if (dialogJob.resume_id) { 
               // Case EDIT.C.b: Job had a resume, which is to be deleted
-              newJob.keepResume = false;
+              newJob.keep_resume = false;
               // (SEE BELOW) Also include the resume_id in the NewJob
             }
             // Case EDIT.C.a: No need to set keepResume if the job didn't have a resume to begin with
@@ -498,10 +498,10 @@ export default function AddOrEditDialog() {
         if (!isAdd) {
           // For EDIT MODE only
           if (coverLetterName) {
-            newJob.keepCoverLetter = true;
+            newJob.keep_cover_letter = true;
           } else {
             if (dialogJob.cover_letter_id) { 
-              newJob.keepCoverLetter = false;
+              newJob.keep_cover_letter = false;
             }
           }
         }

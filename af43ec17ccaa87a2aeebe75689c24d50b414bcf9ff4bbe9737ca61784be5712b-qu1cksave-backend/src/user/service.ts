@@ -38,7 +38,7 @@ export class UserService {
           name: user.name,
           email: user.email,
           roles: user.roles,
-          accessToken: accessToken
+          access_token: accessToken
         };
       } else {
         return undefined;
