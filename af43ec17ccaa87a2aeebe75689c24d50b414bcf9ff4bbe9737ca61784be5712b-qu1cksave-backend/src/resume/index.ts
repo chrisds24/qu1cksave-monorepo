@@ -7,11 +7,11 @@ export interface Resume {
   mime_type: string | null;
   // Optional (?) since when returning the jobs list, we don't return the
   //   actual file, only the details
-  bytearray_as_array?: number[];
+  byte_array_as_array?: number[];
 }
 
 export interface NewResume {
   file_name: string;
   mime_type: string;
-  bytearray_as_array: number[];  // Changed from Uint8Array to number[]
+  byte_array_as_array: number[];  // Changed from Uint8Array to number[]
 }

@@ -438,7 +438,7 @@ export default function AddOrEditDialog() {
           // member_id will be in the request header during the API call
           file_name: resumeFile.name, // Or resumeName, since they're the same in this case
           mime_type: resumeFile.type,
-          bytearray_as_array: arr   
+          byte_array_as_array: arr   
         }
 
         newJob.resume = newResume;
@@ -490,7 +490,7 @@ export default function AddOrEditDialog() {
         const newCoverLetter: NewCoverLetter = {
           file_name: coverLetterFile.name,
           mime_type: coverLetterFile.type,
-          bytearray_as_array: arr   
+          byte_array_as_array: arr   
         }
 
         newJob.cover_letter = newCoverLetter;

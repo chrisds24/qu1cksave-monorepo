@@ -192,7 +192,7 @@ export class JobService {
       // Make the S3 call to add the resume file
       // const s3Key = s3.getResumeS3Key(resume.id, resume.mime_type)
       try {
-        const byteArray = Uint8Array.from(newResume.bytearray_as_array!);
+        const byteArray = Uint8Array.from(newResume.byte_array_as_array!);
         // await s3.putObject(s3Key, byteArray);
         await s3.putObject(resume.id!, byteArray);
       } catch {
@@ -208,7 +208,7 @@ export class JobService {
 
       // Make the S3 call to add the cover letter file
       try {
-        const byteArray = Uint8Array.from(newCoverLetter.bytearray_as_array!);
+        const byteArray = Uint8Array.from(newCoverLetter.byte_array_as_array!);
         await s3.putObject(coverLetter.id!, byteArray);
       } catch {
         // TODO: Need to undo add resume, cover letter, and job to database
@@ -356,7 +356,7 @@ export class JobService {
         // console.log(`newJob has a newResume and also has a resume_id.`)
         // console.log(`Case 5: Updating an existing resume in the resume table. Attach this later`)
 
-        // id, member_id file_name, mime_type, bytearray_as_array   (Resume properties)
+        // id, member_id file_name, mime_type, byte_array_as_array   (Resume properties)
         const update = 'UPDATE resume SET file_name = $1, mime_type = $2 WHERE id = $3 AND member_id = $4 RETURNING *'
         const query = {
           text: update,
@@ -453,7 +453,7 @@ export class JobService {
         // console.log(`newJob has a newCoverLetter and also has a cover_letter_id.`)
         // console.log(`Case 5: Updating an existing cover letter in the cover_letter table. Attach this later`)
 
-        // id, member_id, file_name, mime_type, bytearray_as_array   (cover_letter properties)
+        // id, member_id, file_name, mime_type, byte_array_as_array   (cover_letter properties)
         const update = 'UPDATE cover_letter SET file_name = $1, mime_type = $2 WHERE id = $3 AND member_id = $4 RETURNING *'
         const query = {
           text: update,
@@ -566,7 +566,7 @@ export class JobService {
         console.log(`S3 call attempted. In cases 4 (add) or 5 (replace)`)
         // const s3Key = s3.getResumeS3Key(resume.id!, resume.mime_type!)
         try {
-          const byteArray = Uint8Array.from(newResume!.bytearray_as_array!);
+          const byteArray = Uint8Array.from(newResume!.byte_array_as_array!);
           // await s3.putObject(s3Key, byteArray);
           await s3.putObject(resume.id!, byteArray);
         } catch {
@@ -605,7 +605,7 @@ export class JobService {
       if (coverLetterAction === 'put') { // We're either adding or replacing a file
         console.log(`S3 call attempted. In cases 4 (add) or 5 (replace)`)
         try {
-          const byteArray = Uint8Array.from(newCoverLetter!.bytearray_as_array!);
+          const byteArray = Uint8Array.from(newCoverLetter!.byte_array_as_array!);
           // await s3.putObject(s3Key, byteArray);
           await s3.putObject(coverLetter.id!, byteArray);
         } catch {

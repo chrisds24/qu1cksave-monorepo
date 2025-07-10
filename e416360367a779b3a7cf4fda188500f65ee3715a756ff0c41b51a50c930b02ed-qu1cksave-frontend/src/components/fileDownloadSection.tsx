@@ -25,9 +25,9 @@ export default function FileDownloadSection(props: any) {
     setButtonDisabled(true);
 
     // File in "cache"
-    if (file.bytearray_as_array) {
+    if (file.byte_array_as_array) {
         // Convert the array into a byte array
-        const byteArray = Uint8Array.from(file.bytearray_as_array!);
+        const byteArray = Uint8Array.from(file.byte_array_as_array!);
         // https://stackoverflow.com/questions/74401312/javascript-convert-binary-string-to-blob
         const blob = new Blob([byteArray], {type: file.mime_type!});
         const url = URL.createObjectURL(blob);
@@ -57,7 +57,7 @@ export default function FileDownloadSection(props: any) {
         .then((fileVal: Resume | CoverLetter | undefined) => {
           if (fileVal) {
             // Convert the array into a byte array
-            const byteArray = Uint8Array.from(fileVal.bytearray_as_array!);
+            const byteArray = Uint8Array.from(fileVal.byte_array_as_array!);
             // https://stackoverflow.com/questions/74401312/javascript-convert-binary-string-to-blob
             const blob = new Blob([byteArray], {type: fileVal.mime_type!});
             const url = URL.createObjectURL(blob);

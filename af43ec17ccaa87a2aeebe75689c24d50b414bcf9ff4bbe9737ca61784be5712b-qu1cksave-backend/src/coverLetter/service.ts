@@ -23,7 +23,7 @@ export class CoverLetterService {
           // https://stackoverflow.com/questions/49259231/sending-uint8array-bson-in-a-json-object
           // Need to convert byte array to array so it can be put inside a json
           const arr = Array.from(bodyAsByteArray); 
-          coverLetter.bytearray_as_array = arr;
+          coverLetter.byte_array_as_array = arr;
           // Return the coverLetter data along with the file.
           // - Will need data to convert to correct type, restore name, etc.
           return coverLetter;
