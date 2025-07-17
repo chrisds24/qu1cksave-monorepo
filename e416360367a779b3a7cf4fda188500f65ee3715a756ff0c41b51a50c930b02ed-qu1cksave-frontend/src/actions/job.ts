@@ -25,9 +25,12 @@ export async function addOrEditJob(newJob: Partial<NewJob>, jobId: string | unde
   //       turns out it was nginx settings and not NextJS. Just added
   //       client_max_body_size config and it worked!"
   // SOLVED
-  // - Turns out it was coming from the express backend
+  // - Turns out it was coming from the Express backend
   // - I set the limit to 2mb
 
+  // NOTE: The reason why I had to use Server Actions is because PUT/POST
+  //   has a body size limit for Next.js, which I needed to set.
+  //   - Though, the error mentioned above is from the Express backend
   const job: Job | undefined = await fetch(fetchString, {
     method: jobId ? "PUT" : "POST",
     body: JSON.stringify(newJob),
@@ -37,6 +40,15 @@ export async function addOrEditJob(newJob: Partial<NewJob>, jobId: string | unde
     },
   })
     .then((res) => {
+      // The Express backend only sets the status code to an error for
+      //   Unauthorized. Otherwise, it simply returns undefined when other
+      //   errors happen. Calling res.json() should trigger the catch block
+      // When the Express API returns undefined, res and/or res.body isn't
+      //   actually undefined. But res.json throws SyntaxError: Unexpected
+      //   end of JSON input
+      // NOTE: The Spring Boot API returns null instead but sets the status
+      //   code to not ok, so we still go to the catch block like we used to
+      //   in the Express version.
       if (!res.ok) {
         throw res;
       }
