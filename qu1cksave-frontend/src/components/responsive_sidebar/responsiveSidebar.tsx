@@ -10,7 +10,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { Avatar, Skeleton } from '@mui/material';
 import stringAvatar from '@/lib/stringAvatar';
 import { logout } from '@/actions/auth';
-import { signOut } from 'firebase/auth';
+import { signOut, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 
 const navItems = [
@@ -21,10 +21,10 @@ const navItems = [
 
 export default function ResponsiveSidebar(
   {
-    sessionUserName
+    sessionUser
   } :
   {
-    sessionUserName: string | null | undefined
+    sessionUser: User | undefined
   }
 ) {
   const router = useRouter();
@@ -90,8 +90,17 @@ export default function ResponsiveSidebar(
           }>
             <div className={styles['nav-item-logo-container']}>
               {
-                sessionUserName ?
-                <Avatar {...stringAvatar(sessionUserName)} /> :
+                // If no sessionUser, then onAuthStateChanged hasn't set
+                //   one yet
+                // - Remember that a user could possibly not have a
+                //   displayName in Firebase if updateProfile fails during
+                //   Firebase signup. In this case, use 'No Name'
+                sessionUser ?
+                <Avatar {...stringAvatar(
+                  sessionUser.displayName ?
+                  sessionUser.displayName :
+                  'No Name'
+                )} /> :
                 <Skeleton
                   variant="circular"
                   width={40}
@@ -103,8 +112,8 @@ export default function ResponsiveSidebar(
             <div className={styles['nav-item-text-container']}>
               <p className={styles['nav-item-text']}>
                 {
-                  sessionUserName ?
-                  sessionUserName :
+                  sessionUser ?
+                  (sessionUser.displayName ? sessionUser.displayName : 'No Name'):
                   <Skeleton
                     variant="text"                 
                     sx={{
@@ -124,7 +133,10 @@ export default function ResponsiveSidebar(
             // Log out from Firebase
             await signOut(auth)
               .then(() => {
-                logout(); // Remove session from cookie and redirect to login
+                // Remove session from cookie and redirect to login
+                // - This is needed so I can use Next.js' way of deleting
+                //   cookies easily and redirecting
+                logout();
                 // Again, onAuthStateChanged should detect when signOut logs out
                 //   the user so it can set sessionUser to undefined.
                 // setSessionUser(undefined);

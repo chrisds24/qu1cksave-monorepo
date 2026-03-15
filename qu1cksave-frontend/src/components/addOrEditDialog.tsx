@@ -6,7 +6,7 @@ import { states } from "@/lib/states";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import dayjs, {Dayjs} from 'dayjs'
-import { Job, NewJob } from "@/types/job";
+import { NewJob } from "@/types/job";
 import { YearMonthDate } from "@/types/common";
 import FileUploadSection from "./fileUploadSection";
 import { NewResume } from "@/types/resume";
@@ -18,7 +18,7 @@ import { OpenContext, SetOpenContext } from "@/contexts/add_or_edit_dialog/OpenC
 import { IsAddContext, SetIsAddContext } from "@/contexts/add_or_edit_dialog/IsAddContext";
 import { DialogJobContext, SetDialogJobContext } from "@/contexts/add_or_edit_dialog/DialogJobContext";
 import { JobsDispatchContext } from "@/contexts/JobsContext";
-import { auth } from "@/lib/firebase";
+import { SessionUserContext } from "@/contexts/SessionUserContext";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
@@ -61,6 +61,7 @@ export default function AddOrEditDialog() {
   const dialogJob = useContext(DialogJobContext);
   const setDialogJob = useContext(SetDialogJobContext);
   const dispatch = useContext(JobsDispatchContext);
+  const sessionUser = useContext(SessionUserContext);
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const theme = useTheme();
@@ -515,13 +516,11 @@ export default function AddOrEditDialog() {
     // -----------------------------------------------------------------
 
     // ********** Make the API call to add/update a job **********
-    // Note how JobsProvider in JobsContext.tsx uses sessionUser.getIdToken()
-    // Here, I'm using auth.currentUser which should be the same (see
-    //   JobsContext.tsx)
-    // - Reason is that I don't want to subscribe to SessionUserContext
-    //   here since that might change the behavior of this component when
-    //   re-rendering.
-    const jwt = auth.currentUser?.getIdToken();
+    // Shouldn't really be a problem for this component to subscribe to
+    //   SessionUserContext since it gets rerendered anyway when
+    //   MainLayout in (main)/layout.tx rerenders, which only happens on
+    //   page reload or navigation to this page.
+    const jwt = sessionUser?.getIdToken();
     const jobId = !isAdd ? dialogJob.id : undefined;
     let fetchString = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v0/job`;
     if (jobId) { // In EDIT mode

@@ -25,9 +25,6 @@ export function JobsProvider({ children } : { children: ReactNode }) {
         // Returns the current token if it has not expired or if it will not
         //   expire in the next five minutes. Otherwise, this will refresh
         //   the token and return a new one.
-        // Note that sessionUser and auth.currentUser would be the same since
-        //   when auth.currentUser changes, onAuthStateChanged would update
-        //   sessionUser
         const jwt = sessionUser.getIdToken();
         // Get all jobs for current user
         await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v0/job`, {

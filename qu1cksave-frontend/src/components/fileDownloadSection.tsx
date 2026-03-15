@@ -4,11 +4,12 @@ import { Resume } from "@/types/resume";
 import { useContext, useState } from "react";
 import { CoverLetter } from "@/types/coverLetter";
 import { JobsDispatchContext } from "@/contexts/JobsContext";
-import { auth } from "@/lib/firebase";
+import { SessionUserContext } from "@/contexts/SessionUserContext";
 
 export default function FileDownloadSection(props: any) {
   const { job, fileType } = props;
   const dispatch = useContext(JobsDispatchContext);
+  const sessionUser = useContext(SessionUserContext);
   // https://stackoverflow.com/questions/65668008/disabling-submit-button-when-submitting-form-in-react-not-working-as-expected-wh
   // https://mui.com/material-ui/react-button/
   const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -48,8 +49,7 @@ export default function FileDownloadSection(props: any) {
         link.click(); // Start download
         link.parentNode!.removeChild(link); // Clean up and remove the link
     } else { // Fetch the file
-      const jwt = auth.currentUser?.getIdToken();
-
+      const jwt = sessionUser?.getIdToken();
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v0/${fileType}/${file.id}`, {
         // method: "GET",
         headers: {

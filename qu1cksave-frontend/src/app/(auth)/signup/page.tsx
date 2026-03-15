@@ -10,11 +10,14 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Avatar from '@mui/material/Avatar';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { signup } from '@/actions/auth';
-import { NewUser } from '@/types/auth';
-import { User } from '@/types/user';
 import { useState } from 'react';
 import { CircularProgress } from '@mui/material';
+import {
+  validateName,
+  validatePassword
+} from '@/lib/signupValidations';
+import { createUserWithEmailAndPassword, deleteUser, signOut, updateProfile, User } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 // Credit to:
 // - https://mui.com/material-ui/getting-started/templates/
@@ -45,7 +48,7 @@ export default function Page() {
 
   const changeName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value as string;
-    if (!val || val.length > 255) {
+    if (!validateName(val)) {
       setNameErr(true)
     } else {
       setNameErr(false)
@@ -66,7 +69,7 @@ export default function Page() {
 
   const changePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value as string;
-    if (!val || val.length < 8) {
+    if (!validatePassword(val)) {
       setPasswordErr(true)
     } else {
       setPasswordErr(false)
@@ -92,14 +95,12 @@ export default function Page() {
   const createAccount = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setButtonDisabled(true);
-
-    // If user doesn't enter a name, this code won't catch it since the
-    //   onChange won't trigger
-    // if (nameErr || emailErr || passwordErr || repeatPwErr) { ... }  // HAS A BUG
     
-    const nameError = !name || name.length > 255;
-    const emailError = !email || email.length > 254;
-    const passwordError = !password || password.length < 8;
+    const nameError = !validateName(name);
+    const emailError = !email ||
+      email.length > 254 ||
+      !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
+    const passwordError = !validatePassword(password);
     const repeatPwError = !repeatPw || password !== repeatPw;
     if (nameError || emailError || passwordError || repeatPwError) {
       setNameErr(nameError);
@@ -111,25 +112,62 @@ export default function Page() {
       return;
     }
 
-    const data = new FormData(event.currentTarget);
-    const newUser: NewUser = {
-      name: data.get('name') as string,
-      email: data.get('email') as string,
-      password: data.get('password') as string
-    };
+    // https://firebase.google.com/docs/auth/web/password-auth#create_a_password-based_account
+    // - A newly created user is automatically signed it, so I need to sign
+    //   them out.
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => {
+        // Need to update name since createUserWithEmailAndPassword doesn't
+        //   have an option to set the displayName
+        // - Note that at this point, signup is already successful
+        // - Don't put an alert before updateProfile since alert is blocking.
+        updateProfile(userCredential.user, { displayName: name })
+          .then(async () => { // Update name success
+            // Need to sign out from Firebase since I don't want users to login
+            //   automatically on sign up
+            await signOut(auth);
+            // Regardless if update name fails or not, a Firebase account has
+            //   been created so I need to inform the user about that
+            // TODO: Do I manually need to send a verification email???
+            alert('Successfully created account! A verification email has been sent. Please verify your email in order to log in.');
+            router.push('/login')
+          })
+          .catch(() => { // Update name fail
+            // If update name fails, I could try to delete the user
+            //   so I don't end up with an incomplete user. HOWEVER, that
+            //   delete could also fail.
+            deleteUser(userCredential.user).then(() => {
+              // Note that delete user success clears auth just like signOut,
+              //   so there's no need to call signOut here
+              alert('Error setting name when signing up. Please try signing up again.');
+            }).catch(async () => {
+              // Not putting signOut in a finally block for updateProfile since
+              //   I need to signOut before calling a blocking alert.
+              await signOut(auth);
+              // Update name failed, but user was still created successfully
+              //   since deleteUser couldn't delete it
+              // - The alert message is different from the one above
+              alert('Successfully created account! A verification email has been sent. Please verify your email in order to log in. However, an error has occured when setting your name. You may update it in your profile settings after logging in.');
+              router.push('/login');
 
-    if (newUser.password !== data.get('repeatpw')) {
-      alert("Passwords don't match.");
-    } else {
-      const user: User | undefined = await signup(newUser);
-      if (user) {
-        alert('Successfully created account!');
-        router.push('/login')
-      } else {
-        alert('Error processing request. Please try again or use a different email address.');
-      }
-    }
-    setButtonDisabled(false);
+              // IMPORTANT: What to do if updateProfile to update name fails?
+              // - Responsive sidebar must default to using "No Name" if the
+              //   user's name cannot be obtained from sessionUser (which
+              //   comes from Firebase auth).
+              // - Upon signing up in the backend to my DB, name should be set
+              //   to "No Name" since the DB has name as NOT NULL.
+              // - The user can set it in their profile settings, which should
+              //   also set it in Firebase via Admin SDK.
+            });
+          })
+      })
+      .catch(() => {
+        alert('Error signing up. Please try again.');
+      })
+      .finally(() => {
+        // router.push() is async, so this finally will run.
+        setButtonDisabled(false);
+      });
   };
 
   return (
@@ -155,7 +193,7 @@ export default function Page() {
           autoFocus
           error={nameErr}
           helperText={
-            nameErr ? 'Required. Maximum: 255 characters' : ''
+            nameErr ? 'Required. Maximum: 255 characters. Must be at least two words. Must not start or end with a space.' : ''
           }
           sx={{
             input: {
@@ -217,7 +255,7 @@ export default function Page() {
           onChange={changePassword}
           error={passwordErr}
           helperText={
-            passwordErr ? 'Required. Minimum: 8 characters' : ''
+            passwordErr ? `Required. 15-64 characters. No leading or trailing whitespace. Must contain at least: 1 lowercase, 1 uppercase, 1 numeric, and 1 non-alphanumeric character from the following: ^ $ * . [ ] { } ( ) ? " ! @ # % & / \ , > < ' : ; | _ ~` : ''
           }
           sx={{
             input: {

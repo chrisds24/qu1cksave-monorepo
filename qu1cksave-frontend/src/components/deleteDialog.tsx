@@ -1,7 +1,7 @@
 import { DeleteJobIdContext, SetDeleteJobIdContext } from '@/contexts/delete_dialog/DeleteJobIdContext';
 import { DeleteJobOpenContext, SetDeleteJobOpenContext } from '@/contexts/delete_dialog/DeleteJobOpenContext';
 import { JobsDispatchContext } from '@/contexts/JobsContext';
-import { auth } from '@/lib/firebase';
+import { SessionUserContext } from '@/contexts/SessionUserContext';
 import { CircularProgress } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -18,6 +18,7 @@ export default function DeleteDialog() {
   const deleteJobOpen = useContext(DeleteJobOpenContext);
   const setDeleteJobOpen = useContext(SetDeleteJobOpenContext);
   const dispatch = useContext(JobsDispatchContext);
+  const sessionUser = useContext(SessionUserContext);
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const pathname = usePathname();
@@ -34,7 +35,7 @@ export default function DeleteDialog() {
     // if (!buttonDisabled) {
     setButtonDisabled(true);
 
-    const jwt = auth.currentUser?.getIdToken();
+    const jwt = sessionUser?.getIdToken();
 
     await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v0/job/${deleteJobId}`, {
       method: "DELETE",

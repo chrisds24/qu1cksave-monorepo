@@ -20,10 +20,22 @@ export default function MainLayout({
   // Auth user from Firebase
   const [sessionUser, setSessionUser] = useState<User>();
 
+  // Before: login sets session in cookie. Get decoded user from cookie here
+  // Now: Firebase login sets auth, which onAuthStateChanged listens to
+  //   and gets the user from
+  // Important: Need to make sure to not set sessionUser until email has been
+  //   verified.
+  // - When successfully logging in via Firebase, check there (in the frontend)
+  //   if email has been verified. If not, signOut from Firebase so auth gets
+  //   cleared.
+  // - Here, don't set sessionUser until email is verified.
+  // - Because of this, sessionUser and auth.currentUser won't
+  //   always be the same until the email gets verified. Therefore, I should
+  //   use sessionUser when I need auth.currentUser
   useEffect(() => {
     // Get current user by using an observer on auth
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
+      if (user && user.emailVerified) {
         setSessionUser(user);
       } else {
         setSessionUser(undefined);
@@ -39,7 +51,10 @@ export default function MainLayout({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <>
         <ResponsiveSidebar
-          sessionUserName={sessionUser?.displayName}
+          // Passing user instead of sessionUser?.displayName so I can
+          //   differentiate between the sessionUser not being set yet or the
+          //   the user not having a displayName in Firebase
+          sessionUser={sessionUser}
           // I won't need this. When I logout, I can just
           //   use the signOut function Firebase provides. This should update
           //   auth and onAuthStateChanged should automatically detect it and
