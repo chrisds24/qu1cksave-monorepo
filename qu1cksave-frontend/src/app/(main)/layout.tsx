@@ -2,13 +2,13 @@
 
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import { getSessionUser, logout } from '@/actions/auth';
 import { ReactNode, useEffect, useState } from 'react';
-import { User } from '@/types/user';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { SessionUserIdContext } from '@/contexts/SessionUserIdContext';
+import { SessionUserContext } from '@/contexts/SessionUserContext';
 import ResponsiveSidebar from '@/components/responsive_sidebar/responsiveSidebar';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 const drawerWidth = 180;
 
@@ -17,30 +17,34 @@ export default function MainLayout({
 }: {
   children: ReactNode
 }) {
+  // Auth user from Firebase
   const [sessionUser, setSessionUser] = useState<User>();
 
   useEffect(() => {
-    const getSession = async () => {
-      // Get user from session in cookies
-      // It makes sense to always get the sessionUser to ensure that the
-      //   session is still valid.
-      // Note: getSessionUser does not perform an API call
-      await getSessionUser()
-        .then(async (sesUser) => {
-          if (sesUser) {
-            setSessionUser(sesUser);
-          }
-        })
-    };
-    getSession();
+    // Get current user by using an observer on auth
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setSessionUser(user);
+      } else {
+        setSessionUser(undefined);
+      }
+    });
+
+    // https://react.dev/learn/synchronizing-with-effects#subscribing-to-events
+    // - If your Effect subscribes to something, the cleanup function should unsubscribe
+    return () => unsubscribe();
   }, []); // Having sessionUser as a dependency causes an infinite effect call
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <>
         <ResponsiveSidebar
-          sessionUserName={sessionUser?.name}
-          setSessionUser={setSessionUser}
+          sessionUserName={sessionUser?.displayName}
+          // I won't need this. When I logout, I can just
+          //   use the signOut function Firebase provides. This should update
+          //   auth and onAuthStateChanged should automatically detect it and
+          //   set sessionUser to null
+          // setSessionUser={setSessionUser}
         />
         <Box
           component="main"
@@ -52,9 +56,9 @@ export default function MainLayout({
           }}
         >
           <Toolbar sx={{display: { xs: 'block', md: 'none' }}}/>
-          <SessionUserIdContext.Provider value={ sessionUser?.id }>
+          <SessionUserContext.Provider value={ sessionUser }>
             {children}
-          </SessionUserIdContext.Provider>
+          </SessionUserContext.Provider>
         </Box>
       </>
     </LocalizationProvider>

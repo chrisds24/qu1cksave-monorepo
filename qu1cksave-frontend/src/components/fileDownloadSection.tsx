@@ -4,6 +4,7 @@ import { Resume } from "@/types/resume";
 import { useContext, useState } from "react";
 import { CoverLetter } from "@/types/coverLetter";
 import { JobsDispatchContext } from "@/contexts/JobsContext";
+import { auth } from "@/lib/firebase";
 
 export default function FileDownloadSection(props: any) {
   const { job, fileType } = props;
@@ -47,7 +48,14 @@ export default function FileDownloadSection(props: any) {
         link.click(); // Start download
         link.parentNode!.removeChild(link); // Clean up and remove the link
     } else { // Fetch the file
-      await fetch(`/api/${fileType === 'resume' ? 'resume' : 'coverLetter'}/${file.id}`)
+      const jwt = auth.currentUser?.getIdToken();
+
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v0/${fileType}/${file.id}`, {
+        // method: "GET",
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      })      
         .then((res) => { 
           if (!res.ok) {
             throw res;

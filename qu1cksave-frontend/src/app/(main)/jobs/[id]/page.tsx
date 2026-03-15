@@ -318,7 +318,7 @@ export default function Page({ params }: { params: { id: string } }) {
             </Box>
             <FileDownloadSection job={job} fileType={'resume'} />
             <Box sx={{marginBottom: 1}}/>
-            <FileDownloadSection job={job} fileType={'cover_letter'} />
+            <FileDownloadSection job={job} fileType={'coverLetter'} />
           </Box>
         );
       } else {

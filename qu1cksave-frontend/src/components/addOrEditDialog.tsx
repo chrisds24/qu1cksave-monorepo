@@ -10,7 +10,6 @@ import { Job, NewJob } from "@/types/job";
 import { YearMonthDate } from "@/types/common";
 import FileUploadSection from "./fileUploadSection";
 import { NewResume } from "@/types/resume";
-import { addOrEditJob } from "@/actions/job";
 import NumberInputBasic from "./numberInput";
 import { NewCoverLetter } from "@/types/coverLetter";
 import { DateValidationError } from "@mui/x-date-pickers/models";
@@ -19,6 +18,7 @@ import { OpenContext, SetOpenContext } from "@/contexts/add_or_edit_dialog/OpenC
 import { IsAddContext, SetIsAddContext } from "@/contexts/add_or_edit_dialog/IsAddContext";
 import { DialogJobContext, SetDialogJobContext } from "@/contexts/add_or_edit_dialog/DialogJobContext";
 import { JobsDispatchContext } from "@/contexts/JobsContext";
+import { auth } from "@/lib/firebase";
 
 const statusList = ['Not Applied', 'Applied', 'Assessment', 'Interview', 'Job Offered', 'Accepted Offer', 'Declined Offer', 'Rejected', 'Ghosted', 'Closed'];
 
@@ -514,22 +514,73 @@ export default function AddOrEditDialog() {
 
     // -----------------------------------------------------------------
 
-    // Using server actions
-    try {
-      const job: Job | undefined = await addOrEditJob(newJob, !isAdd ? dialogJob.id : undefined)
-      if (job) {
+    // ********** Make the API call to add/update a job **********
+    // Note how JobsProvider in JobsContext.tsx uses sessionUser.getIdToken()
+    // Here, I'm using auth.currentUser which should be the same (see
+    //   JobsContext.tsx)
+    // - Reason is that I don't want to subscribe to SessionUserContext
+    //   here since that might change the behavior of this component when
+    //   re-rendering.
+    const jwt = auth.currentUser?.getIdToken();
+    const jobId = !isAdd ? dialogJob.id : undefined;
+    let fetchString = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v0/job`;
+    if (jobId) { // In EDIT mode
+      fetchString += `/${jobId}`;
+    }
+
+    await fetch(fetchString, {
+      method: jobId ? "PUT" : "POST",
+      body: JSON.stringify(newJob),
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        // NOTE: The Spring Boot API returns null then sets the status code to
+        //   not ok if there's an exception, so we end up in the catch block
+        if (!res.ok) {
+          throw res;
+        }
+        return res.json()
+      })
+      .then((job) => {
+        // There's no case where job is falsy (such as null or undefined) and
+        //   it doesn't end up in the catch block. The add/edit endpoints
+        //   always return the added/edited job if successful and throws an
+        //   exception that sets the status code to not ok if not successful.
         if (isAdd) { // Add
           dispatch({type: 'added', job: job});
         } else { // Edit
           dispatch({type: 'edited', job: job});
         }
-      } else {
+      })
+      .catch(() => {
+        // Originally, I called a server action called addOrEditJob instead
+        //   of directly making the fetch request here
+        // The server action would return a job or undefined if an error
+        //   happened
+        // Since I set the request size limit to below 2 MB, addOrEditJob
+        //   throws an error if a request past that size is made
+        // For that, I wrapped the call in a try catch, where the catch would make
+        //   an alert which tell the user to reload the page and try again OR
+        //   reduce the size to under 2 MB
+        // The actual fetch request inside addOrEditJob also had a catch
+        //   block, which simply returned undefined
+        // THEREFORE, the catch block here should replicate that behavior and
+        //   I can simply have the "if not job" branch inside this catch
+        //   block instead of doing it outside the promise chain
+        // HOWEVER, I now no longer have a server action that throws an error
+        //   leading me to the outside catch block (now removed)
+        // - I'll need the backend to return a useful error object that can
+        //   inform me if this is what happened (since the backend also has
+        //   a size limit on requests) if I want to replicate the old behavior
+        // - SO FOR NOW, I'm just always informing the user that they may have
+        //   to reduce the size of their request
+
         // No need to set jobs to undefined (which will go to error page)
-        alert(`Error processing request. Please reload the page and try again.`)
-      }
-    } catch {
-      alert(`Error processing request. Please reload the page and try again. Or try reducing the size of your request to under 2 MB by reducing your resume/cover letter file size.`)
-    }
+        alert(`Error processing request. Please reload the page and try again. Or try reducing the size of your request to under 2 MB by reducing your resume/cover letter file size.`)
+      })
 
     handleClose();
     setButtonDisabled(false);

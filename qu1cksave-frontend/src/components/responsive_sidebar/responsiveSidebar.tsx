@@ -1,8 +1,7 @@
 'use client'
-import { Dispatch, SetStateAction, useMemo, useState } from 'react';
+import { useState } from 'react';
 import styles from './responsiveSidebar.module.css';
 import MenuIcon from '@mui/icons-material/Menu';
-import { User } from '@/types/user';
 import { usePathname, useRouter } from 'next/navigation';
 import WorkIcon from '@mui/icons-material/Work';
 import FolderIcon from '@mui/icons-material/Folder';
@@ -11,6 +10,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { Avatar, Skeleton } from '@mui/material';
 import stringAvatar from '@/lib/stringAvatar';
 import { logout } from '@/actions/auth';
+import { signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 const navItems = [
   {name: 'Jobs', icon: <WorkIcon sx={{color: '#ffffff', height: '24px'}}/>, route: 'jobs'},
@@ -20,12 +21,10 @@ const navItems = [
 
 export default function ResponsiveSidebar(
   {
-    sessionUserName,
-    setSessionUser
+    sessionUserName
   } :
   {
-    sessionUserName: string | undefined,
-    setSessionUser: Dispatch<SetStateAction<User | undefined>>
+    sessionUserName: string | null | undefined
   }
 ) {
   const router = useRouter();
@@ -121,9 +120,18 @@ export default function ResponsiveSidebar(
         </li>
         <li
           key={`logout`}
-          onClick={() => {
-            logout();
-            setSessionUser(undefined);
+          onClick={async () => {
+            // Log out from Firebase
+            await signOut(auth)
+              .then(() => {
+                logout(); // Remove session from cookie and redirect to login
+                // Again, onAuthStateChanged should detect when signOut logs out
+                //   the user so it can set sessionUser to undefined.
+                // setSessionUser(undefined);
+              })
+              .catch(() => {
+                alert('Error signing out.')
+              });
           }}
         >
           <div className={styles['nav-item-container']}>
