@@ -16,7 +16,7 @@ import {
   validateName,
   validatePassword
 } from '@/lib/signupValidations';
-import { createUserWithEmailAndPassword, deleteUser, signOut, updateProfile, User } from 'firebase/auth';
+import { createUserWithEmailAndPassword, deleteUser, sendEmailVerification, signOut, updateProfile, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 
 // Credit to:
@@ -96,6 +96,7 @@ export default function Page() {
     event.preventDefault();
     setButtonDisabled(true);
     
+    // Ensure all fields are valid
     const nameError = !validateName(name);
     const emailError = !email ||
       email.length > 254 ||
@@ -115,50 +116,72 @@ export default function Page() {
     // https://firebase.google.com/docs/auth/web/password-auth#create_a_password-based_account
     // - A newly created user is automatically signed it, so I need to sign
     //   them out.
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(async (userCredential) => {
+    await createUserWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => { // ACCOUNT SUCCESSFULLY CREATED
         // Need to update name since createUserWithEmailAndPassword doesn't
         //   have an option to set the displayName
-        // - Note that at this point, signup is already successful
-        // - Don't put an alert before updateProfile since alert is blocking.
-        updateProfile(userCredential.user, { displayName: name })
-          .then(async () => { // Update name success
-            // Need to sign out from Firebase since I don't want users to login
-            //   automatically on sign up
-            await signOut(auth);
-            // Regardless if update name fails or not, a Firebase account has
-            //   been created so I need to inform the user about that
-            // TODO: Do I manually need to send a verification email???
-            alert('Successfully created account! A verification email has been sent. Please verify your email in order to log in.');
-            router.push('/login')
+        await updateProfile(userCredential.user, { displayName: name })
+          .then(async () => { // UPDATE NAME SUCCESS
+            // Need to send email verification since account creation was successful
+            // - Must be logged in to do this
+            await sendEmailVerification(userCredential.user)
+              .then(async () => { // EMAIL VERIFICATION SENT SUCCESSFULLY
+                // Need to sign out from Firebase since I don't want users to login
+                //   automatically on sign up
+                // Note that I'm not putting signOut in a finally block since
+                //   I need to signOut before calling a blocking alert.
+                await signOut(auth);
+                alert('Successfully created account! A verification email has been sent. Please verify your email in order to log in.');
+              })
+              .catch(async () => { // VERIFICATION EMAIL NOT SENT
+                await signOut(auth);
+                // Inform user that they need to login to resend the email
+                alert('Successfully created account! However, there was an error sending the verification email, so please login to resend it.');
+              })
+              .finally(() => {
+                // Successful login, so go to login page
+                router.push('/login');
+              })
           })
-          .catch(() => { // Update name fail
+          .catch(async () => { // UPDATE NAME FAIL
             // If update name fails, I could try to delete the user
             //   so I don't end up with an incomplete user. HOWEVER, that
             //   delete could also fail.
-            deleteUser(userCredential.user).then(() => {
-              // Note that delete user success clears auth just like signOut,
-              //   so there's no need to call signOut here
-              alert('Error setting name when signing up. Please try signing up again.');
-            }).catch(async () => {
-              // Not putting signOut in a finally block for updateProfile since
-              //   I need to signOut before calling a blocking alert.
-              await signOut(auth);
-              // Update name failed, but user was still created successfully
-              //   since deleteUser couldn't delete it
-              // - The alert message is different from the one above
-              alert('Successfully created account! A verification email has been sent. Please verify your email in order to log in. However, an error has occured when setting your name. You may update it in your profile settings after logging in.');
-              router.push('/login');
+            await deleteUser(userCredential.user)
+              .then(() => { // SUCCESSFULLY DELETED INCOMPLETE USER
+                // Note that successfully deleting user clears auth just like
+                //   signOut, so there's no need to call signOut here
+                // The verification email also shouldn't be sent since
+                //   the account has just been deleted
+                alert('Error setting name when signing up. Please try signing up again.');
+              })
+              .catch(async () => { // UNABLE TO DELETE INCOMPLETE USER
+                // Account creation was still successful, so I need to send the
+                //   email verification even though the user doesn't have a name
+                await sendEmailVerification(userCredential.user)
+                  .then(async () => { // VERIFICATION EMAIL SENT
+                    await signOut(auth);
+                    // Inform user that they also need to update their name in
+                    //   their profile settings.
+                    alert('Successfully created account! A verification email has been sent. Please verify your email in order to log in. However, an error has occured when setting your name. You may update it in your profile settings after logging in.');
+                  })
+                  .catch(async () => { // VERIFICATION EMAIL NOT SENT
+                    await signOut(auth);
+                    alert('Successfully created account! However, there was an error sending the verification email, so please login to resend it. An error has also occured when setting your name. You may update it in your profile settings after logging in.');
+                  })
+                  .finally(() => {
+                    router.push('/login');
+                  })
 
-              // IMPORTANT: What to do if updateProfile to update name fails?
-              // - Responsive sidebar must default to using "No Name" if the
-              //   user's name cannot be obtained from sessionUser (which
-              //   comes from Firebase auth).
-              // - Upon signing up in the backend to my DB, name should be set
-              //   to "No Name" since the DB has name as NOT NULL.
-              // - The user can set it in their profile settings, which should
-              //   also set it in Firebase via Admin SDK.
-            });
+                // What to do if updateProfile to update name fails? (DONE)
+                // - Responsive sidebar must default to using "No Name" if the
+                //   user's name cannot be obtained from sessionUser (which
+                //   comes from Firebase auth).
+                // - Upon signing up in the backend to my DB, name should be set
+                //   to "No Name" since the DB has name as NOT NULL.
+                // - The user can set it in their profile settings, which should
+                //   also set it in Firebase via Admin SDK.
+              });
           })
       })
       .catch(() => {

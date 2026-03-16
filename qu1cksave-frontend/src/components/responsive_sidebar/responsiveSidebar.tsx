@@ -9,7 +9,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Avatar, Skeleton } from '@mui/material';
 import stringAvatar from '@/lib/stringAvatar';
-import { logout } from '@/actions/auth';
+import { removeCookieAndGoToLoginPage } from '@/actions/auth';
 import { signOut, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 
@@ -136,7 +136,7 @@ export default function ResponsiveSidebar(
                 // Remove session from cookie and redirect to login
                 // - This is needed so I can use Next.js' way of deleting
                 //   cookies easily and redirecting
-                logout();
+                removeCookieAndGoToLoginPage();
                 // Again, onAuthStateChanged should detect when signOut logs out
                 //   the user so it can set sessionUser to undefined.
                 // setSessionUser(undefined);
