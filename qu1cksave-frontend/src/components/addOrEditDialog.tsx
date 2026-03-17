@@ -520,7 +520,7 @@ export default function AddOrEditDialog() {
     //   SessionUserContext since it gets rerendered anyway when
     //   MainLayout in (main)/layout.tx rerenders, which only happens on
     //   page reload or navigation to this page.
-    const jwt = sessionUser?.getIdToken();
+    const jwt = await sessionUser?.getIdToken();
     const jobId = !isAdd ? dialogJob.id : undefined;
     let fetchString = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v0/job`;
     if (jobId) { // In EDIT mode

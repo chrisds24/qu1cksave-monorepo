@@ -49,7 +49,7 @@ export default function FileDownloadSection(props: any) {
         link.click(); // Start download
         link.parentNode!.removeChild(link); // Clean up and remove the link
     } else { // Fetch the file
-      const jwt = sessionUser?.getIdToken();
+      const jwt = await sessionUser?.getIdToken();
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v0/${fileType}/${file.id}`, {
         // method: "GET",
         headers: {

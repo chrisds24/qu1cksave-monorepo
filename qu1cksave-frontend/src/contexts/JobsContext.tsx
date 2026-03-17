@@ -2,7 +2,6 @@ import { Job } from "@/types/job";
 import { Context, createContext, ReactNode, useContext, useEffect, useReducer, useState } from "react";
 import { SessionUserContext } from "./SessionUserContext";
 import { SetJobsLoadingContext } from "./JobsLoadingContext";
-import { auth } from "@/lib/firebase";
 
 export const JobsContext: Context<any> = createContext(null);
 export const JobsDispatchContext: Context<any> = createContext(null);
@@ -25,7 +24,7 @@ export function JobsProvider({ children } : { children: ReactNode }) {
         // Returns the current token if it has not expired or if it will not
         //   expire in the next five minutes. Otherwise, this will refresh
         //   the token and return a new one.
-        const jwt = sessionUser.getIdToken();
+        const jwt = await sessionUser.getIdToken();
         // Get all jobs for current user
         await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v0/job`, {
           headers: {

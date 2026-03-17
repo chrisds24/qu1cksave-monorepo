@@ -15,7 +15,7 @@ import { redirect } from "next/navigation";
 //   logging into Firebase.
 // - If email isn't verified, I need to signOut from Firebase so auth gets
 //   cleared. Then tell the user that an email verification has been sent 
-export async function setCookie(val: string) {   
+export async function setCookieAndGoToJobs(val: string) {   
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies
   // - According to MDN, maxAge is less error-prone than expires
   //   signInWithEmailAndPassword allows someone to login even if they're
@@ -36,6 +36,8 @@ export async function setCookie(val: string) {
   //   is trying to use the same cookie name.
   const maxAge = 60 * 60 * 24 * 365; // Expires in 1 year
   cookies().set("session", val, { maxAge: maxAge, httpOnly: true, secure: true, sameSite: 'strict' });
+  // Needed since router.push('/jobs'); in client doesn't work anymore
+  redirect('jobs');
 }
 
 // Primary purpose is to delete the cookie used by Next.js middleware

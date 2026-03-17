@@ -149,10 +149,11 @@ export default function Page() {
             //   delete could also fail.
             await deleteUser(userCredential.user)
               .then(() => { // SUCCESSFULLY DELETED INCOMPLETE USER
-                // Note that successfully deleting user clears auth just like
-                //   signOut, so there's no need to call signOut here
                 // The verification email also shouldn't be sent since
                 //   the account has just been deleted
+                // Note that successfully deleting user clears auth just like
+                //   signOut, so there's no need to call signOut here
+                // NO NEED TO SIGN OUT (See note above)
                 alert('Error setting name when signing up. Please try signing up again.');
               })
               .catch(async () => { // UNABLE TO DELETE INCOMPLETE USER
@@ -181,6 +182,18 @@ export default function Page() {
                 //   to "No Name" since the DB has name as NOT NULL.
                 // - The user can set it in their profile settings, which should
                 //   also set it in Firebase via Admin SDK.
+
+                // What to do if someone signs up with someone else's email?
+                // - The actual owner would receive the email, which they can
+                //   just ignore.
+                //   -- Not sure how Firebase's rate limiting for this works,
+                //      but hopefully it's good enough to avoid spamming
+                // - What if the actual owner actually wants to sign up, but
+                //   they don't know their password since someone else signed
+                //   up their email to Firebase without their consent?
+                //   -- Need a password reset feature.
+                //      + Only the owner will receive the email to reset
+                //        their password.
               });
           })
       })
@@ -348,3 +361,18 @@ export default function Page() {
     </>
   );
 }
+
+// Notes (Mar 17, 2026):
+// - Chris Santos (my yahoo email)
+//   -- "Successfully created account! A verification email has been sent.
+//       Please verify your email in order to log in."
+//   -- Verification email keeps being sent if logging in without verifying,
+//      which is expected
+//   -- When clicking a verification link other than the most recent:
+//      "Try verifying your email again. Your request to verify your email has
+//       expired or the link has already been used"
+//   -- Once verified:
+//      "Your email has been verified. You can now sign in with your new account"
+//      + Can now login
+//   -- When attempting to sign up with the same email, says "Error processing
+//      request" which is expected

@@ -10,7 +10,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Avatar from '@mui/material/Avatar';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { setCookie } from '@/actions/auth';
+import { setCookieAndGoToJobs } from '@/actions/auth';
 import { useState } from 'react';
 import { CircularProgress } from '@mui/material';
 import { sendEmailVerification, signInWithEmailAndPassword, signOut } from 'firebase/auth';
@@ -82,8 +82,8 @@ export default function Page() {
         if (user.emailVerified) {
             // Need to set cookie so user can access autheticated pages. Then
             //   redirect to jobs page
-            setCookie("arbitrary value not used for request authentication");
-            router.push('/jobs');
+            await setCookieAndGoToJobs("arbitrary value not used for request authentication");
+            // router.push('/jobs'); // Doesn't work anymore but used to
         } else {
             // Send verification email
             // - Must be signed in to do this
@@ -97,7 +97,7 @@ export default function Page() {
                 // Again, not putting signOut in finally since signOut must
                 //   happen before a blocking alert
                 await signOut(auth);
-                alert('');
+                alert('Error sending verification email. Please login again to send it then verify your email there.');
               })
         }
       })
@@ -212,3 +212,19 @@ export default function Page() {
     </>
   );
 }
+
+// Notes (Mar 17, 2026):
+// - Molly and Anna can just login since they're already in Firebase with email
+//   verified and the test DB
+// - Goat User can just login since he's in Firebase + email verified
+//   -- No notification of a signup for DB (as expected)
+// - Nobby (in Firebase + email verified + in test DB) can also login.
+//   -- He can go to the main page, but my custom error page is shown for
+//      jobs page as expected.
+// - Christian: Same as with Goat User
+// - Unverified Email: Notification about verification email being sent.
+//   -- A verification email has been sent. Please first verify your email before logging in.
+//   -- NOTE: There's no way to test the branch when sending an email fails
+// - No Name: Same as Goat User
+//   -- Even though the Firebase user doesn't have a name, the sidebar
+//      defaulted to No Name which is expected.

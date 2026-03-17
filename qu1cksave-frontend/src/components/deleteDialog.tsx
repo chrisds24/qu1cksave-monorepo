@@ -35,7 +35,7 @@ export default function DeleteDialog() {
     // if (!buttonDisabled) {
     setButtonDisabled(true);
 
-    const jwt = sessionUser?.getIdToken();
+    const jwt = await sessionUser?.getIdToken();
 
     await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v0/job/${deleteJobId}`, {
       method: "DELETE",
