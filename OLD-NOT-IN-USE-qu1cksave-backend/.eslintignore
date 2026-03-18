@@ -1,9 +1,0 @@
-node_modules/
-build/
-coverage/
-
-.eslintrc.js
-package-lock.json
-
-*.md
-*.yml

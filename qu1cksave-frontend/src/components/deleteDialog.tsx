@@ -1,6 +1,7 @@
 import { DeleteJobIdContext, SetDeleteJobIdContext } from '@/contexts/delete_dialog/DeleteJobIdContext';
 import { DeleteJobOpenContext, SetDeleteJobOpenContext } from '@/contexts/delete_dialog/DeleteJobOpenContext';
 import { JobsDispatchContext } from '@/contexts/JobsContext';
+import { SessionUserContext } from '@/contexts/SessionUserContext';
 import { CircularProgress } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -17,6 +18,7 @@ export default function DeleteDialog() {
   const deleteJobOpen = useContext(DeleteJobOpenContext);
   const setDeleteJobOpen = useContext(SetDeleteJobOpenContext);
   const dispatch = useContext(JobsDispatchContext);
+  const sessionUser = useContext(SessionUserContext);
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const pathname = usePathname();
@@ -33,8 +35,13 @@ export default function DeleteDialog() {
     // if (!buttonDisabled) {
     setButtonDisabled(true);
 
-    await fetch(`/api/job/${deleteJobId}`, {
-      method: 'DELETE',
+    const jwt = await sessionUser?.getIdToken();
+
+    await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v0/job/${deleteJobId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
     })
       .then((res) => {
         if (!res.ok) {
@@ -51,7 +58,7 @@ export default function DeleteDialog() {
           router.push('/jobs');
         }
       })
-      .catch((err) => {
+      .catch(() => {
         // No need to set jobs to undefined (which will go to error page)
         alert(`Error processing request. Please reload the page and try again.`)
       });

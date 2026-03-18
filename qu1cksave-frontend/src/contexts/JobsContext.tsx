@@ -1,25 +1,40 @@
 import { Job } from "@/types/job";
 import { Context, createContext, ReactNode, useContext, useEffect, useReducer, useState } from "react";
-import { SessionUserIdContext } from "./SessionUserIdContext";
+import { SessionUserContext } from "./SessionUserContext";
 import { SetJobsLoadingContext } from "./JobsLoadingContext";
 
 export const JobsContext: Context<any> = createContext(null);
 export const JobsDispatchContext: Context<any> = createContext(null);
 
 export function JobsProvider({ children } : { children: ReactNode }) {
-  const sessionUserId = useContext(SessionUserIdContext);
+  // No longer using sessionUserId since the Firebase token won't
+  //   have it since the addition of FirebaseAuth. For conditionals that
+  //   rely on sessionUserId, I'll use sessionUser instead
+  const sessionUser = useContext(SessionUserContext);
   const setJobsLoading = useContext(SetJobsLoadingContext);
 
-  // The reason for the undefined is when there's an error?
-  // const [jobs, setJobs] = useState<Job[] | undefined>([]);
   const [jobs, dispatch] = useReducer(jobsReducer, []);
 
   useEffect(() => {
     const getJobs = async () => {
-      if (sessionUserId) {
+      // If there's a sessionUser, then a user is logged in
+      //   to Firebase
+      if (sessionUser) {
+        // https://firebase.google.com/docs/reference/js/auth.user.md#usergetidtoken
+        // Returns the current token if it has not expired or if it will not
+        //   expire in the next five minutes. Otherwise, this will refresh
+        //   the token and return a new one.
+        const jwt = await sessionUser.getIdToken();
         // Get all jobs for current user
-        await fetch(`/api/job?id=${sessionUserId}`)
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v0/job`, {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        })
           .then((res) => {
+            // When the Java backend encounters an exception, it goes to my
+            //   custom exception handler that sets the status code depending
+            //   on the exception and returns null (TEMPORARILY null for now)
             if (!res.ok) {
               throw res;
             }
@@ -37,7 +52,7 @@ export function JobsProvider({ children } : { children: ReactNode }) {
       }
     }
     getJobs();
-  }, [sessionUserId]);
+  }, [sessionUser]);
   // Important:
   // - For the sessionUser dependency above, think about the following:
   // - https://react.dev/learn/removing-effect-dependencies
@@ -46,7 +61,7 @@ export function JobsProvider({ children } : { children: ReactNode }) {
   //   -- In my case, maybe I should just pass the sessionUser.id from
   //      (main)/layout.tsx
   // Solution: I changed it so that there's SessionUserIdContext instead of
-  //   SessionUserContext
+  //   SessionUserContext (Now SessionUserFirebaseUidContext)
 
   return (
     <JobsContext.Provider value={jobs}>

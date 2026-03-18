@@ -17,6 +17,7 @@
     "@mui/material-nextjs": "^5.15.11",
     "@mui/x-date-pickers": "^7.12.1",
     "dayjs": "^1.11.12",
+    "firebase": "^12.10.0",
     "jsonwebtoken": "*",
     "next": "14.1.4",
     "react": "^18",

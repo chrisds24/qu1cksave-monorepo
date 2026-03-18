@@ -1,8 +1,7 @@
 'use client'
-import { Dispatch, SetStateAction, useMemo, useState } from 'react';
+import { useState } from 'react';
 import styles from './responsiveSidebar.module.css';
 import MenuIcon from '@mui/icons-material/Menu';
-import { User } from '@/types/user';
 import { usePathname, useRouter } from 'next/navigation';
 import WorkIcon from '@mui/icons-material/Work';
 import FolderIcon from '@mui/icons-material/Folder';
@@ -10,7 +9,9 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Avatar, Skeleton } from '@mui/material';
 import stringAvatar from '@/lib/stringAvatar';
-import { logout } from '@/actions/auth';
+import { removeCookieAndGoToLoginPage } from '@/actions/auth';
+import { signOut, User } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 const navItems = [
   {name: 'Jobs', icon: <WorkIcon sx={{color: '#ffffff', height: '24px'}}/>, route: 'jobs'},
@@ -20,12 +21,10 @@ const navItems = [
 
 export default function ResponsiveSidebar(
   {
-    sessionUserName,
-    setSessionUser
+    sessionUser
   } :
   {
-    sessionUserName: string | undefined,
-    setSessionUser: Dispatch<SetStateAction<User | undefined>>
+    sessionUser: User | undefined
   }
 ) {
   const router = useRouter();
@@ -91,8 +90,17 @@ export default function ResponsiveSidebar(
           }>
             <div className={styles['nav-item-logo-container']}>
               {
-                sessionUserName ?
-                <Avatar {...stringAvatar(sessionUserName)} /> :
+                // If no sessionUser, then onAuthStateChanged hasn't set
+                //   one yet
+                // - Remember that a user could possibly not have a
+                //   displayName in Firebase if updateProfile fails during
+                //   Firebase signup. In this case, use 'No Name'
+                sessionUser ?
+                <Avatar {...stringAvatar(
+                  sessionUser.displayName ?
+                  sessionUser.displayName :
+                  'No Name'
+                )} /> :
                 <Skeleton
                   variant="circular"
                   width={40}
@@ -104,8 +112,8 @@ export default function ResponsiveSidebar(
             <div className={styles['nav-item-text-container']}>
               <p className={styles['nav-item-text']}>
                 {
-                  sessionUserName ?
-                  sessionUserName :
+                  sessionUser ?
+                  (sessionUser.displayName ? sessionUser.displayName : 'No Name'):
                   <Skeleton
                     variant="text"                 
                     sx={{
@@ -121,9 +129,21 @@ export default function ResponsiveSidebar(
         </li>
         <li
           key={`logout`}
-          onClick={() => {
-            logout();
-            setSessionUser(undefined);
+          onClick={async () => {
+            // Log out from Firebase
+            await signOut(auth)
+              .then(() => {
+                // Remove session from cookie and redirect to login
+                // - This is needed so I can use Next.js' way of deleting
+                //   cookies easily and redirecting
+                removeCookieAndGoToLoginPage();
+                // Again, onAuthStateChanged should detect when signOut logs out
+                //   the user so it can set sessionUser to undefined.
+                // setSessionUser(undefined);
+              })
+              .catch(() => {
+                alert('Error signing out.')
+              });
           }}
         >
           <div className={styles['nav-item-container']}>

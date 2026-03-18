@@ -1,95 +1,47 @@
 'use server'
 
-import { Credentials, NewUser } from "@/types/auth";
-import { User } from "@/types/user";
-import * as jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export async function login(credentials: Credentials): Promise<User | undefined> {    
-  // const user = await fetch("http://localhost:3010/api/v0/user/login", {
-  // const user = await fetch("https://qu1cksave-backend.onrender.com/api/v0/user/login", {
-  const user = await fetch(`${process.env.BACKEND_URL}/api/v0/user/login`, {
-    method: "POST",
-    body: JSON.stringify(credentials),
-    headers: {
-      Authorization: `Bearer ${process.env.API_KEY}`,
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => {
-      // Spring Boot API returns null with a non 200 range status code if
-      //   something goes wrong, including when the user can't be found, which
-      //   triggers the catch block
-      if (!res.ok) {
-        throw res;
-      }
-      // If res body is undefined, res.json() causes an error
-      return res.json();
-    })
-    .then((user) => {
-      const expires = new Date(Date.now() + 2*60*60*1000); // Expires in 2 hours
-      // Switch to this once using https
-      cookies().set("session", user.access_token, { expires, httpOnly: true, secure: true, sameSite: 'strict' });
-      return {id: user.id, email: user.email, name: user.name, roles: user.roles};
-    })
-    .catch((err) => {
-      return undefined
-    })
-
-  return user;
+// TODO (Firebase): Call the provided Firebase Auth funciton instead
+//   Might need to move the logic to where I call login instead of being
+//   inside a server action.
+// IMPORTANT: It's still important to set the cookie upon a login.
+// - When logging in via Firebase successfully: Set the cookie
+// - If successful going to my backend, keep the cookie.
+// - If not successful (Ex. email not verified or not a valid token),
+//   need to remove the cookie.
+// - Remember, I also need to add a check to email verified after successfully
+//   logging into Firebase.
+// - If email isn't verified, I need to signOut from Firebase so auth gets
+//   cleared. Then tell the user that an email verification has been sent 
+export async function setCookieAndGoToJobs(val: string) {   
+  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies
+  // - According to MDN, maxAge is less error-prone than expires
+  //   signInWithEmailAndPassword allows someone to login even if they're
+  //   currently logged in to Firebase. Since this is the case, the cookie
+  //   expiring after 1 year wouldn't be a problem since they can just log
+  //   in again after that time.
+  // - Can't really use onAuthStateChanged in my (main) directory which is
+  //   protected by Next.js middleware since the middleware will just redirect
+  //   away from it (or not even allow access at all) if the cookie is expired
+  //   -- However, I can run it in the login page or even the outermost layout
+  //      instead, meaning that a user can be logged in from the landing page
+  //      like how some web apps do it.
+  // - Note that I'm only giving the cookie an arbitrary value since the point
+  //   of setting the cookie is for the middleware to be able to tell if
+  //   a user is allowed to access authenticated pages or not. This isn't used
+  //   for actual authentication since that's what the JWT is for
+  // - Naming this "session" is fine as long as no other system in my domain
+  //   is trying to use the same cookie name.
+  const maxAge = 60 * 60 * 24 * 365; // Expires in 1 year
+  cookies().set("session", val, { maxAge: maxAge, httpOnly: true, secure: true, sameSite: 'strict' });
+  // Needed since router.push('/jobs'); in client doesn't work anymore
+  redirect('jobs');
 }
 
-export async function logout() {
+// Primary purpose is to delete the cookie used by Next.js middleware
+export async function removeCookieAndGoToLoginPage() {
   cookies().delete('session');
   redirect('login');
 }
-
-export async function signup(newUser: NewUser): Promise<User | undefined> {
-  // const user = await fetch("http://localhost:3010/api/v0/user/signup", {
-  // const user = await fetch("https://qu1cksave-backend.onrender.com/api/v0/user/signup", {
-  const user = await fetch(`${process.env.BACKEND_URL}/api/v0/user/signup`, {
-    method: "POST",
-    body: JSON.stringify(newUser),
-    headers: {
-      Authorization: `Bearer ${process.env.API_KEY}`,
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => {
-      if (!res.ok) {
-        throw res;
-      }
-      return res.json();
-    })
-    .catch((err) => {
-      return undefined;
-    });
-    
-  return user;
-}
-
-export async function decrypt(token: string): Promise<User | undefined> {
-  let result = undefined;
-  // https://www.npmjs.com/package/jsonwebtoken
-  // - there are other libraries that expect base64 encoded secrets (random bytes encoded using base64)...
-  jwt.verify(token, Buffer.from(process.env.ACCESS_TOKEN as string, 'base64'), (err, decoded) => {
-    if (err) {
-      result = undefined;
-    } else {
-      result = decoded as User;
-    }
-  });
-  return result;
-}
-
-// Needed to get User to show the user's name in jobs page
-export async function getSessionUser(): Promise<User | undefined> {
-  const session = cookies().get("session")?.value;
-  if (session) {
-    return await decrypt(session);
-  } else {
-    return undefined;
-  }
-}
-

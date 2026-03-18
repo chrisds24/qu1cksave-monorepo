@@ -10,10 +10,11 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Avatar from '@mui/material/Avatar';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { login } from '@/actions/auth';
-import { Credentials } from '@/types/auth';
+import { setCookieAndGoToJobs } from '@/actions/auth';
 import { useState } from 'react';
 import { CircularProgress } from '@mui/material';
+import { sendEmailVerification, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 // Credit to:
 // - https://mui.com/material-ui/getting-started/templates/
@@ -40,8 +41,8 @@ export default function Page() {
 
   const changeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value as string;
-    // https://regexr.com/3e48o
-    if (!val || val.length > 254 || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val)) {
+    // Only require that email field isn't empty.
+    if (!val) {
       setEmailErr(true)
     } else {
       setEmailErr(false)
@@ -51,7 +52,8 @@ export default function Page() {
 
   const changePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value as string;
-    if (!val || val.length < 8) {
+    // Only require that password field isn't empty.
+    if (!val) {
       setPasswordErr(true)
     } else {
       setPasswordErr(false)
@@ -63,28 +65,48 @@ export default function Page() {
     event.preventDefault();
     setButtonDisabled(true);
 
-    const emailError = !email || email.length > 254;
-    const passwordError = !password || password.length < 8;
+    // Ensure all fields are valid
+    const emailError = !email;
+    const passwordError = !password;
     if (emailError || passwordError) {
       setEmailErr(emailError);
       setPasswordErr(passwordError);
-      alert('Please ensure that all fields are valid.');
+      alert('Please ensure that all required fields have been filled.');
       setButtonDisabled(false);
       return;
     }
 
-    const formdata = new FormData(event.currentTarget);
-    const credentials: Credentials = {
-      email: formdata.get('email') as string,
-      password: formdata.get('password') as string
-    };
-    const user = await login(credentials);
-    if (user) {
-      router.push('/jobs');
-    } else {
-      alert('Error processing request. Please try again or check your credentials.');
-    }
-    setButtonDisabled(false);
+    await signInWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => { // Successful Firebase login
+        const user = userCredential.user;
+        if (user.emailVerified) {
+            // Need to set cookie so user can access autheticated pages. Then
+            //   redirect to jobs page
+            await setCookieAndGoToJobs("arbitrary value not used for request authentication");
+            // router.push('/jobs'); // Doesn't work anymore but used to
+        } else {
+            // Send verification email
+            // - Must be signed in to do this
+            await sendEmailVerification(user)
+              .then(async () => {
+                // Need to signout from Firebase since login wasn't successful.
+                await signOut(auth);
+                alert('A verification email has been sent. Please first verify your email before logging in.');
+              })
+              .catch(async () => {
+                // Again, not putting signOut in finally since signOut must
+                //   happen before a blocking alert
+                await signOut(auth);
+                alert('Error sending verification email. Please login again to send it then verify your email there.');
+              })
+        }
+      })
+      .catch(() => { // Unsuccessful Firebase login
+        alert('Error logging in. Please try again or check your credentials.');
+      })
+      .finally(() => {
+        setButtonDisabled(false);
+      });
   };
 
   return (
@@ -111,7 +133,7 @@ export default function Page() {
           onChange={changeEmail}
           error={emailErr}
           helperText={
-            emailErr ? 'Required. Maximum: 254 characters. Must be a valid email address.' : ''
+            emailErr ? 'Required. Please fill out this field.' : ''
           }
           sx={{
             input: {
@@ -146,7 +168,7 @@ export default function Page() {
           onChange={changePassword}
           error={passwordErr}
           helperText={
-            passwordErr ? 'Required. Minimum: 8 characters' : ''
+            passwordErr ? 'Required. Please fill out this field.' : ''
           }
           sx={{
             input: {
@@ -190,3 +212,19 @@ export default function Page() {
     </>
   );
 }
+
+// Notes (Mar 17, 2026):
+// - Molly and Anna can just login since they're already in Firebase with email
+//   verified and the test DB
+// - Goat User can just login since he's in Firebase + email verified
+//   -- No notification of a signup for DB (as expected)
+// - Nobby (in Firebase + email verified + in test DB) can also login.
+//   -- He can go to the main page, but my custom error page is shown for
+//      jobs page as expected.
+// - Christian: Same as with Goat User
+// - Unverified Email: Notification about verification email being sent.
+//   -- A verification email has been sent. Please first verify your email before logging in.
+//   -- NOTE: There's no way to test the branch when sending an email fails
+// - No Name: Same as Goat User
+//   -- Even though the Firebase user doesn't have a name, the sidebar
+//      defaulted to No Name which is expected.
