@@ -71,7 +71,7 @@ export default function Page() {
       </Typography>
       <Box component="form" noValidate onSubmit={sendResetLink} sx={{ mt: 1.5, width: '87%' }}>
         <Typography variant="subtitle2" color={'#ffffff'} marginBottom={1.5}>
-          Please enter the email associated with your account and we'll send you password reset instructions
+          Please enter the email associated with your account and we&apos;ll send you password reset instructions
         </Typography>
         <TextField
           margin="normal"
