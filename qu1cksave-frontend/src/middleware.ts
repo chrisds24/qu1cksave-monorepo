@@ -8,12 +8,19 @@ export async function middleware(request: NextRequest) {
   if(isAuthenticated && (request.nextUrl.pathname === '/')) {
     return NextResponse.redirect(new URL('/jobs', request.url))
   }
+
   // Authenticated and at login route, go to jobs route
   if(isAuthenticated && request.nextUrl.pathname.startsWith('/login')) {
     return NextResponse.redirect(new URL('/jobs', request.url))
   }
+
   // Authenticated and at signup route, go to jobs route
-  if(isAuthenticated && request.nextUrl.pathname.startsWith('/login')) {
+  if(isAuthenticated && request.nextUrl.pathname.startsWith('/signup')) {
+    return NextResponse.redirect(new URL('/jobs', request.url))
+  }
+
+  // Authenticated and at reset password route, go to jobs route
+  if(isAuthenticated && request.nextUrl.pathname.startsWith('/resetpassword')) {
     return NextResponse.redirect(new URL('/jobs', request.url))
   }
 
@@ -37,6 +44,7 @@ export const config = {
   matcher: ['/',
     '/login/:path*',
     '/signup/:path*',
+    '/resetpassword/:path*',
     '/jobs/:path*',
     '/documents/:path*',
     '/statistics/:path*'

@@ -115,9 +115,9 @@ export default function Page() {
         <LockOutlinedIcon />
       </Avatar>
       <Typography component="h1" variant="h5" color={'#ffffff'}>
-        Sign In
+        Log In
       </Typography>
-      <Box component="form" noValidate onSubmit={signin} sx={{ mt: 1 }}>
+      <Box component="form" noValidate onSubmit={signin} sx={{ mt: 1, width: '87%' }}>
         {/* https://stackoverflow.com/questions/70989890/how-to-change-textfield-inputs-focus-border-using-material-ui-theme */}
         <TextField
           margin="normal"
@@ -182,12 +182,24 @@ export default function Page() {
             },
           }}
         />
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginTop: 0.5,
+            marginBottom: 1
+          }}
+        >
+            <Link href="/resetpassword" variant="body2">
+              {"Forgot password?"}
+            </Link>         
+        </Box>
         <Button
           type="submit"
           fullWidth
           variant="contained"
           sx={{
-            mt: 3,
+            mt: 2,
             mb: 2,
             color: '#ffffff',
             backgroundColor: '#000000',
@@ -198,7 +210,7 @@ export default function Page() {
            }}
           disabled={buttonDisabled}
         >
-          {buttonDisabled ? <CircularProgress size={25} sx={{color: '#ffffff'}} />: 'Sign In'}
+          {buttonDisabled ? <CircularProgress size={25} sx={{color: '#ffffff'}} />: 'Log In'}
         </Button>
         <Grid container>
           <Grid item>
